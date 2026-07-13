@@ -16,12 +16,16 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <Card className={cn("shadow-none", className)}>
+    <Card className={cn("shadow-sm", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
-        {Icon ? <Icon className="size-4 text-primary" /> : null}
+        {Icon ? (
+          <span className="flex size-8 items-center justify-center rounded-full bg-primary/12 text-primary">
+            <Icon className="size-4" />
+          </span>
+        ) : null}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-semibold tracking-tight text-foreground">
