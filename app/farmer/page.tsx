@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   HandCoins,
@@ -10,6 +12,7 @@ import { VegetablePriceCard } from "@/components/market/vegetable-price-card";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -30,6 +33,7 @@ import {
 } from "@/lib/mock";
 
 export default function FarmerDashboardPage() {
+  const { t } = useLocale();
   const topPrices = [...marketPrices].sort((a, b) => b.highest - a.highest).slice(0, 4);
   const recommended = [...buyingRequests]
     .filter((r) => r.status === "Active")
@@ -40,33 +44,33 @@ export default function FarmerDashboardPage() {
   return (
     <div>
       <PageHeader
-        title="Dashboard"
-        description="Who will pay the best price for your harvest today?"
+        title={t("farmer.dash.title")}
+        description={t("farmer.dash.description")}
         action={
           <Button asChild>
-            <Link href="/farmer/harvest/new">Create Harvest Listing</Link>
+            <Link href="/farmer/harvest/new">{t("farmer.dash.createListing")}</Link>
           </Button>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          title="Harvest Listings"
+          title={t("farmer.dash.harvestListings")}
           value={String(farmerDashboardStats.harvestListings)}
           icon={Leaf}
         />
         <StatCard
-          title="Pending Offers"
+          title={t("farmer.dash.pendingOffers")}
           value={String(farmerDashboardStats.pendingOffers)}
           icon={HandCoins}
         />
         <StatCard
-          title="Accepted Sales"
+          title={t("farmer.dash.acceptedSales")}
           value={String(farmerDashboardStats.acceptedSales)}
           icon={ShoppingBag}
         />
         <StatCard
-          title="Total Earnings"
+          title={t("farmer.dash.totalEarnings")}
           value={formatLKR(farmerDashboardStats.totalEarnings)}
           icon={Wallet}
         />
@@ -74,9 +78,9 @@ export default function FarmerDashboardPage() {
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Today&apos;s Highest Prices</h2>
+          <h2 className="text-lg font-semibold">{t("farmer.dash.highestPrices")}</h2>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/farmer/prices">All prices</Link>
+            <Link href="/farmer/prices">{t("farmer.dash.allPrices")}</Link>
           </Button>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -92,9 +96,11 @@ export default function FarmerDashboardPage() {
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Recommended Buyer Requests</h2>
+          <h2 className="text-lg font-semibold">
+            {t("farmer.dash.recommendedRequests")}
+          </h2>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/farmer/requests">View all</Link>
+            <Link href="/farmer/requests">{t("common.viewAll")}</Link>
           </Button>
         </div>
         <div className="grid gap-4 lg:grid-cols-3">
@@ -110,21 +116,21 @@ export default function FarmerDashboardPage() {
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Recent Offers</h2>
+          <h2 className="text-lg font-semibold">{t("farmer.dash.recentOffers")}</h2>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/farmer/offers">Compare offers</Link>
+            <Link href="/farmer/offers">{t("farmer.dash.compareOffers")}</Link>
           </Button>
         </div>
         <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Trader</TableHead>
-                <TableHead>Vegetable</TableHead>
-                <TableHead>Offered Price</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead>{t("common.trader")}</TableHead>
+                <TableHead>{t("common.vegetable")}</TableHead>
+                <TableHead>{t("farmer.dash.offeredPrice")}</TableHead>
+                <TableHead>{t("common.quantity")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
+                <TableHead className="text-right">{t("common.action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -141,7 +147,7 @@ export default function FarmerDashboardPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <Button size="sm" variant="outline" asChild>
-                      <Link href="/farmer/offers">View</Link>
+                      <Link href="/farmer/offers">{t("common.view")}</Link>
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -153,15 +159,15 @@ export default function FarmerDashboardPage() {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <section>
-          <h2 className="mb-4 text-lg font-semibold">My Harvest</h2>
+          <h2 className="mb-4 text-lg font-semibold">{t("farmer.dash.myHarvest")}</h2>
           <div className="overflow-hidden rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Vegetable</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Applications</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t("common.vegetable")}</TableHead>
+                  <TableHead>{t("common.quantity")}</TableHead>
+                  <TableHead>{t("common.applications")}</TableHead>
+                  <TableHead>{t("common.status")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -187,7 +193,9 @@ export default function FarmerDashboardPage() {
           </div>
         </section>
         <section>
-          <h2 className="mb-4 text-lg font-semibold">Notifications</h2>
+          <h2 className="mb-4 text-lg font-semibold">
+            {t("farmer.dash.notifications")}
+          </h2>
           <ul className="space-y-3">
             {notifications
               .filter((n) =>

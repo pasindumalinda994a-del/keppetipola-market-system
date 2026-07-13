@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Building2,
@@ -9,6 +11,7 @@ import { PriceTrendChart } from "@/components/market/price-trend-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -29,6 +32,7 @@ import {
 } from "@/lib/mock";
 
 export default function AdminDashboardPage() {
+  const { t } = useLocale();
   const pendingFarmers = users.filter(
     (u) => u.role === "farmer" && u.status === "Pending"
   ).length;
@@ -37,54 +41,56 @@ export default function AdminDashboardPage() {
   return (
     <div>
       <PageHeader
-        title="Admin Dashboard"
-        description="Market overview and pending approvals."
+        title={t("admin.dash.title")}
+        description={t("admin.dash.description")}
       />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          title="Farmers"
+          title={t("admin.dash.farmers")}
           value={String(adminDashboardStats.farmers)}
           icon={Users}
         />
         <StatCard
-          title="Traders"
+          title={t("admin.dash.traders")}
           value={String(adminDashboardStats.traders)}
           icon={Building2}
         />
         <StatCard
-          title="Transactions"
+          title={t("admin.dash.transactions")}
           value={String(adminDashboardStats.transactions)}
           icon={ShoppingBag}
         />
         <StatCard
-          title="Today's Sales"
+          title={t("admin.dash.todaySales")}
           value={formatLKR(adminDashboardStats.todaySales)}
           icon={Leaf}
         />
       </div>
 
       <section className="mt-8">
-        <h2 className="mb-4 text-lg font-semibold">Pending Approvals</h2>
+        <h2 className="mb-4 text-lg font-semibold">
+          {t("admin.dash.pendingApprovals")}
+        </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <article className="rounded-lg border bg-card p-4">
-            <p className="text-sm text-muted-foreground">Farmers</p>
+            <p className="text-sm text-muted-foreground">{t("common.farmers")}</p>
             <p className="mt-1 text-2xl font-semibold">{pendingFarmers}</p>
             <Button variant="link" className="px-0" asChild>
-              <Link href="/admin/users">Review</Link>
+              <Link href="/admin/users">{t("common.review")}</Link>
             </Button>
           </article>
           <article className="rounded-lg border bg-card p-4">
-            <p className="text-sm text-muted-foreground">Traders</p>
+            <p className="text-sm text-muted-foreground">{t("common.traders")}</p>
             <p className="mt-1 text-2xl font-semibold">0</p>
             <Button variant="link" className="px-0" asChild>
-              <Link href="/admin/users">Review</Link>
+              <Link href="/admin/users">{t("common.review")}</Link>
             </Button>
           </article>
           <article className="rounded-lg border bg-card p-4">
-            <p className="text-sm text-muted-foreground">Stalls</p>
+            <p className="text-sm text-muted-foreground">{t("common.stalls")}</p>
             <p className="mt-1 text-2xl font-semibold">{pendingStalls}</p>
             <Button variant="link" className="px-0" asChild>
-              <Link href="/admin/stalls">Review</Link>
+              <Link href="/admin/stalls">{t("common.review")}</Link>
             </Button>
           </article>
         </div>
@@ -93,35 +99,37 @@ export default function AdminDashboardPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Recent Transactions</h2>
+            <h2 className="text-lg font-semibold">
+              {t("admin.dash.recentTransactions")}
+            </h2>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/admin/transactions">View all</Link>
+              <Link href="/admin/transactions">{t("common.viewAll")}</Link>
             </Button>
           </div>
           <div className="overflow-hidden rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Parties</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t("common.id")}</TableHead>
+                  <TableHead>{t("common.parties")}</TableHead>
+                  <TableHead>{t("common.amount")}</TableHead>
+                  <TableHead>{t("common.status")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transactions.slice(0, 4).map((t) => (
-                  <TableRow key={t.id}>
-                    <TableCell className="font-mono text-xs">{t.id}</TableCell>
+                {transactions.slice(0, 4).map((txn) => (
+                  <TableRow key={txn.id}>
+                    <TableCell className="font-mono text-xs">{txn.id}</TableCell>
                     <TableCell className="text-sm">
-                      {t.farmerName} → {t.traderName}
+                      {txn.farmerName} → {txn.traderName}
                       <br />
                       <span className="text-muted-foreground">
-                        {t.vegetableName} · {formatKg(t.quantityKg)}
+                        {txn.vegetableName} · {formatKg(txn.quantityKg)}
                       </span>
                     </TableCell>
-                    <TableCell>{formatLKR(t.amount)}</TableCell>
+                    <TableCell>{formatLKR(txn.amount)}</TableCell>
                     <TableCell>
-                      <StatusBadge status={t.status} />
+                      <StatusBadge status={txn.status} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -130,16 +138,16 @@ export default function AdminDashboardPage() {
           </div>
         </section>
         <section>
-          <h2 className="mb-4 text-lg font-semibold">Price Trend</h2>
+          <h2 className="mb-4 text-lg font-semibold">{t("common.priceTrend")}</h2>
           <PriceTrendChart data={getPriceHistory("veg-1")} height={260} />
         </section>
       </div>
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Activity Log</h2>
+          <h2 className="text-lg font-semibold">{t("admin.dash.activityLog")}</h2>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/admin/logs">All logs</Link>
+            <Link href="/admin/logs">{t("admin.dash.allLogs")}</Link>
           </Button>
         </div>
         <ul className="space-y-2">

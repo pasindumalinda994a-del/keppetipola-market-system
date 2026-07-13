@@ -4,20 +4,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 import { NotificationDrawer } from "@/components/layout/notification-drawer";
+import { useLocale } from "@/components/providers/locale-provider";
 import { getMockUser } from "@/lib/mock-auth";
+import type { MessageKey } from "@/lib/i18n/messages";
 import type { UserRole } from "@/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export type NavItem = {
   href: string;
-  label: string;
+  labelKey: MessageKey;
   icon: LucideIcon;
 };
 
 export function PortalShell({
   role,
-  title,
+  titleKey,
   nav,
   mobileNav,
   children,
@@ -26,7 +29,7 @@ export function PortalShell({
   profileHref,
 }: {
   role: UserRole;
-  title: string;
+  titleKey: MessageKey;
   nav: NavItem[];
   mobileNav: NavItem[];
   children: React.ReactNode;
@@ -35,8 +38,10 @@ export function PortalShell({
   profileHref?: string;
 }) {
   const pathname = usePathname();
+  const { t } = useLocale();
   const user = getMockUser(role);
   const profile = profileHref ?? `/${role}/settings`;
+  const title = t(titleKey);
 
   return (
     <div className="min-h-dvh bg-background lg:bg-portal-frame lg:p-3 xl:p-4">
@@ -52,7 +57,7 @@ export function PortalShell({
           </div>
 
           <p className="mb-2 px-5 text-[10px] font-semibold tracking-[0.14em] text-sidebar-foreground/40 uppercase">
-            Navigation
+            {t("shell.navigation")}
           </p>
 
           <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
@@ -77,7 +82,7 @@ export function PortalShell({
                       active ? "text-primary" : "text-sidebar-foreground/45"
                     )}
                   />
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -114,7 +119,8 @@ export function PortalShell({
             <p className="font-heading text-base font-semibold text-foreground lg:hidden">
               {title}
             </p>
-            <div className="ml-auto flex items-center gap-1">
+            <div className="ml-auto flex items-center gap-1 sm:gap-2">
+              <LanguageToggle />
               <NotificationDrawer
                 href={notificationHref}
                 groups={notificationGroups}
@@ -123,7 +129,7 @@ export function PortalShell({
                 href={profile}
                 className="ml-1 hidden rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline"
               >
-                Profile
+                {t("shell.profile")}
               </Link>
             </div>
           </header>
@@ -151,7 +157,7 @@ export function PortalShell({
                   )}
                 >
                   <Icon className="size-5" />
-                  <span className="truncate">{item.label}</span>
+                  <span className="truncate">{t(item.labelKey)}</span>
                 </Link>
               </li>
             );

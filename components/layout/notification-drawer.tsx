@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Bell } from "lucide-react";
 import { formatRelativeTime } from "@/lib/format";
 import { notifications as allNotifications } from "@/lib/mock";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -21,6 +22,7 @@ export function NotificationDrawer({
   href?: string;
   groups?: string[];
 }) {
+  const { t } = useLocale();
   const items = allNotifications
     .filter((n) => !groups || groups.includes(n.group))
     .slice(0, 8);
@@ -30,7 +32,7 @@ export function NotificationDrawer({
     <Sheet>
       <SheetTrigger
         render={<Button variant="ghost" size="icon" className="relative" />}
-        aria-label="Notifications"
+        aria-label={t("shell.notifications")}
       >
         <Bell className="size-5" />
         {unread > 0 ? (
@@ -39,7 +41,7 @@ export function NotificationDrawer({
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>Notifications</SheetTitle>
+          <SheetTitle>{t("shell.notifications")}</SheetTitle>
         </SheetHeader>
         <div className="mt-4 space-y-3 overflow-y-auto px-1 pb-6">
           {items.map((n) => (
@@ -63,7 +65,7 @@ export function NotificationDrawer({
         </div>
         <div className="border-t px-1 pt-3">
           <Button asChild variant="outline" className="w-full">
-            <Link href={href}>View all</Link>
+            <Link href={href}>{t("shell.viewAll")}</Link>
           </Button>
         </div>
       </SheetContent>
