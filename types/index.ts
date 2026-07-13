@@ -25,6 +25,7 @@ export interface Vegetable {
 export interface MarketPrice {
   vegetableId: string;
   vegetableName: string;
+  imageUrl: string;
   lowest: number;
   highest: number;
   average: number;

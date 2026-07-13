@@ -29,14 +29,14 @@ export const vegetables: Vegetable[] = [
 ];
 
 export const marketPrices: MarketPrice[] = [
-  { vegetableId: "veg-1", vegetableName: "Carrot", lowest: 190, highest: 200, average: 196, change: 5, lastUpdated: new Date(Date.now() - 3 * 60000).toISOString() },
-  { vegetableId: "veg-2", vegetableName: "Cabbage", lowest: 80, highest: 95, average: 88, change: -2, lastUpdated: new Date(Date.now() - 8 * 60000).toISOString() },
-  { vegetableId: "veg-3", vegetableName: "Leeks", lowest: 220, highest: 245, average: 232, change: 8, lastUpdated: new Date(Date.now() - 5 * 60000).toISOString() },
-  { vegetableId: "veg-4", vegetableName: "Beans", lowest: 280, highest: 310, average: 295, change: 12, lastUpdated: new Date(Date.now() - 12 * 60000).toISOString() },
-  { vegetableId: "veg-5", vegetableName: "Tomato", lowest: 150, highest: 175, average: 162, change: -4, lastUpdated: new Date(Date.now() - 6 * 60000).toISOString() },
-  { vegetableId: "veg-6", vegetableName: "Potato", lowest: 120, highest: 135, average: 128, change: 1, lastUpdated: new Date(Date.now() - 15 * 60000).toISOString() },
-  { vegetableId: "veg-7", vegetableName: "Beetroot", lowest: 160, highest: 180, average: 170, change: 3, lastUpdated: new Date(Date.now() - 9 * 60000).toISOString() },
-  { vegetableId: "veg-8", vegetableName: "Capsicum", lowest: 350, highest: 390, average: 370, change: -6, lastUpdated: new Date(Date.now() - 4 * 60000).toISOString() },
+  { vegetableId: "veg-1", vegetableName: "Carrot", imageUrl: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=640&h=480&fit=crop&q=80", lowest: 190, highest: 200, average: 196, change: 5, lastUpdated: new Date(Date.now() - 3 * 60000).toISOString() },
+  { vegetableId: "veg-2", vegetableName: "Cabbage", imageUrl: "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=640&h=480&fit=crop&q=80", lowest: 80, highest: 95, average: 88, change: -2, lastUpdated: new Date(Date.now() - 8 * 60000).toISOString() },
+  { vegetableId: "veg-3", vegetableName: "Leeks", imageUrl: "https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=640&h=480&fit=crop&q=80", lowest: 220, highest: 245, average: 232, change: 8, lastUpdated: new Date(Date.now() - 5 * 60000).toISOString() },
+  { vegetableId: "veg-4", vegetableName: "Beans", imageUrl: "https://images.unsplash.com/photo-1567375698348-5d9d5ae99de0?w=640&h=480&fit=crop&q=80", lowest: 280, highest: 310, average: 295, change: 12, lastUpdated: new Date(Date.now() - 12 * 60000).toISOString() },
+  { vegetableId: "veg-5", vegetableName: "Tomato", imageUrl: "https://images.unsplash.com/photo-1546470427-e26264be0d16?w=640&h=480&fit=crop&q=80", lowest: 150, highest: 175, average: 162, change: -4, lastUpdated: new Date(Date.now() - 6 * 60000).toISOString() },
+  { vegetableId: "veg-6", vegetableName: "Potato", imageUrl: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=640&h=480&fit=crop&q=80", lowest: 120, highest: 135, average: 128, change: 1, lastUpdated: new Date(Date.now() - 15 * 60000).toISOString() },
+  { vegetableId: "veg-7", vegetableName: "Beetroot", imageUrl: "https://images.unsplash.com/photo-1593105544559-ecb03bf76f54?w=640&h=480&fit=crop&q=80", lowest: 160, highest: 180, average: 170, change: 3, lastUpdated: new Date(Date.now() - 9 * 60000).toISOString() },
+  { vegetableId: "veg-8", vegetableName: "Capsicum", imageUrl: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=640&h=480&fit=crop&q=80", lowest: 350, highest: 390, average: 370, change: -6, lastUpdated: new Date(Date.now() - 4 * 60000).toISOString() },
 ];
 
 function daysAgo(n: number): string {
