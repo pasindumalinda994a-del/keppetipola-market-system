@@ -43,7 +43,7 @@ export default function CreateBuyingRequestPage() {
         title="Create Buying Request"
         description="Tell farmers what you need and the price you’ll pay."
       />
-      <form onSubmit={onSubmit} className="space-y-4 rounded-lg border bg-card p-6">
+      <form onSubmit={onSubmit} className="space-y-4 rounded-lg bg-card p-6">
         <div className="space-y-2">
           <Label>Vegetable</Label>
           <Select

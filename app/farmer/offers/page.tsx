@@ -48,7 +48,7 @@ export default function FarmerOffersPage() {
         title="Trader Offers"
         description="Compare offers — highest price is highlighted."
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

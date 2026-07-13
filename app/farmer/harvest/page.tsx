@@ -25,7 +25,7 @@ export default function FarmerHarvestPage() {
           </Button>
         }
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

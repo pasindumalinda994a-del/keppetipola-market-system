@@ -16,7 +16,7 @@ export function DemandRequestCard({
   return (
     <article
       className={cn(
-        "flex flex-col rounded-lg border border-border/70 bg-card p-4 shadow-sm",
+        "flex flex-col rounded-lg bg-card p-4",
         className
       )}
     >

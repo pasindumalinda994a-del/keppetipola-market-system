@@ -48,7 +48,7 @@ export default function FarmerRequestsPage() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {filtered.map((r) => (
-          <article key={r.id} className="flex flex-col rounded-lg border bg-card p-4">
+          <article key={r.id} className="flex flex-col rounded-lg bg-card p-4">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <p className="text-sm text-muted-foreground">Trader</p>

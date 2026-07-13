@@ -25,7 +25,7 @@ export function BarSummaryChart({
   valueIsCurrency?: boolean;
 }) {
   return (
-    <div className="w-full rounded-lg border bg-card p-4" style={{ height }}>
+    <div className="w-full rounded-lg bg-card p-4" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-border" />

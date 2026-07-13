@@ -71,7 +71,7 @@ export function PortalShell({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium text-sidebar-foreground/55 transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                    "flex items-center gap-3 rounded-full px-3.5 py-2.5 text-sm font-medium text-sidebar-foreground/55 transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
                     active &&
                       "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                   )}

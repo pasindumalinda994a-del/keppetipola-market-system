@@ -55,7 +55,7 @@
 
 :root {
   /* Eco-modern: forest chrome, mint panel, emerald accent, amber prices */
-  --background: oklch(0.965 0.01 165);
+  --background: #f1f9f7;
   --foreground: oklch(0.2 0.02 160);
   --card: oklch(1 0.002 165);
   --card-foreground: oklch(0.2 0.02 160);

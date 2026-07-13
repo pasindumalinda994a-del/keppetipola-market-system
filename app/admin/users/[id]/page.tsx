@@ -42,7 +42,7 @@ export default async function AdminUserDetailPage({
           </Button>
         }
       />
-      <div className="grid gap-4 rounded-lg border bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 rounded-lg bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-sm text-muted-foreground">Phone</p>
           <p className="font-medium">{user.phone}</p>
@@ -68,7 +68,7 @@ export default async function AdminUserDetailPage({
             <li className="text-muted-foreground">No recent login activity.</li>
           ) : (
             activity.map((a) => (
-              <li key={a.id} className="rounded-lg border bg-card px-4 py-2">
+              <li key={a.id} className="rounded-lg bg-card px-4 py-2">
                 {a.message}
               </li>
             ))
@@ -80,7 +80,7 @@ export default async function AdminUserDetailPage({
         <h2 className="mb-3 text-lg font-semibold">
           {user.role === "farmer" ? "Sales" : "Purchases"}
         </h2>
-        <div className="overflow-hidden rounded-lg border bg-card">
+        <div className="overflow-hidden rounded-lg bg-card">
           <Table>
             <TableHeader>
               <TableRow>

@@ -76,7 +76,7 @@ export default function TraderDashboardPage() {
             <Link href="/trader/applications">{t("common.review")}</Link>
           </Button>
         </div>
-        <div className="overflow-hidden rounded-lg border bg-card">
+        <div className="overflow-hidden rounded-lg bg-card">
           <Table>
             <TableHeader>
               <TableRow>
@@ -110,7 +110,7 @@ export default function TraderDashboardPage() {
           {buyingRequests
             .filter((r) => r.traderId === "trader-1")
             .map((r) => (
-              <article key={r.id} className="rounded-lg border bg-card p-4">
+              <article key={r.id} className="rounded-lg bg-card p-4">
                 <h3 className="font-semibold">{r.vegetableName}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {t("trader.dash.need")} {formatKg(r.quantityKg)} ·{" "}
@@ -127,7 +127,7 @@ export default function TraderDashboardPage() {
           <h2 className="mb-4 text-lg font-semibold">
             {t("trader.dash.recentPurchases")}
           </h2>
-          <div className="overflow-hidden rounded-lg border bg-card">
+          <div className="overflow-hidden rounded-lg bg-card">
             <Table>
               <TableHeader>
                 <TableRow>

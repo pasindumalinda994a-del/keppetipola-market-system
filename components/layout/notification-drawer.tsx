@@ -48,7 +48,7 @@ export function NotificationDrawer({
             <div
               key={n.id}
               className={cn(
-                "rounded-lg border p-3",
+                "rounded-lg bg-card p-3",
                 !n.read && "border-primary/30 bg-accent/40"
               )}
             >

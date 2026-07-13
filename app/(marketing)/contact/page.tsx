@@ -28,7 +28,7 @@ export default function ContactPage() {
         description="Reach the market management office."
       />
       <div className="grid gap-10 lg:grid-cols-2">
-        <form onSubmit={onSubmit} className="space-y-4 rounded-xl border bg-card p-6">
+        <form onSubmit={onSubmit} className="space-y-4 rounded-xl bg-card p-6">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input id="name" name="name" required />

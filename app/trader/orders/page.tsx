@@ -18,7 +18,7 @@ export default function PurchaseOrdersPage() {
         title="Purchase Orders"
         description="Active and pending purchases with farmers."
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

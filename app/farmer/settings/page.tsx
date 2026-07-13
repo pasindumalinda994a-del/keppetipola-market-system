@@ -13,7 +13,7 @@ export default function FarmerSettingsPage() {
         title="Settings"
         description="Notifications and account preferences."
       />
-      <div className="space-y-6 rounded-lg border bg-card p-6">
+      <div className="space-y-6 rounded-lg bg-card p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>Offer alerts</Label>

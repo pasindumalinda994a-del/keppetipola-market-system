@@ -62,7 +62,7 @@ export default function FarmerApplicationsPage() {
         title="Farmer Applications"
         description="Review applicants and send offers."
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

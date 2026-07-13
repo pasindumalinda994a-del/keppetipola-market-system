@@ -22,7 +22,7 @@ export default function PurchaseHistoryPage() {
         title="Purchase History"
         description="Past purchases and settled amounts."
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

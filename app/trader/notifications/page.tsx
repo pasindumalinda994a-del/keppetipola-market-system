@@ -24,7 +24,7 @@ export default function TraderNotificationsPage() {
                   <li
                     key={n.id}
                     className={cn(
-                      "rounded-lg border bg-card px-4 py-3",
+                      "rounded-lg bg-card px-4 py-3",
                       !n.read && "border-primary/30 bg-accent/30"
                     )}
                   >

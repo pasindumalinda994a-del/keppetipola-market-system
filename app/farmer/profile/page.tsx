@@ -21,7 +21,7 @@ export default function FarmerProfilePage() {
         title="Profile"
         description="Personal information and contact details."
       />
-      <form onSubmit={onSubmit} className="space-y-4 rounded-lg border bg-card p-6">
+      <form onSubmit={onSubmit} className="space-y-4 rounded-lg bg-card p-6">
         <div className="space-y-2">
           <Label htmlFor="name">Full name</Label>
           <Input id="name" defaultValue={user.name} />

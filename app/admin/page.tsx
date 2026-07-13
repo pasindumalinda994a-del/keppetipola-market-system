@@ -72,21 +72,21 @@ export default function AdminDashboardPage() {
           {t("admin.dash.pendingApprovals")}
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <article className="rounded-lg border bg-card p-4">
+          <article className="rounded-lg bg-card p-4">
             <p className="text-sm text-muted-foreground">{t("common.farmers")}</p>
             <p className="mt-1 text-2xl font-semibold">{pendingFarmers}</p>
             <Button variant="link" className="px-0" asChild>
               <Link href="/admin/users">{t("common.review")}</Link>
             </Button>
           </article>
-          <article className="rounded-lg border bg-card p-4">
+          <article className="rounded-lg bg-card p-4">
             <p className="text-sm text-muted-foreground">{t("common.traders")}</p>
             <p className="mt-1 text-2xl font-semibold">0</p>
             <Button variant="link" className="px-0" asChild>
               <Link href="/admin/users">{t("common.review")}</Link>
             </Button>
           </article>
-          <article className="rounded-lg border bg-card p-4">
+          <article className="rounded-lg bg-card p-4">
             <p className="text-sm text-muted-foreground">{t("common.stalls")}</p>
             <p className="mt-1 text-2xl font-semibold">{pendingStalls}</p>
             <Button variant="link" className="px-0" asChild>
@@ -106,7 +106,7 @@ export default function AdminDashboardPage() {
               <Link href="/admin/transactions">{t("common.viewAll")}</Link>
             </Button>
           </div>
-          <div className="overflow-hidden rounded-lg border bg-card">
+          <div className="overflow-hidden rounded-lg bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
           {systemLogs.slice(0, 5).map((log) => (
             <li
               key={log.id}
-              className="flex items-start justify-between gap-3 rounded-lg border bg-card px-4 py-3 text-sm"
+              className="flex items-start justify-between gap-3 rounded-lg bg-card px-4 py-3 text-sm"
             >
               <div>
                 <span className="font-medium text-primary">{log.type}</span>

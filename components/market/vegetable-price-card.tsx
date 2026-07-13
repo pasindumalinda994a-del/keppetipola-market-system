@@ -18,7 +18,7 @@ export function VegetablePriceCard({
     <Link
       href={href}
       className={cn(
-        "group block rounded-xl border border-border/70 bg-card p-3 shadow-sm transition-colors hover:border-primary/35 hover:bg-accent/30",
+        "group block rounded-xl bg-card p-3 transition-colors hover:bg-accent/30",
         className
       )}
     >

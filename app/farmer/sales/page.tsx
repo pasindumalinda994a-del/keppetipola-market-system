@@ -19,7 +19,7 @@ export default function FarmerSalesPage() {
         title="My Sales"
         description="Completed and in-progress sales."
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

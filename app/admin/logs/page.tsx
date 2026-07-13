@@ -31,7 +31,7 @@ export default function AdminLogsPage() {
         {filtered.map((log) => (
           <li
             key={log.id}
-            className="rounded-lg border bg-card px-4 py-3 text-sm"
+            className="rounded-lg bg-card px-4 py-3 text-sm"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="font-medium text-primary">{log.type}</span>

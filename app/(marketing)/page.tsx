@@ -146,7 +146,7 @@ export default function HomePage() {
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {announcements.map((a) => (
-              <article key={a.id} className="rounded-xl border bg-card p-5">
+              <article key={a.id} className="rounded-xl bg-card p-5">
                 <p className="text-xs text-muted-foreground">
                   {formatDate(a.publishedAt)}
                 </p>

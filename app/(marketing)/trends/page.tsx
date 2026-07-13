@@ -76,7 +76,7 @@ export default function PriceTrendsPage() {
         </p>
       ) : null}
       <PriceTrendChart data={history} height={360} />
-      <div className="mt-8 overflow-hidden rounded-xl border bg-card">
+      <div className="mt-8 overflow-hidden rounded-xl bg-card">
         <Table>
           <TableHeader>
             <TableRow>

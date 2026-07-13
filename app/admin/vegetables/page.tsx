@@ -47,7 +47,7 @@ export default function AdminVegetablesPage() {
         description="Catalog of market vegetables."
         action={<Button onClick={() => setOpen(true)}>Add vegetable</Button>}
       />
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>

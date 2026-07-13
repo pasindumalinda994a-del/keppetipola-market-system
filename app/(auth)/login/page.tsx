@@ -42,7 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-none">
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>
