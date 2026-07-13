@@ -27,7 +27,7 @@ export default function TraderRequestsPage() {
           </Button>
         }
       />
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="overflow-hidden rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

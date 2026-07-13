@@ -40,7 +40,7 @@ export default async function HarvestDetailPage({
         }
       />
 
-      <div className="grid gap-4 rounded-xl border bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 rounded-lg border bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-sm text-muted-foreground">Quantity</p>
           <p className="font-semibold">{formatKg(harvest.quantityKg)}</p>
@@ -61,7 +61,7 @@ export default async function HarvestDetailPage({
 
       <section className="mt-8">
         <h2 className="mb-3 text-lg font-semibold">Offers</h2>
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
@@ -89,7 +89,7 @@ export default async function HarvestDetailPage({
 
       <section className="mt-8">
         <h2 className="mb-3 text-lg font-semibold">Applications</h2>
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
             <TableHeader>
               <TableRow>

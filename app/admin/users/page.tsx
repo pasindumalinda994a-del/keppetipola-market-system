@@ -21,7 +21,7 @@ import type { UserRole } from "@/types";
 function UserTable({ role }: { role: UserRole }) {
   const rows = users.filter((u) => u.role === role);
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
           <TableRow>

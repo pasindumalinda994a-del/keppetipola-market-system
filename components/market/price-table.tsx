@@ -12,7 +12,7 @@ import { PriceChange } from "@/components/shared/price-change";
 
 export function PriceTable({ prices }: { prices: MarketPrice[] }) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
           <TableRow>

@@ -46,7 +46,7 @@ export default function AdminTransactionsPage() {
           onChange={setFilters}
         />
       </div>
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="overflow-hidden rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

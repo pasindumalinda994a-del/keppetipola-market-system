@@ -22,7 +22,7 @@ export function StatCard({
           {title}
         </CardTitle>
         {Icon ? (
-          <span className="flex size-8 items-center justify-center rounded-full bg-primary/12 text-primary">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-primary/12 text-primary">
             <Icon className="size-4" />
           </span>
         ) : null}

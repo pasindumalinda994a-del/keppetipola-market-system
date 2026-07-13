@@ -139,7 +139,7 @@ export function FilterPanel({
             <Filter className="size-4" />
             Filters
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-2xl">
+          <SheetContent side="bottom" className="rounded-t-lg">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>

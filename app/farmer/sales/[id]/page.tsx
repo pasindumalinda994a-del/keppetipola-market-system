@@ -26,7 +26,7 @@ export default async function SaleInvoicePage({
           </Button>
         }
       />
-      <div className="rounded-xl border bg-card p-6">
+      <div className="rounded-lg border bg-card p-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="font-heading text-lg font-semibold text-primary">

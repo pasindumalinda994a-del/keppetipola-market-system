@@ -10,7 +10,7 @@ export default function TraderSettingsPage() {
   return (
     <div className="mx-auto max-w-xl">
       <PageHeader title="Settings" description="Trader notification preferences." />
-      <div className="space-y-6 rounded-xl border bg-card p-6">
+      <div className="space-y-6 rounded-lg border bg-card p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>New applications</Label>

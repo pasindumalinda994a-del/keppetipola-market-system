@@ -66,21 +66,21 @@ export default function AdminDashboardPage() {
       <section className="mt-8">
         <h2 className="mb-4 text-lg font-semibold">Pending Approvals</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <article className="rounded-xl border bg-card p-4">
+          <article className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">Farmers</p>
             <p className="mt-1 text-2xl font-semibold">{pendingFarmers}</p>
             <Button variant="link" className="px-0" asChild>
               <Link href="/admin/users">Review</Link>
             </Button>
           </article>
-          <article className="rounded-xl border bg-card p-4">
+          <article className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">Traders</p>
             <p className="mt-1 text-2xl font-semibold">0</p>
             <Button variant="link" className="px-0" asChild>
               <Link href="/admin/users">Review</Link>
             </Button>
           </article>
-          <article className="rounded-xl border bg-card p-4">
+          <article className="rounded-lg border bg-card p-4">
             <p className="text-sm text-muted-foreground">Stalls</p>
             <p className="mt-1 text-2xl font-semibold">{pendingStalls}</p>
             <Button variant="link" className="px-0" asChild>
@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
               <Link href="/admin/transactions">View all</Link>
             </Button>
           </div>
-          <div className="overflow-hidden rounded-xl border bg-card">
+          <div className="overflow-hidden rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>

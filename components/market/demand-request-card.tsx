@@ -16,7 +16,7 @@ export function DemandRequestCard({
   return (
     <article
       className={cn(
-        "flex flex-col rounded-2xl border border-border/70 bg-card p-4 shadow-sm",
+        "flex flex-col rounded-lg border border-border/70 bg-card p-4 shadow-sm",
         className
       )}
     >
@@ -25,7 +25,7 @@ export function DemandRequestCard({
           <p className="text-sm text-muted-foreground">Trader</p>
           <h3 className="font-semibold text-foreground">{request.traderName}</h3>
         </div>
-        <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
+        <span className="rounded-lg bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
           Grade {request.preferredGrade}
         </span>
       </div>

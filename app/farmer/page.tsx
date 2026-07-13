@@ -115,7 +115,7 @@ export default function FarmerDashboardPage() {
             <Link href="/farmer/offers">Compare offers</Link>
           </Button>
         </div>
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
@@ -154,7 +154,7 @@ export default function FarmerDashboardPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <section>
           <h2 className="mb-4 text-lg font-semibold">My Harvest</h2>
-          <div className="overflow-hidden rounded-xl border bg-card">
+          <div className="overflow-hidden rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -197,7 +197,7 @@ export default function FarmerDashboardPage() {
               .map((n) => (
                 <li
                   key={n.id}
-                  className="rounded-xl border bg-card px-4 py-3 text-sm"
+                  className="rounded-lg border bg-card px-4 py-3 text-sm"
                 >
                   <div className="flex justify-between gap-2">
                     <p className="font-medium">{n.title}</p>

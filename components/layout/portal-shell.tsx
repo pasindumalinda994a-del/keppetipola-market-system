@@ -66,7 +66,7 @@ export function PortalShell({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-full px-3.5 py-2.5 text-sm font-medium text-sidebar-foreground/55 transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                    "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium text-sidebar-foreground/55 transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
                     active &&
                       "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                   )}
@@ -86,7 +86,7 @@ export function PortalShell({
           <div className="mt-auto px-4 pb-5">
             <Link
               href={profile}
-              className="flex items-center gap-3 rounded-2xl px-2 py-2 transition-colors hover:bg-sidebar-accent/50"
+              className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-sidebar-accent/50"
             >
               <Avatar className="size-10 ring-2 ring-sidebar-foreground/10">
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
@@ -121,7 +121,7 @@ export function PortalShell({
               />
               <Link
                 href={profile}
-                className="ml-1 hidden rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline"
+                className="ml-1 hidden rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline"
               >
                 Profile
               </Link>

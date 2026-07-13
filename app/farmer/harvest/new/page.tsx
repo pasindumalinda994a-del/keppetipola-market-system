@@ -44,7 +44,7 @@ export default function CreateHarvestPage() {
       />
       <form
         onSubmit={onSubmit}
-        className="space-y-4 rounded-xl border bg-card p-6"
+        className="space-y-4 rounded-lg border bg-card p-6"
       >
         <div className="space-y-2">
           <Label>Vegetable</Label>

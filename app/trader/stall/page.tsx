@@ -21,7 +21,7 @@ export default function StallProfilePage() {
         title="Stall Profile"
         description="Public stall details farmers see on your requests."
       />
-      <form onSubmit={onSubmit} className="space-y-4 rounded-xl border bg-card p-6">
+      <form onSubmit={onSubmit} className="space-y-4 rounded-lg border bg-card p-6">
         <div className="space-y-2">
           <Label htmlFor="name">Stall name</Label>
           <Input id="name" defaultValue={stall.name} />

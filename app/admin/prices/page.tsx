@@ -65,7 +65,7 @@ export default function AdminPricesPage() {
         title="Market Prices"
         description="Auto-generated from deals. Manual correction only in exceptional cases."
       />
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="overflow-hidden rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

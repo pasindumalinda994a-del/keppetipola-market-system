@@ -69,7 +69,7 @@ export default function TraderDashboardPage() {
             <Link href="/trader/applications">Review</Link>
           </Button>
         </div>
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
@@ -101,7 +101,7 @@ export default function TraderDashboardPage() {
           {buyingRequests
             .filter((r) => r.traderId === "trader-1")
             .map((r) => (
-              <article key={r.id} className="rounded-xl border bg-card p-4">
+              <article key={r.id} className="rounded-lg border bg-card p-4">
                 <h3 className="font-semibold">{r.vegetableName}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Need {formatKg(r.quantityKg)} · {formatLKR(r.minPrice)}–
@@ -116,7 +116,7 @@ export default function TraderDashboardPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <section>
           <h2 className="mb-4 text-lg font-semibold">Recent Purchases</h2>
-          <div className="overflow-hidden rounded-xl border bg-card">
+          <div className="overflow-hidden rounded-lg border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>

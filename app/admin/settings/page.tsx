@@ -20,7 +20,7 @@ export default function AdminSettingsPage() {
         title="Settings"
         description="Categories, market hours, and notification templates."
       />
-      <form onSubmit={save} className="space-y-8 rounded-xl border bg-card p-6">
+      <form onSubmit={save} className="space-y-8 rounded-lg border bg-card p-6">
         <section className="space-y-4">
           <h2 className="font-semibold">Categories</h2>
           <div className="space-y-2">
