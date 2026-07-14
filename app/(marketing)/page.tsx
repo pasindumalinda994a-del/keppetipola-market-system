@@ -123,18 +123,26 @@ export default function HomePage() {
           <StatCard
             title="Today's Transactions"
             value={String(marketStats.todayTransactions)}
+            change={5.4}
+            chartData={[4, 6, 5, 7, 8]}
           />
           <StatCard
             title="Active Farmers"
             value={String(marketStats.activeFarmers)}
+            change={3.2}
+            chartData={[5, 5, 6, 7, 8]}
           />
           <StatCard
             title="Active Traders"
             value={String(marketStats.activeTraders)}
+            change={-1.5}
+            chartData={[7, 6, 5, 4, 4]}
           />
           <StatCard
             title="Vegetables Sold"
             value={`${marketStats.vegetablesSoldTons} Tons`}
+            change={8.1}
+            chartData={[3, 5, 4, 7, 9]}
           />
         </div>
       </section>

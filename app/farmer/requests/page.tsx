@@ -6,8 +6,18 @@ import { formatDateTime, formatKg, formatLKR } from "@/lib/format";
 import { FilterPanel } from "@/components/shared/filter-panel";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { buyingRequests, vegetables } from "@/lib/mock";
+
+function traderInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
 
 export default function FarmerRequestsPage() {
   const [q, setQ] = useState("");
@@ -50,11 +60,19 @@ export default function FarmerRequestsPage() {
         {filtered.map((r) => (
           <article key={r.id} className="flex flex-col rounded-lg bg-card p-4">
             <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="text-sm text-muted-foreground">Trader</p>
-                <h3 className="font-semibold">{r.traderName}</h3>
+              <div className="flex min-w-0 items-center gap-3">
+                <Avatar size="lg" className="size-11">
+                  {r.traderPhotoUrl ? (
+                    <AvatarImage src={r.traderPhotoUrl} alt={r.traderName} />
+                  ) : null}
+                  <AvatarFallback>{traderInitials(r.traderName)}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="text-sm text-muted-foreground">Trader</p>
+                  <h3 className="truncate font-semibold">{r.traderName}</h3>
+                </div>
               </div>
-              <span className="rounded-lg bg-secondary px-2 py-1 text-xs font-medium">
+              <span className="shrink-0 rounded-lg bg-secondary px-2 py-1 text-xs font-medium">
                 Grade {r.preferredGrade}
               </span>
             </div>

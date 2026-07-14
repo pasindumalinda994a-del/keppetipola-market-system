@@ -44,6 +44,7 @@ export interface BuyingRequest {
   id: string;
   traderId: string;
   traderName: string;
+  traderPhotoUrl?: string;
   vegetableId: string;
   vegetableName: string;
   quantityKg: number;

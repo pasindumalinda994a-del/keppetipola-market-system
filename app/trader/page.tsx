@@ -1,12 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ClipboardList,
-  ShoppingBag,
-  Users,
-  Wallet,
-} from "lucide-react";
 import { PriceTrendChart } from "@/components/market/price-trend-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
@@ -48,22 +42,30 @@ export default function TraderDashboardPage() {
         <StatCard
           title={t("trader.dash.buyingRequests")}
           value={String(traderDashboardStats.buyingRequests)}
-          icon={ClipboardList}
+          change={4.5}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[3, 4, 5, 4, 6]}
         />
         <StatCard
           title={t("trader.dash.applications")}
           value={String(traderDashboardStats.applications)}
-          icon={Users}
+          change={9.2}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[4, 6, 5, 7, 8]}
         />
         <StatCard
           title={t("trader.dash.purchasesToday")}
           value={String(traderDashboardStats.purchasesToday)}
-          icon={ShoppingBag}
+          change={-1.8}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[6, 5, 7, 4, 3]}
         />
         <StatCard
           title={t("trader.dash.todaySpending")}
           value={formatLKR(traderDashboardStats.todaySpending)}
-          icon={Wallet}
+          change={3.6}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[5, 4, 6, 7, 8]}
         />
       </div>
 

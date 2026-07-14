@@ -1,12 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import {
-  HandCoins,
-  Leaf,
-  ShoppingBag,
-  Wallet,
-} from "lucide-react";
 import { DemandRequestCard } from "@/components/market/demand-request-card";
 import { VegetablePriceCard } from "@/components/market/vegetable-price-card";
 import { PageHeader } from "@/components/shared/page-header";
@@ -57,22 +51,30 @@ export default function FarmerDashboardPage() {
         <StatCard
           title={t("farmer.dash.harvestListings")}
           value={String(farmerDashboardStats.harvestListings)}
-          icon={Leaf}
+          change={12.5}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[3, 5, 4, 6, 8]}
         />
         <StatCard
           title={t("farmer.dash.pendingOffers")}
           value={String(farmerDashboardStats.pendingOffers)}
-          icon={HandCoins}
+          change={-3.1}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[7, 6, 5, 4, 3]}
         />
         <StatCard
           title={t("farmer.dash.acceptedSales")}
           value={String(farmerDashboardStats.acceptedSales)}
-          icon={ShoppingBag}
+          change={8.4}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[4, 5, 6, 7, 9]}
         />
         <StatCard
           title={t("farmer.dash.totalEarnings")}
           value={formatLKR(farmerDashboardStats.totalEarnings)}
-          icon={Wallet}
+          change={5.2}
+          changeLabel={t("common.thanLastMonth")}
+          chartData={[5, 6, 5, 8, 9]}
         />
       </div>
 

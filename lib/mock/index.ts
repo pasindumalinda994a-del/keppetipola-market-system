@@ -60,13 +60,24 @@ export function getPriceHistory(vegetableId: string): PriceHistoryPoint[] {
   });
 }
 
+const traderPhotos: Record<string, string> = {
+  "trader-1":
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&q=80",
+  "trader-2":
+    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=160&h=160&fit=crop&q=80",
+  "trader-3":
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&q=80",
+  "trader-4":
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&h=160&fit=crop&q=80",
+};
+
 export const buyingRequests: BuyingRequest[] = [
-  { id: "req-1", traderId: "trader-1", traderName: "Trader ABC", vegetableId: "veg-1", vegetableName: "Carrot", quantityKg: 500, minPrice: 190, maxPrice: 198, preferredGrade: "A", pickupDate: "2026-07-14", closingTime: "2026-07-13T18:00:00Z", status: "Active", rating: 4.6 },
-  { id: "req-2", traderId: "trader-2", traderName: "Green Valley Stall", vegetableId: "veg-3", vegetableName: "Leeks", quantityKg: 300, minPrice: 225, maxPrice: 240, preferredGrade: "A", pickupDate: "2026-07-15", closingTime: "2026-07-14T12:00:00Z", status: "Active", rating: 4.8 },
-  { id: "req-3", traderId: "trader-3", traderName: "Hill Country Traders", vegetableId: "veg-4", vegetableName: "Beans", quantityKg: 200, minPrice: 285, maxPrice: 305, preferredGrade: "B", pickupDate: "2026-07-14", closingTime: "2026-07-13T20:00:00Z", status: "Active", rating: 4.2 },
-  { id: "req-4", traderId: "trader-1", traderName: "Trader ABC", vegetableId: "veg-1", vegetableName: "Carrot", quantityKg: 800, minPrice: 195, maxPrice: 200, preferredGrade: "A", pickupDate: "2026-07-16", closingTime: "2026-07-15T10:00:00Z", status: "Active", rating: 4.6 },
-  { id: "req-5", traderId: "trader-4", traderName: "Fresh Mart Stall", vegetableId: "veg-5", vegetableName: "Tomato", quantityKg: 450, minPrice: 155, maxPrice: 168, preferredGrade: "A", pickupDate: "2026-07-14", closingTime: "2026-07-13T16:00:00Z", status: "Active", rating: 4.4 },
-  { id: "req-6", traderId: "trader-2", traderName: "Green Valley Stall", vegetableId: "veg-2", vegetableName: "Cabbage", quantityKg: 700, minPrice: 82, maxPrice: 92, preferredGrade: "B", pickupDate: "2026-07-15", closingTime: "2026-07-14T09:00:00Z", status: "Active", rating: 4.8 },
+  { id: "req-1", traderId: "trader-1", traderName: "Trader ABC", traderPhotoUrl: traderPhotos["trader-1"], vegetableId: "veg-1", vegetableName: "Carrot", quantityKg: 500, minPrice: 190, maxPrice: 198, preferredGrade: "A", pickupDate: "2026-07-14", closingTime: "2026-07-13T18:00:00Z", status: "Active", rating: 4.6 },
+  { id: "req-2", traderId: "trader-2", traderName: "Green Valley Stall", traderPhotoUrl: traderPhotos["trader-2"], vegetableId: "veg-3", vegetableName: "Leeks", quantityKg: 300, minPrice: 225, maxPrice: 240, preferredGrade: "A", pickupDate: "2026-07-15", closingTime: "2026-07-14T12:00:00Z", status: "Active", rating: 4.8 },
+  { id: "req-3", traderId: "trader-3", traderName: "Hill Country Traders", traderPhotoUrl: traderPhotos["trader-3"], vegetableId: "veg-4", vegetableName: "Beans", quantityKg: 200, minPrice: 285, maxPrice: 305, preferredGrade: "B", pickupDate: "2026-07-14", closingTime: "2026-07-13T20:00:00Z", status: "Active", rating: 4.2 },
+  { id: "req-4", traderId: "trader-1", traderName: "Trader ABC", traderPhotoUrl: traderPhotos["trader-1"], vegetableId: "veg-1", vegetableName: "Carrot", quantityKg: 800, minPrice: 195, maxPrice: 200, preferredGrade: "A", pickupDate: "2026-07-16", closingTime: "2026-07-15T10:00:00Z", status: "Active", rating: 4.6 },
+  { id: "req-5", traderId: "trader-4", traderName: "Fresh Mart Stall", traderPhotoUrl: traderPhotos["trader-4"], vegetableId: "veg-5", vegetableName: "Tomato", quantityKg: 450, minPrice: 155, maxPrice: 168, preferredGrade: "A", pickupDate: "2026-07-14", closingTime: "2026-07-13T16:00:00Z", status: "Active", rating: 4.4 },
+  { id: "req-6", traderId: "trader-2", traderName: "Green Valley Stall", traderPhotoUrl: traderPhotos["trader-2"], vegetableId: "veg-2", vegetableName: "Cabbage", quantityKg: 700, minPrice: 82, maxPrice: 92, preferredGrade: "B", pickupDate: "2026-07-15", closingTime: "2026-07-14T09:00:00Z", status: "Active", rating: 4.8 },
 ];
 
 export const harvests: Harvest[] = [

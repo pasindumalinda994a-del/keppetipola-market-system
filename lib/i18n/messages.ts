@@ -69,6 +69,7 @@ const en = {
   "common.traders": "Traders",
   "common.stalls": "Stalls",
   "common.priceTrend": "Price Trend",
+  "common.thanLastMonth": "than last month",
 
   // Farmer dashboard
   "farmer.dash.title": "Dashboard",
@@ -180,6 +181,7 @@ const si: Record<MessageKey, string> = {
   "common.traders": "වෙළෙන්දන්",
   "common.stalls": "කුටි",
   "common.priceTrend": "මිල ප්‍රවණතාව",
+  "common.thanLastMonth": "පසුගිය මාසයට වඩා",
 
   "farmer.dash.title": "මුල් පිටුව",
   "farmer.dash.description": "අද ඔබේ අස්වැන්නට හොඳම මිල ගෙවන්නේ කවුද?",
