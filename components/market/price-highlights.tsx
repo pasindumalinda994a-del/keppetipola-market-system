@@ -13,7 +13,7 @@ export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
   const canExpand = prices.length > FIRST_ROW;
 
   return (
-    <section id="price-highlights" className="mx-auto max-w-6xl px-4 py-14">
+    <section id="price-highlights" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-14">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h2 className="font-satoshi text-2xl font-semibold tracking-tight">

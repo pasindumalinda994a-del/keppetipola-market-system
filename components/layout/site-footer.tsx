@@ -1,7 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BrandLogo } from "@/components/layout/brand-logo";
+import { getHashFromHref, scrollToId } from "@/lib/smooth-scroll";
 
 export function SiteFooter() {
+  const pathname = usePathname();
+
+  function onHashClick(
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) {
+    const hash = getHashFromHref(href);
+    if (hash && pathname === "/") {
+      e.preventDefault();
+      scrollToId(hash);
+    }
+  }
+
   return (
     <footer className="mt-auto border-t border-sidebar-border bg-portal-frame text-sidebar-foreground">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
@@ -18,6 +35,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/#price-highlights"
+                onClick={(e) => onHashClick(e, "/#price-highlights")}
                 className="transition-colors hover:text-primary"
               >
                 Live Prices
@@ -26,6 +44,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/#market-demand"
+                onClick={(e) => onHashClick(e, "/#market-demand")}
                 className="transition-colors hover:text-primary"
               >
                 Market Demand

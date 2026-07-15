@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { Button } from "@/components/ui/button";
+import { getHashFromHref, scrollToId } from "@/lib/smooth-scroll";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -21,6 +22,23 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  function onNavClick(
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) {
+    const hash = getHashFromHref(href);
+    if (!hash) {
+      setOpen(false);
+      return;
+    }
+
+    if (pathname === "/") {
+      e.preventDefault();
+      scrollToId(hash);
+    }
+    setOpen(false);
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
@@ -30,6 +48,7 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={(e) => onNavClick(e, link.href)}
               className={cn(
                 "text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
                 pathname === link.href && "text-foreground"
@@ -65,7 +84,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className="text-sm font-medium"
-                onClick={() => setOpen(false)}
+                onClick={(e) => onNavClick(e, link.href)}
               >
                 {link.label}
               </Link>
