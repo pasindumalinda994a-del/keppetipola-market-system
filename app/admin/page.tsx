@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PriceTrendChart } from "@/components/market/price-trend-chart";
+import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -18,7 +18,6 @@ import {
 import { formatKg, formatLKR, formatRelativeTime } from "@/lib/format";
 import {
   adminDashboardStats,
-  getPriceHistory,
   stalls,
   systemLogs,
   transactions,
@@ -98,52 +97,50 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              {t("admin.dash.recentTransactions")}
-            </h2>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/admin/transactions">{t("common.viewAll")}</Link>
-            </Button>
-          </div>
-          <div className="overflow-hidden rounded-lg bg-card">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("common.id")}</TableHead>
-                  <TableHead>{t("common.parties")}</TableHead>
-                  <TableHead>{t("common.amount")}</TableHead>
-                  <TableHead>{t("common.status")}</TableHead>
+      <section className="mt-8">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">
+            {t("admin.dash.recentTransactions")}
+          </h2>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/admin/transactions">{t("common.viewAll")}</Link>
+          </Button>
+        </div>
+        <div className="overflow-hidden rounded-lg bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("common.id")}</TableHead>
+                <TableHead>{t("common.parties")}</TableHead>
+                <TableHead>{t("common.amount")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {transactions.slice(0, 4).map((txn) => (
+                <TableRow key={txn.id}>
+                  <TableCell className="font-mono text-xs">{txn.id}</TableCell>
+                  <TableCell className="text-sm">
+                    {txn.farmerName} → {txn.traderName}
+                    <br />
+                    <span className="text-muted-foreground">
+                      {txn.vegetableName} · {formatKg(txn.quantityKg)}
+                    </span>
+                  </TableCell>
+                  <TableCell>{formatLKR(txn.amount)}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={txn.status} />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {transactions.slice(0, 4).map((txn) => (
-                  <TableRow key={txn.id}>
-                    <TableCell className="font-mono text-xs">{txn.id}</TableCell>
-                    <TableCell className="text-sm">
-                      {txn.farmerName} → {txn.traderName}
-                      <br />
-                      <span className="text-muted-foreground">
-                        {txn.vegetableName} · {formatKg(txn.quantityKg)}
-                      </span>
-                    </TableCell>
-                    <TableCell>{formatLKR(txn.amount)}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={txn.status} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </section>
-        <section>
-          <h2 className="mb-4 text-lg font-semibold">{t("common.priceTrend")}</h2>
-          <PriceTrendChart data={getPriceHistory("veg-1")} height={260} />
-        </section>
-      </div>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <BookmarkedPriceChart title={t("common.priceTrend")} height={260} showRangeFilter />
+      </section>
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">

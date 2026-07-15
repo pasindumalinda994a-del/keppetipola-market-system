@@ -14,23 +14,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function PriceTrendsPage() {
   const [q, setQ] = useState("");
-  const [selected, setSelected] = useState("veg-1");
 
-  const options = useMemo(() => {
-    if (!q) return vegetables;
-    return vegetables.filter((v) =>
+  const selected = useMemo(() => {
+    if (!q.trim()) return vegetables[0]?.id ?? "veg-1";
+    const match = vegetables.find((v) =>
       v.name.toLowerCase().includes(q.toLowerCase())
     );
+    return match?.id ?? vegetables[0]?.id ?? "veg-1";
   }, [q]);
 
   const history = getPriceHistory(selected);
@@ -42,30 +35,13 @@ export default function PriceTrendsPage() {
         title="Price Trends"
         description="Seven-day wholesale price history by vegetable."
       />
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+      <div className="mb-6">
         <SearchBar
           placeholder="Search vegetable…"
           value={q}
           onChange={setQ}
           className="sm:max-w-xs"
         />
-        <Select
-          value={selected}
-          onValueChange={(v) => {
-            if (v) setSelected(v);
-          }}
-        >
-          <SelectTrigger className="sm:w-56">
-            <SelectValue placeholder="Select vegetable" />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((v) => (
-              <SelectItem key={v.id} value={v.id}>
-                {v.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
       {current ? (
         <p className="mb-4 text-sm text-muted-foreground">

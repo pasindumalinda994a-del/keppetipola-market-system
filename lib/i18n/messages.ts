@@ -8,6 +8,10 @@ const en = {
   "shell.profile": "Profile",
   "shell.notifications": "Notifications",
   "shell.viewAll": "View all",
+  "shell.logout": "Log out",
+  "shell.footer": "© {year} Keppetipola Market",
+  "shell.footer.help": "Help",
+  "shell.footer.contact": "Contact",
 
   // Portals
   "portal.farmer": "Farmer Portal",
@@ -125,6 +129,10 @@ const si: Record<MessageKey, string> = {
   "shell.profile": "පැතිකඩ",
   "shell.notifications": "දැනුම්දීම්",
   "shell.viewAll": "සියල්ල බලන්න",
+  "shell.logout": "ඉවත් වන්න",
+  "shell.footer": "© {year} කෙප්පෙටිපොල වෙළඳපොළ",
+  "shell.footer.help": "උදව්",
+  "shell.footer.contact": "සම්බන්ධ වන්න",
 
   "portal.farmer": "ගොවි ද්වාරය",
   "portal.trader": "වෙළෙන්දා ද්වාරය",

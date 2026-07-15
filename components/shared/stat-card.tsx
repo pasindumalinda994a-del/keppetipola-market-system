@@ -13,20 +13,26 @@ function MiniBarChart({
   return (
     <div
       className={cn(
-        "flex h-14 min-w-12 shrink-0 items-end justify-end gap-1.5",
+        "flex h-14 min-w-14 shrink-0 items-end justify-end gap-1",
         tone === "up" && "text-primary",
         tone === "down" && "text-chart-2",
         tone === "neutral" && "text-muted-foreground"
       )}
       aria-hidden
     >
-      {data.map((n, i) => (
-        <span
-          key={i}
-          className="w-2 rounded-full bg-current opacity-90"
-          style={{ height: `${Math.max(18, (n / max) * 100)}%` }}
-        />
-      ))}
+      {data.map((n, i) => {
+        const ratio = n / max;
+        return (
+          <span
+            key={i}
+            className="w-1.5 rounded-full bg-current transition-opacity"
+            style={{
+              height: `${Math.max(16, ratio * 100)}%`,
+              opacity: 0.35 + ratio * 0.65,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -73,7 +79,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "flex items-end justify-between gap-4 rounded-2xl bg-card p-5 text-card-foreground shadow-[0_1px_2px_rgba(15,40,35,0.04),0_8px_24px_rgba(15,40,35,0.04)]",
+        "flex items-end justify-between gap-4 rounded-2xl bg-card p-5 text-card-foreground shadow-[0_1px_2px_rgba(15,15,15,0.04),0_8px_24px_rgba(15,15,15,0.05)]",
         className
       )}
     >

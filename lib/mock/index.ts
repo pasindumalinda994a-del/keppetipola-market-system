@@ -29,14 +29,14 @@ export const vegetables: Vegetable[] = [
 ];
 
 export const marketPrices: MarketPrice[] = [
-  { vegetableId: "veg-1", vegetableName: "Carrot", imageUrl: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=640&h=480&fit=crop&q=80", lowest: 190, highest: 200, average: 196, change: 5, lastUpdated: new Date(Date.now() - 3 * 60000).toISOString() },
-  { vegetableId: "veg-2", vegetableName: "Cabbage", imageUrl: "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=640&h=480&fit=crop&q=80", lowest: 80, highest: 95, average: 88, change: -2, lastUpdated: new Date(Date.now() - 8 * 60000).toISOString() },
-  { vegetableId: "veg-3", vegetableName: "Leeks", imageUrl: "https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=640&h=480&fit=crop&q=80", lowest: 220, highest: 245, average: 232, change: 8, lastUpdated: new Date(Date.now() - 5 * 60000).toISOString() },
-  { vegetableId: "veg-4", vegetableName: "Beans", imageUrl: "https://images.unsplash.com/photo-1567375698348-5d9d5ae99de0?w=640&h=480&fit=crop&q=80", lowest: 280, highest: 310, average: 295, change: 12, lastUpdated: new Date(Date.now() - 12 * 60000).toISOString() },
-  { vegetableId: "veg-5", vegetableName: "Tomato", imageUrl: "https://images.unsplash.com/photo-1546470427-e26264be0d16?w=640&h=480&fit=crop&q=80", lowest: 150, highest: 175, average: 162, change: -4, lastUpdated: new Date(Date.now() - 6 * 60000).toISOString() },
-  { vegetableId: "veg-6", vegetableName: "Potato", imageUrl: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=640&h=480&fit=crop&q=80", lowest: 120, highest: 135, average: 128, change: 1, lastUpdated: new Date(Date.now() - 15 * 60000).toISOString() },
-  { vegetableId: "veg-7", vegetableName: "Beetroot", imageUrl: "https://images.unsplash.com/photo-1593105544559-ecb03bf76f54?w=640&h=480&fit=crop&q=80", lowest: 160, highest: 180, average: 170, change: 3, lastUpdated: new Date(Date.now() - 9 * 60000).toISOString() },
-  { vegetableId: "veg-8", vegetableName: "Capsicum", imageUrl: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=640&h=480&fit=crop&q=80", lowest: 350, highest: 390, average: 370, change: -6, lastUpdated: new Date(Date.now() - 4 * 60000).toISOString() },
+  { vegetableId: "veg-1", vegetableName: "Carrot", imageUrl: "/Vegitable-Images/Carrot.png", lowest: 190, highest: 200, average: 196, change: 5, lastUpdated: new Date(Date.now() - 3 * 60000).toISOString() },
+  { vegetableId: "veg-2", vegetableName: "Cabbage", imageUrl: "/Vegitable-Images/Cabbage.png", lowest: 80, highest: 95, average: 88, change: -2, lastUpdated: new Date(Date.now() - 8 * 60000).toISOString() },
+  { vegetableId: "veg-3", vegetableName: "Leeks", imageUrl: "/Vegitable-Images/Leeks.png", lowest: 220, highest: 245, average: 232, change: 8, lastUpdated: new Date(Date.now() - 5 * 60000).toISOString() },
+  { vegetableId: "veg-4", vegetableName: "Beans", imageUrl: "/Vegitable-Images/Beans.png", lowest: 280, highest: 310, average: 295, change: 12, lastUpdated: new Date(Date.now() - 12 * 60000).toISOString() },
+  { vegetableId: "veg-5", vegetableName: "Tomato", imageUrl: "/Vegitable-Images/Tomato.png", lowest: 150, highest: 175, average: 162, change: -4, lastUpdated: new Date(Date.now() - 6 * 60000).toISOString() },
+  { vegetableId: "veg-6", vegetableName: "Potato", imageUrl: "/Vegitable-Images/Potato.png", lowest: 120, highest: 135, average: 128, change: 1, lastUpdated: new Date(Date.now() - 15 * 60000).toISOString() },
+  { vegetableId: "veg-7", vegetableName: "Beetroot", imageUrl: "/Vegitable-Images/Beetroot.png", lowest: 160, highest: 180, average: 170, change: 3, lastUpdated: new Date(Date.now() - 9 * 60000).toISOString() },
+  { vegetableId: "veg-8", vegetableName: "Capsicum", imageUrl: "/Vegitable-Images/Capsicum.png", lowest: 350, highest: 390, average: 370, change: -6, lastUpdated: new Date(Date.now() - 4 * 60000).toISOString() },
 ];
 
 function daysAgo(n: number): string {
@@ -45,12 +45,44 @@ function daysAgo(n: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-export function getPriceHistory(vegetableId: string): PriceHistoryPoint[] {
-  const base = marketPrices.find((p) => p.vegetableId === vegetableId)?.average ?? 150;
-  return Array.from({ length: 7 }, (_, i) => {
-    const offset = 6 - i;
-    const wobble = Math.sin(i * 1.3) * 8 + (i % 3) * 2;
-    const average = Math.round(base - 10 + wobble + offset);
+function monthsAgo(n: number): string {
+  const d = new Date();
+  d.setDate(1);
+  d.setMonth(d.getMonth() - n);
+  return d.toISOString().slice(0, 10);
+}
+
+export type PriceHistoryRange = "week" | "month" | "year";
+
+export function getPriceHistory(
+  vegetableId: string,
+  range: PriceHistoryRange = "week"
+): PriceHistoryPoint[] {
+  const base =
+    marketPrices.find((p) => p.vegetableId === vegetableId)?.average ?? 150;
+  const seed = vegetableId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+
+  if (range === "year") {
+    return Array.from({ length: 12 }, (_, i) => {
+      const offset = 11 - i;
+      const wobble =
+        Math.sin(i * 0.75 + seed * 0.17) * 18 + ((i + seed) % 5) * 3;
+      const average = Math.round(base - 15 + wobble + offset * 0.4);
+      return {
+        date: monthsAgo(offset),
+        average,
+        lowest: average - 12,
+        highest: average + 14,
+      };
+    });
+  }
+
+  const length = range === "month" ? 30 : 7;
+  return Array.from({ length }, (_, i) => {
+    const offset = length - 1 - i;
+    const wobble =
+      Math.sin(i * 1.3 + seed * 0.17) * 10 + ((i + seed) % 4) * 2;
+    const average = Math.round(base - 10 + wobble + offset * 0.35);
     return {
       date: daysAgo(offset),
       average,

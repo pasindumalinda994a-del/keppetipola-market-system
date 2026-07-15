@@ -7,21 +7,15 @@ import { cn } from "@/lib/utils";
 
 export function VegetablePriceCard({
   price,
-  href = "/prices",
+  href,
   className,
 }: {
   price: MarketPrice;
   href?: string;
   className?: string;
 }) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "group block rounded-xl bg-card p-3 transition-colors hover:bg-accent/30",
-        className
-      )}
-    >
+  const content = (
+    <>
       <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-muted">
         <Image
           src={price.imageUrl}
@@ -43,6 +37,21 @@ export function VegetablePriceCard({
           Updated {formatRelativeTime(price.lastUpdated)}
         </p>
       </div>
-    </Link>
+    </>
   );
+
+  const classes = cn(
+    "group block rounded-xl bg-card p-3 transition-colors hover:bg-accent/30",
+    className
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={classes}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={classes}>{content}</div>;
 }

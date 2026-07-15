@@ -23,6 +23,10 @@ export default function CreateHarvestPage() {
   const [grade, setGrade] = useState("A");
   const [pending, setPending] = useState(false);
 
+  const vegetableItems = Object.fromEntries(
+    vegetables.map((v) => [v.id, v.name])
+  );
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!vegetable) {
@@ -51,6 +55,7 @@ export default function CreateHarvestPage() {
           <Select
             value={vegetable || undefined}
             onValueChange={(v) => setVegetable(v ?? "")}
+            items={vegetableItems}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select vegetable" />

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { DemandRequestCard } from "@/components/market/demand-request-card";
 import { VegetablePriceCard } from "@/components/market/vegetable-price-card";
 import { PageHeader } from "@/components/shared/page-header";
@@ -16,13 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatKg, formatLKR, formatRelativeTime } from "@/lib/format";
+import { formatKg, formatLKR } from "@/lib/format";
 import {
   buyingRequests,
   farmerDashboardStats,
   harvests,
   marketPrices,
-  notifications,
   offers,
 } from "@/lib/mock";
 
@@ -97,6 +97,10 @@ export default function FarmerDashboardPage() {
       </section>
 
       <section className="mt-8">
+        <BookmarkedPriceChart title={t("common.priceTrend")} height={260} showRangeFilter />
+      </section>
+
+      <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">
             {t("farmer.dash.recommendedRequests")}
@@ -159,68 +163,40 @@ export default function FarmerDashboardPage() {
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        <section>
-          <h2 className="mb-4 text-lg font-semibold">{t("farmer.dash.myHarvest")}</h2>
-          <div className="overflow-hidden rounded-lg bg-card">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("common.vegetable")}</TableHead>
-                  <TableHead>{t("common.quantity")}</TableHead>
-                  <TableHead>{t("common.applications")}</TableHead>
-                  <TableHead>{t("common.status")}</TableHead>
+      <section className="mt-8">
+        <h2 className="mb-4 text-lg font-semibold">{t("farmer.dash.myHarvest")}</h2>
+        <div className="overflow-hidden rounded-lg bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("common.vegetable")}</TableHead>
+                <TableHead>{t("common.quantity")}</TableHead>
+                <TableHead>{t("common.applications")}</TableHead>
+                <TableHead>{t("common.status")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {harvests.slice(0, 4).map((h) => (
+                <TableRow key={h.id}>
+                  <TableCell className="font-medium">
+                    <Link
+                      href={`/farmer/harvest/${h.id}`}
+                      className="hover:underline"
+                    >
+                      {h.vegetableName}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{formatKg(h.quantityKg)}</TableCell>
+                  <TableCell>{h.applications}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={h.status} />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {harvests.slice(0, 4).map((h) => (
-                  <TableRow key={h.id}>
-                    <TableCell className="font-medium">
-                      <Link
-                        href={`/farmer/harvest/${h.id}`}
-                        className="hover:underline"
-                      >
-                        {h.vegetableName}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{formatKg(h.quantityKg)}</TableCell>
-                    <TableCell>{h.applications}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={h.status} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </section>
-        <section>
-          <h2 className="mb-4 text-lg font-semibold">
-            {t("farmer.dash.notifications")}
-          </h2>
-          <ul className="space-y-3">
-            {notifications
-              .filter((n) =>
-                ["Offers", "Sales", "Announcements", "System"].includes(n.group)
-              )
-              .slice(0, 5)
-              .map((n) => (
-                <li
-                  key={n.id}
-                  className="rounded-lg bg-card px-4 py-3 text-sm"
-                >
-                  <div className="flex justify-between gap-2">
-                    <p className="font-medium">{n.title}</p>
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {formatRelativeTime(n.createdAt)}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-muted-foreground">{n.message}</p>
-                </li>
               ))}
-          </ul>
-        </section>
-      </div>
+            </TableBody>
+          </Table>
+        </div>
+      </section>
     </div>
   );
 }

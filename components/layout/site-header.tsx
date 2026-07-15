@@ -4,14 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { BrandLogo } from "@/components/layout/brand-logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/prices", label: "Live Prices" },
-  { href: "/demand", label: "Market Demand" },
+  { href: "/#price-highlights", label: "Live Prices" },
+  { href: "/#market-demand", label: "Market Demand" },
   { href: "/trends", label: "Price Trends" },
   { href: "/about", label: "About" },
+  { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -22,9 +24,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="font-heading text-xl font-semibold tracking-tight text-primary">
-          Keppetipola Market
-        </Link>
+        <BrandLogo href="/" size="md" priority />
         <nav className="hidden items-center gap-6 md:flex">
           {links.map((link) => (
             <Link

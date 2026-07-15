@@ -61,7 +61,7 @@ export default function ContactPage() {
           <div>
             <h2 className="font-semibold">Market hours</h2>
             <p className="mt-1 text-muted-foreground">
-              Daily 4:00 AM – 2:00 PM
+              Daily 8:00 AM – 4:00 PM
             </p>
           </div>
         </div>

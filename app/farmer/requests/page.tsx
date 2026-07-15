@@ -3,12 +3,11 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatDateTime, formatKg, formatLKR } from "@/lib/format";
-import { FilterPanel } from "@/components/shared/filter-panel";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { buyingRequests, vegetables } from "@/lib/mock";
+import { buyingRequests } from "@/lib/mock";
 
 function traderInitials(name: string) {
   return name
@@ -21,25 +20,18 @@ function traderInitials(name: string) {
 
 export default function FarmerRequestsPage() {
   const [q, setQ] = useState("");
-  const [filters, setFilters] = useState<{ vegetable?: string; trader?: string }>(
-    {}
-  );
 
-  const traders = [...new Set(buyingRequests.map((r) => r.traderName))];
   const filtered = useMemo(() => {
     return buyingRequests
       .filter((r) => {
-        const matchQ =
+        return (
           !q ||
           r.vegetableName.toLowerCase().includes(q.toLowerCase()) ||
-          r.traderName.toLowerCase().includes(q.toLowerCase());
-        const matchV =
-          !filters.vegetable || r.vegetableName === filters.vegetable;
-        const matchT = !filters.trader || r.traderName === filters.trader;
-        return matchQ && matchV && matchT;
+          r.traderName.toLowerCase().includes(q.toLowerCase())
+        );
       })
       .sort((a, b) => b.maxPrice - a.maxPrice);
-  }, [q, filters]);
+  }, [q]);
 
   return (
     <div>
@@ -47,14 +39,8 @@ export default function FarmerRequestsPage() {
         title="Trader Requests"
         description="Apply to buying requests sorted by highest price."
       />
-      <div className="mb-6 space-y-4">
+      <div className="mb-6">
         <SearchBar value={q} onChange={setQ} placeholder="Search…" />
-        <FilterPanel
-          vegetables={vegetables.map((v) => v.name)}
-          traders={traders}
-          values={filters}
-          onChange={setFilters}
-        />
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {filtered.map((r) => (

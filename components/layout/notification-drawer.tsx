@@ -36,7 +36,7 @@ export function NotificationDrawer({
       >
         <Bell className="size-5" />
         {unread > 0 ? (
-          <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-price" />
+          <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-primary" />
         ) : null}
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md">

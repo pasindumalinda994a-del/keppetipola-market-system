@@ -9,7 +9,9 @@ export default function MarketingLayout({
   return (
     <>
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 [&_:is(h1,h2,h3,h4,h5,h6)]:font-satoshi [&_:is(h1,h2,h3,h4,h5,h6)]:!font-normal [&_:is(h1,h2,h3,h4,h5,h6)]:uppercase">
+        {children}
+      </main>
       <SiteFooter />
     </>
   );

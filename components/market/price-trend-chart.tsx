@@ -2,7 +2,6 @@
 
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -12,6 +11,65 @@ import {
 } from "recharts";
 import type { PriceHistoryPoint } from "@/types";
 import { formatLKR } from "@/lib/format";
+import {
+  ChartLegendRow,
+  ChartShell,
+  ChartTooltipContent,
+  chartAxisTick,
+  chartMargin,
+} from "@/components/market/chart-ui";
+
+const SERIES = [
+  {
+    key: "average" as const,
+    name: "Average",
+    color: "var(--chart-1)",
+    strokeWidth: 2.5,
+    dash: undefined as string | undefined,
+  },
+  {
+    key: "highest" as const,
+    name: "Highest",
+    color: "var(--chart-2)",
+    strokeWidth: 1.75,
+    dash: "5 4",
+  },
+  {
+    key: "lowest" as const,
+    name: "Lowest",
+    color: "var(--chart-3)",
+    strokeWidth: 1.75,
+    dash: "5 4",
+  },
+];
+
+function TrendTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload?: readonly any[];
+  label?: string | number;
+}) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <ChartTooltipContent
+      label={new Date(String(label)).toLocaleDateString("en-LK", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      })}
+      items={payload.map((entry) => ({
+        name: String(entry.name ?? entry.dataKey ?? ""),
+        value: formatLKR(Number(entry.value)),
+        color: typeof entry.color === "string" ? entry.color : undefined,
+      }))}
+    />
+  );
+}
 
 export function PriceTrendChart({
   data,
@@ -21,64 +79,68 @@ export function PriceTrendChart({
   height?: number;
 }) {
   return (
-    <div className="w-full rounded-lg bg-card p-4" style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-          <XAxis
-            dataKey="date"
-            tick={{ fontSize: 12 }}
-            tickFormatter={(v) =>
-              new Date(v).toLocaleDateString("en-LK", {
-                month: "short",
-                day: "numeric",
-              })
-            }
-          />
-          <YAxis
-            tick={{ fontSize: 12 }}
-            tickFormatter={(v) => `Rs.${v}`}
-            width={56}
-          />
-          <Tooltip
-            formatter={(value) => formatLKR(Number(value))}
-            labelFormatter={(label) =>
-              new Date(String(label)).toLocaleDateString("en-LK", {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              })
-            }
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="average"
-            name="Average"
-            stroke="var(--primary)"
-            strokeWidth={2}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="highest"
-            name="Highest"
-            stroke="var(--price)"
-            strokeWidth={1.5}
-            strokeDasharray="4 4"
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="lowest"
-            name="Lowest"
-            stroke="var(--muted-foreground)"
-            strokeWidth={1.5}
-            strokeDasharray="4 4"
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <ChartShell height={height}>
+      <div className="min-h-0 flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={chartMargin}>
+            <CartesianGrid
+              vertical={false}
+              stroke="var(--border)"
+              strokeOpacity={0.7}
+            />
+            <XAxis
+              dataKey="date"
+              axisLine={false}
+              tickLine={false}
+              tick={chartAxisTick}
+              dy={8}
+              tickFormatter={(v) =>
+                new Date(v).toLocaleDateString("en-LK", {
+                  month: "short",
+                  day: "numeric",
+                })
+              }
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={chartAxisTick}
+              width={52}
+              dx={-4}
+              tickFormatter={(v) => `Rs.${v}`}
+            />
+            <Tooltip
+              cursor={{
+                stroke: "var(--border)",
+                strokeWidth: 1,
+                strokeDasharray: "4 4",
+              }}
+              content={TrendTooltip}
+            />
+            {SERIES.map((s) => (
+              <Line
+                key={s.key}
+                type="monotone"
+                dataKey={s.key}
+                name={s.name}
+                stroke={s.color}
+                strokeWidth={s.strokeWidth}
+                strokeDasharray={s.dash}
+                dot={false}
+                activeDot={{
+                  r: 5,
+                  strokeWidth: 2,
+                  stroke: "var(--card)",
+                  fill: s.color,
+                }}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <ChartLegendRow
+        items={SERIES.map((s) => ({ name: s.name, color: s.color }))}
+      />
+    </ChartShell>
   );
 }

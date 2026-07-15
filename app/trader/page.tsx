@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PriceTrendChart } from "@/components/market/price-trend-chart";
+import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -19,7 +19,6 @@ import { formatKg, formatLKR } from "@/lib/format";
 import {
   applications,
   buyingRequests,
-  getPriceHistory,
   purchaseOrders,
   traderDashboardStats,
 } from "@/lib/mock";
@@ -124,39 +123,37 @@ export default function TraderDashboardPage() {
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        <section>
-          <h2 className="mb-4 text-lg font-semibold">
-            {t("trader.dash.recentPurchases")}
-          </h2>
-          <div className="overflow-hidden rounded-lg bg-card">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("common.farmer")}</TableHead>
-                  <TableHead>{t("common.vegetable")}</TableHead>
-                  <TableHead>{t("common.amount")}</TableHead>
+      <section className="mt-8">
+        <h2 className="mb-4 text-lg font-semibold">
+          {t("trader.dash.recentPurchases")}
+        </h2>
+        <div className="overflow-hidden rounded-lg bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("common.farmer")}</TableHead>
+                <TableHead>{t("common.vegetable")}</TableHead>
+                <TableHead>{t("common.amount")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {purchaseOrders.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell>{p.farmerName}</TableCell>
+                  <TableCell>{p.vegetableName}</TableCell>
+                  <TableCell>
+                    {formatLKR(p.price * p.quantityKg)}
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {purchaseOrders.map((p) => (
-                  <TableRow key={p.id}>
-                    <TableCell>{p.farmerName}</TableCell>
-                    <TableCell>{p.vegetableName}</TableCell>
-                    <TableCell>
-                      {formatLKR(p.price * p.quantityKg)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </section>
-        <section>
-          <h2 className="mb-4 text-lg font-semibold">{t("common.priceTrend")}</h2>
-          <PriceTrendChart data={getPriceHistory("veg-1")} height={260} />
-        </section>
-      </div>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <BookmarkedPriceChart title={t("common.priceTrend")} height={260} showRangeFilter />
+      </section>
     </div>
   );
 }
