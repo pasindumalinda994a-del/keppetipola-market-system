@@ -9,9 +9,24 @@ const userRoutes = require("./routes/user.routes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = (
+  process.env.CLIENT_ORIGINS ||
+  process.env.CLIENT_ORIGIN ||
+  "http://localhost:3000"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin(origin, callback) {
+      // Allow non-browser clients (curl, Postman) with no Origin header
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
   })
 );
 app.use(express.json());

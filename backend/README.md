@@ -22,6 +22,16 @@ npm run dev
 
 Server listens on `http://localhost:5000`.
 
+### CORS / frontend origins
+
+Set `CLIENT_ORIGINS` (comma-separated) or `CLIENT_ORIGIN` in `.env` to the frontend URLs allowed to call this API, for example:
+
+```env
+CLIENT_ORIGINS=http://localhost:3000,https://keppetipola-market-system.vercel.app
+```
+
+On the Next.js / Vercel side, set `NEXT_PUBLIC_API_URL` to this API’s public URL (not `localhost` in production), then redeploy.
+
 4. Seed the default admin account (idempotent):
 
 ```bash
