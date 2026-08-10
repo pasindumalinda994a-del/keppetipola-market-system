@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { LocaleProvider } from "@/components/providers/locale-provider";
+import { RequireAuth } from "@/components/providers/require-auth";
 
 const nav = [
   { href: "/admin", labelKey: "nav.dashboard" as const, icon: LayoutDashboard },
@@ -45,17 +46,19 @@ export default function AdminLayout({
 }) {
   return (
     <LocaleProvider>
-      <PortalShell
-        role="admin"
-        titleKey="portal.admin"
-        nav={nav}
-        mobileNav={mobileNav}
-        notificationHref="/admin/announcements"
-        notificationGroups={["Announcements", "System"]}
-        profileHref="/admin/settings"
-      >
-        {children}
-      </PortalShell>
+      <RequireAuth role="admin">
+        <PortalShell
+          role="admin"
+          titleKey="portal.admin"
+          nav={nav}
+          mobileNav={mobileNav}
+          notificationHref="/admin/announcements"
+          notificationGroups={["Announcements", "System"]}
+          profileHref="/admin/settings"
+        >
+          {children}
+        </PortalShell>
+      </RequireAuth>
     </LocaleProvider>
   );
 }

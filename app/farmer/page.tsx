@@ -27,11 +27,12 @@ import {
   marketPrices,
   offers,
 } from "@/lib/mock";
-import { getMockUser } from "@/lib/mock-auth";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function FarmerDashboardPage() {
   const { t, locale } = useLocale();
-  const farmer = getMockUser("farmer");
+  const { user: farmer } = useAuth();
+  if (!farmer) return null;
   const farmerLoyaltyTokens = loyaltyBalances
     .filter((b) => b.farmerId === farmer.id)
     .reduce((sum, b) => sum + b.tokenCount, 0);

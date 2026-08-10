@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { NotificationDrawer } from "@/components/layout/notification-drawer";
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
-import { getMockUser } from "@/lib/mock-auth";
 import type { MessageKey } from "@/lib/i18n/messages";
 import type { UserRole } from "@/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -42,13 +42,16 @@ export function PortalShell({
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useLocale();
-  const user = getMockUser(role);
+  const { user, logout: clearSession } = useAuth();
   const profile = profileHref ?? `/${role}/settings`;
   const title = t(titleKey);
 
   function logout() {
+    clearSession();
     router.push("/login");
   }
+
+  if (!user) return null;
 
   return (
     <div className="min-h-dvh bg-background lg:bg-portal-frame lg:p-3 xl:p-4">

@@ -29,12 +29,13 @@ import {
   getLoyaltyRuleForTrader,
   loyaltyBalances,
 } from "@/lib/mock";
-import { getMockUser } from "@/lib/mock-auth";
+import { useAuth } from "@/components/providers/auth-provider";
 import type { LoyaltyRule } from "@/types";
 
 export default function TraderLoyaltyPage() {
   const { t, locale } = useLocale();
-  const trader = getMockUser("trader");
+  const { user: trader } = useAuth();
+  if (!trader) return null;
   const traderId = trader.id;
 
   const seedRule =

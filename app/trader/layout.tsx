@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { LocaleProvider } from "@/components/providers/locale-provider";
+import { RequireAuth } from "@/components/providers/require-auth";
 
 const nav = [
   { href: "/trader", labelKey: "nav.dashboard" as const, icon: LayoutDashboard },
@@ -46,17 +47,19 @@ export default function TraderLayout({
 }) {
   return (
     <LocaleProvider>
-      <PortalShell
-        role="trader"
-        titleKey="portal.trader"
-        nav={nav}
-        mobileNav={mobileNav}
-        notificationHref="/trader/notifications"
-        notificationGroups={["Applications", "Accepted Offers", "Announcements"]}
-        profileHref="/trader/stall"
-      >
-        {children}
-      </PortalShell>
+      <RequireAuth role="trader">
+        <PortalShell
+          role="trader"
+          titleKey="portal.trader"
+          nav={nav}
+          mobileNav={mobileNav}
+          notificationHref="/trader/notifications"
+          notificationGroups={["Applications", "Accepted Offers", "Announcements"]}
+          profileHref="/trader/stall"
+        >
+          {children}
+        </PortalShell>
+      </RequireAuth>
     </LocaleProvider>
   );
 }

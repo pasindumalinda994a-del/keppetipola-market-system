@@ -14,16 +14,22 @@ import {
   getLoyaltyRuleForTrader,
   loyaltyBalances,
 } from "@/lib/mock";
-import { getMockUser } from "@/lib/mock-auth";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function FarmerLoyaltyPage() {
   const { t } = useLocale();
-  const farmer = getMockUser("farmer");
+  const { user: farmer } = useAuth();
+  const farmerId = farmer?.id;
 
   const balances = useMemo(
-    () => loyaltyBalances.filter((b) => b.farmerId === farmer.id),
-    [farmer.id]
+    () =>
+      farmerId
+        ? loyaltyBalances.filter((b) => b.farmerId === farmerId)
+        : [],
+    [farmerId]
   );
+
+  if (!farmer) return null;
 
   return (
     <div>

@@ -1,0 +1,47 @@
+import type { User, UserRole } from "@/types";
+
+export const AUTH_STORAGE_KEY = "keppetipola.auth";
+
+export type StoredAuth = {
+  token: string;
+  user: User;
+};
+
+export function portalPathForRole(role: UserRole): string {
+  if (role === "farmer") return "/farmer";
+  if (role === "trader") return "/trader";
+  return "/admin";
+}
+
+export function readStoredAuth(): StoredAuth | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as StoredAuth;
+    if (!parsed?.token || !parsed?.user?.id || !parsed?.user?.role) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+export function writeStoredAuth(auth: StoredAuth): void {
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+}
+
+export function clearStoredAuth(): void {
+  localStorage.removeItem(AUTH_STORAGE_KEY);
+}
+
+/** Normalize API user so joinedAt is always a string. */
+export function normalizeUser(user: User): User {
+  return {
+    ...user,
+    address: user.address ?? "",
+    joinedAt:
+      typeof user.joinedAt === "string"
+        ? user.joinedAt
+        : new Date(user.joinedAt as unknown as string).toISOString(),
+  };
+}

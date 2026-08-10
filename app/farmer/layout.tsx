@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { LocaleProvider } from "@/components/providers/locale-provider";
+import { RequireAuth } from "@/components/providers/require-auth";
 
 const nav = [
   { href: "/farmer", labelKey: "nav.dashboard" as const, icon: LayoutDashboard },
@@ -46,17 +47,19 @@ export default function FarmerLayout({
 }) {
   return (
     <LocaleProvider>
-      <PortalShell
-        role="farmer"
-        titleKey="portal.farmer"
-        nav={nav}
-        mobileNav={mobileNav}
-        notificationHref="/farmer/notifications"
-        notificationGroups={["Offers", "Sales", "Announcements", "System"]}
-        profileHref="/farmer/profile"
-      >
-        {children}
-      </PortalShell>
+      <RequireAuth role="farmer">
+        <PortalShell
+          role="farmer"
+          titleKey="portal.farmer"
+          nav={nav}
+          mobileNav={mobileNav}
+          notificationHref="/farmer/notifications"
+          notificationGroups={["Offers", "Sales", "Announcements", "System"]}
+          profileHref="/farmer/profile"
+        >
+          {children}
+        </PortalShell>
+      </RequireAuth>
     </LocaleProvider>
   );
 }

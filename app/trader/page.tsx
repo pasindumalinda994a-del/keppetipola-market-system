@@ -24,11 +24,12 @@ import {
   purchaseOrders,
   traderDashboardStats,
 } from "@/lib/mock";
-import { getMockUser } from "@/lib/mock-auth";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function TraderDashboardPage() {
   const { t, locale } = useLocale();
-  const trader = getMockUser("trader");
+  const { user: trader } = useAuth();
+  if (!trader) return null;
   const loyaltyFarmers = loyaltyBalances.filter(
     (b) => b.traderId === trader.id
   ).length;

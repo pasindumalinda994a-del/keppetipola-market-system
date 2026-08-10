@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Store, Wheat } from "lucide-react";
-import { portalPathForRole } from "@/lib/mock-auth";
+import { ApiError } from "@/lib/api";
+import { portalPathForRole } from "@/lib/auth";
+import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,17 +15,39 @@ import { cn } from "@/lib/utils";
 
 function RegisterForm() {
   const router = useRouter();
+  const { register } = useAuth();
   const params = useSearchParams();
   const roleParam = params.get("role");
   const roleLocked = roleParam === "farmer" || roleParam === "trader";
   const [role, setRole] = useState<"farmer" | "trader">(
     roleLocked ? roleParam : "farmer"
   );
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    toast.success("Account created (demo)");
-    router.push(portalPathForRole(role));
+    setSubmitting(true);
+    try {
+      const user = await register({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        password,
+        role,
+      });
+      toast.success("Account created");
+      router.push(portalPathForRole(user.role));
+    } catch (err) {
+      const message =
+        err instanceof ApiError ? err.message : "Could not create account";
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const roleLabel = role === "farmer" ? "Farmer" : "Trader";
@@ -77,8 +101,11 @@ function RegisterForm() {
           <Input
             id="name"
             required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
             className="h-11 rounded-xl bg-background/70 px-3.5"
+            autoComplete="name"
           />
         </div>
         <div className="space-y-2">
@@ -86,8 +113,11 @@ function RegisterForm() {
           <Input
             id="phone"
             required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="+94 …"
             className="h-11 rounded-xl bg-background/70 px-3.5"
+            autoComplete="tel"
           />
         </div>
         <div className="space-y-2">
@@ -96,8 +126,11 @@ function RegisterForm() {
             id="email"
             type="email"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             className="h-11 rounded-xl bg-background/70 px-3.5"
+            autoComplete="email"
           />
         </div>
         <div className="space-y-2">
@@ -107,12 +140,20 @@ function RegisterForm() {
             type="password"
             required
             minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="At least 6 characters"
             className="h-11 rounded-xl bg-background/70 px-3.5"
+            autoComplete="new-password"
           />
         </div>
-        <Button type="submit" size="lg" className="mt-1 h-11 w-full rounded-xl">
-          Create {role} account
+        <Button
+          type="submit"
+          size="lg"
+          disabled={submitting}
+          className="mt-1 h-11 w-full rounded-xl"
+        >
+          {submitting ? "Creating…" : `Create ${role} account`}
         </Button>
       </form>
 
