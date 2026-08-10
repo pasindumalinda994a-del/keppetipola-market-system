@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { formatLKR, formatRelativeTime } from "@/lib/format";
 import type { MarketPrice } from "@/types";
 import { PriceChange } from "@/components/shared/price-change";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/components/providers/locale-provider";
+import { fillTemplate, translateVegetableName } from "@/lib/i18n/messages";
 
 export function VegetablePriceCard({
   price,
@@ -14,12 +18,14 @@ export function VegetablePriceCard({
   href?: string;
   className?: string;
 }) {
+  const { t, locale } = useLocale();
+  const vegName = translateVegetableName(price.vegetableName, t);
   const content = (
     <>
       <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-muted">
         <Image
           src={price.imageUrl}
-          alt={price.vegetableName}
+          alt={vegName}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
@@ -27,14 +33,16 @@ export function VegetablePriceCard({
       </div>
       <div className="mt-3 px-0.5">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-foreground">{price.vegetableName}</h3>
+          <h3 className="font-semibold text-foreground">{vegName}</h3>
           <PriceChange value={price.change} />
         </div>
         <p className="mt-1.5 text-lg font-semibold text-price-foreground">
-          {formatLKR(price.lowest)}–{formatLKR(price.highest)}
+          {formatLKR(price.lowest, locale)}–{formatLKR(price.highest, locale)}
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
-          Updated {formatRelativeTime(price.lastUpdated)}
+          {fillTemplate(t("time.updated"), {
+            time: formatRelativeTime(price.lastUpdated, locale),
+          })}
         </p>
       </div>
     </>

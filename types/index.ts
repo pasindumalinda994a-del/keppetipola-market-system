@@ -191,3 +191,46 @@ export interface MarketStats {
   activeTraders: number;
   vegetablesSoldTons: number;
 }
+
+/** Trader-defined loyalty program: N completed sales unlock a % discount. */
+export interface LoyaltyRule {
+  id: string;
+  traderId: string;
+  tokenThreshold: number;
+  discountPercent: number;
+  isActive: boolean;
+  updatedAt: string;
+}
+
+/** Accumulated tokens for one farmer–trader pair. */
+export interface LoyaltyBalance {
+  id: string;
+  farmerId: string;
+  farmerName: string;
+  traderId: string;
+  traderName: string;
+  tokenCount: number;
+  /** Tokens counted toward the current threshold cycle. */
+  tokensTowardReward: number;
+  rewardUnlocked: boolean;
+  lastEarnedAt?: string;
+}
+
+/** Audit trail: one event per completed sale that issued a token. */
+export interface LoyaltyTokenEvent {
+  id: string;
+  saleId: string;
+  farmerId: string;
+  traderId: string;
+  tokensIssued: number;
+  createdAt: string;
+}
+
+export interface LoyaltyProgress {
+  current: number;
+  threshold: number;
+  percent: number;
+  unlocked: boolean;
+  discountPercent: number;
+  ruleActive: boolean;
+}

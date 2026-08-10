@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,11 +24,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { fillTemplate, translateVegetableName } from "@/lib/i18n/messages";
 import { formatDate, formatKg } from "@/lib/format";
 import { applications as seed } from "@/lib/mock";
 import type { Application } from "@/types";
 
 export default function FarmerApplicationsPage() {
+  const { t, locale } = useLocale();
   const [apps, setApps] = useState<Application[]>(seed);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Application | null>(null);
@@ -41,7 +44,7 @@ export default function FarmerApplicationsPage() {
     setApps((prev) =>
       prev.map((a) => (a.id === id ? { ...a, status: "Cancelled" } : a))
     );
-    toast.message("Application rejected");
+    toast.message(t("trader.applications.rejected"));
   }
 
   function sendOffer(e: React.FormEvent) {
@@ -53,36 +56,40 @@ export default function FarmerApplicationsPage() {
       )
     );
     setOpen(false);
-    toast.success(`Offer sent to ${selected.farmerName}`);
+    toast.success(
+      fillTemplate(t("trader.applications.offerSent"), {
+        name: selected.farmerName,
+      })
+    );
   }
 
   return (
     <div>
       <PageHeader
-        title="Farmer Applications"
-        description="Review applicants and send offers."
+        title={t("trader.applications.title")}
+        description={t("trader.applications.description")}
       />
       <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Farmer</TableHead>
-              <TableHead>Vegetable</TableHead>
-              <TableHead>Qty</TableHead>
-              <TableHead>Grade</TableHead>
-              <TableHead>Harvest Date</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>{t("common.farmer")}</TableHead>
+              <TableHead>{t("common.vegetable")}</TableHead>
+              <TableHead>{t("common.qty")}</TableHead>
+              <TableHead>{t("common.grade")}</TableHead>
+              <TableHead>{t("common.harvestDate")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.action")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {apps.map((a) => (
               <TableRow key={a.id}>
                 <TableCell className="font-medium">{a.farmerName}</TableCell>
-                <TableCell>{a.vegetableName}</TableCell>
-                <TableCell>{formatKg(a.quantityKg)}</TableCell>
+                <TableCell>{translateVegetableName(a.vegetableName, t)}</TableCell>
+                <TableCell>{formatKg(a.quantityKg, locale)}</TableCell>
                 <TableCell>{a.grade}</TableCell>
-                <TableCell>{formatDate(a.harvestDate)}</TableCell>
+                <TableCell>{formatDate(a.harvestDate, locale)}</TableCell>
                 <TableCell>
                   <StatusBadge status={a.status} />
                 </TableCell>
@@ -90,14 +97,14 @@ export default function FarmerApplicationsPage() {
                   {a.status === "Pending" ? (
                     <>
                       <Button size="sm" onClick={() => openOffer(a)}>
-                        Send Offer
+                        {t("trader.applications.sendOffer")}
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => reject(a.id)}
                       >
-                        Reject
+                        {t("common.reject")}
                       </Button>
                     </>
                   ) : (
@@ -114,16 +121,20 @@ export default function FarmerApplicationsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Send offer{selected ? ` to ${selected.farmerName}` : ""}
+              {selected
+                ? fillTemplate(t("trader.applications.dialogDesc"), {
+                    name: selected.farmerName,
+                  })
+                : t("trader.applications.dialogTitle")}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={sendOffer} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Price (Rs/kg)</Label>
+              <Label htmlFor="price">{t("trader.applications.pricePerKg")}</Label>
               <Input id="price" type="number" min={1} required defaultValue={198} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="buyQty">Buying quantity (kg)</Label>
+              <Label htmlFor="buyQty">{t("trader.applications.buyingQty")}</Label>
               <Input
                 id="buyQty"
                 type="number"
@@ -133,18 +144,22 @@ export default function FarmerApplicationsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="pickup">Pickup time</Label>
+              <Label htmlFor="pickup">{t("trader.applications.pickupTime")}</Label>
               <Input id="pickup" type="datetime-local" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea id="message" rows={3} placeholder="Optional message" />
+              <Label htmlFor="message">{t("common.message")}</Label>
+              <Textarea
+                id="message"
+                rows={3}
+                placeholder={t("common.optionalMessage")}
+              />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancel
+                {t("common.cancel")}
               </Button>
-              <Button type="submit">Submit offer</Button>
+              <Button type="submit">{t("trader.applications.submitOffer")}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

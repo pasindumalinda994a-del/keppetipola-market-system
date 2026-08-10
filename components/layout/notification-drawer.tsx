@@ -5,6 +5,7 @@ import { Bell } from "lucide-react";
 import { formatRelativeTime } from "@/lib/format";
 import { notifications as allNotifications } from "@/lib/mock";
 import { useLocale } from "@/components/providers/locale-provider";
+import { notifGroupKeys } from "@/lib/i18n/messages";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -22,7 +23,7 @@ export function NotificationDrawer({
   href?: string;
   groups?: string[];
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const items = allNotifications
     .filter((n) => !groups || groups.includes(n.group))
     .slice(0, 8);
@@ -55,11 +56,15 @@ export function NotificationDrawer({
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm font-medium">{n.title}</p>
                 <span className="shrink-0 text-xs text-muted-foreground">
-                  {formatRelativeTime(n.createdAt)}
+                  {formatRelativeTime(n.createdAt, locale)}
                 </span>
               </div>
               <p className="mt-1 text-sm text-muted-foreground">{n.message}</p>
-              <p className="mt-2 text-xs font-medium text-primary">{n.group}</p>
+              <p className="mt-2 text-xs font-medium text-primary">
+                {notifGroupKeys[n.group]
+                  ? t(notifGroupKeys[n.group])
+                  : n.group}
+              </p>
             </div>
           ))}
         </div>

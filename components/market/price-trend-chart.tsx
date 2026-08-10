@@ -18,25 +18,27 @@ import {
   chartAxisTick,
   chartMargin,
 } from "@/components/market/chart-ui";
+import { useLocale } from "@/components/providers/locale-provider";
+import type { MessageKey } from "@/lib/i18n/messages";
 
 const SERIES = [
   {
     key: "average" as const,
-    name: "Average",
+    nameKey: "chart.series.average" as MessageKey,
     color: "var(--chart-1)",
     strokeWidth: 2.5,
     dash: undefined as string | undefined,
   },
   {
     key: "highest" as const,
-    name: "Highest",
+    nameKey: "chart.series.highest" as MessageKey,
     color: "var(--chart-2)",
     strokeWidth: 1.75,
     dash: "5 4",
   },
   {
     key: "lowest" as const,
-    name: "Lowest",
+    nameKey: "chart.series.lowest" as MessageKey,
     color: "var(--chart-3)",
     strokeWidth: 1.75,
     dash: "5 4",
@@ -78,6 +80,7 @@ export function PriceTrendChart({
   data: PriceHistoryPoint[];
   height?: number;
 }) {
+  const { t } = useLocale();
   return (
     <ChartShell height={height}>
       <div className="min-h-0 flex-1">
@@ -122,7 +125,7 @@ export function PriceTrendChart({
                 key={s.key}
                 type="monotone"
                 dataKey={s.key}
-                name={s.name}
+                name={t(s.nameKey)}
                 stroke={s.color}
                 strokeWidth={s.strokeWidth}
                 strokeDasharray={s.dash}
@@ -139,7 +142,7 @@ export function PriceTrendChart({
         </ResponsiveContainer>
       </div>
       <ChartLegendRow
-        items={SERIES.map((s) => ({ name: s.name, color: s.color }))}
+        items={SERIES.map((s) => ({ name: t(s.nameKey), color: s.color }))}
       />
     </ChartShell>
   );

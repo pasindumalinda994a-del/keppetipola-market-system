@@ -28,6 +28,7 @@ import {
   chartAxisTick,
   chartMargin,
 } from "@/components/market/chart-ui";
+import { useLocale } from "@/components/providers/locale-provider";
 
 export type ChartVegetable = {
   id: string;
@@ -105,6 +106,7 @@ export function MultiVegetablePriceChart({
   chartType?: PriceChartType;
   metric?: PriceChartMetric;
 }) {
+  const { t } = useLocale();
   const data = useMemo(() => {
     if (vegetables.length === 0) return [];
 
@@ -176,8 +178,8 @@ export function MultiVegetablePriceChart({
         height={height}
         empty={
           <ChartEmptyState
-            title="No vegetables selected"
-            description="Bookmark vegetables above to compare their prices on this chart."
+            title={t("chart.noSelected")}
+            description={t("chart.bookmarkAbove")}
           />
         }
       />

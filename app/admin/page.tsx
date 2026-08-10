@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatKg, formatLKR, formatRelativeTime } from "@/lib/format";
+import { statusMessageKeys, translateVegetableName } from "@/lib/i18n/messages";
 import {
   adminDashboardStats,
   stalls,
@@ -25,7 +26,7 @@ import {
 } from "@/lib/mock";
 
 export default function AdminDashboardPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const pendingFarmers = users.filter(
     (u) => u.role === "farmer" && u.status === "Pending"
   ).length;
@@ -61,7 +62,7 @@ export default function AdminDashboardPage() {
         />
         <StatCard
           title={t("admin.dash.todaySales")}
-          value={formatLKR(adminDashboardStats.todaySales)}
+          value={formatLKR(adminDashboardStats.todaySales, locale)}
           change={6.8}
           changeLabel={t("common.thanLastMonth")}
           chartData={[4, 6, 5, 8, 9]}
@@ -124,10 +125,11 @@ export default function AdminDashboardPage() {
                     {txn.farmerName} → {txn.traderName}
                     <br />
                     <span className="text-muted-foreground">
-                      {txn.vegetableName} · {formatKg(txn.quantityKg)}
+                      {translateVegetableName(txn.vegetableName, t)} ·{" "}
+                      {formatKg(txn.quantityKg, locale)}
                     </span>
                   </TableCell>
-                  <TableCell>{formatLKR(txn.amount)}</TableCell>
+                  <TableCell>{formatLKR(txn.amount, locale)}</TableCell>
                   <TableCell>
                     <StatusBadge status={txn.status} />
                   </TableCell>
@@ -156,11 +158,15 @@ export default function AdminDashboardPage() {
               className="flex items-start justify-between gap-3 rounded-lg bg-card px-4 py-3 text-sm"
             >
               <div>
-                <span className="font-medium text-primary">{log.type}</span>
+                <span className="font-medium text-primary">
+                  {statusMessageKeys[log.type]
+                    ? t(statusMessageKeys[log.type])
+                    : log.type}
+                </span>
                 <span className="text-muted-foreground"> — {log.message}</span>
               </div>
               <span className="shrink-0 text-xs text-muted-foreground">
-                {formatRelativeTime(log.createdAt)}
+                {formatRelativeTime(log.createdAt, locale)}
               </span>
             </li>
           ))}

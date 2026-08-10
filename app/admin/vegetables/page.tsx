@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -22,10 +23,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { translateVegetableName } from "@/lib/i18n/messages";
 import { vegetables as seed } from "@/lib/mock";
 import type { Vegetable } from "@/types";
 
 export default function AdminVegetablesPage() {
+  const { t } = useLocale();
   const [items, setItems] = useState<Vegetable[]>(seed);
   const [open, setOpen] = useState(false);
 
@@ -37,39 +40,45 @@ export default function AdminVegetablesPage() {
           : v
       )
     );
-    toast.success("Vegetable updated");
+    toast.success(t("admin.vegetables.updated"));
   }
 
   return (
     <div>
       <PageHeader
-        title="Vegetable Management"
-        description="Catalog of market vegetables."
-        action={<Button onClick={() => setOpen(true)}>Add vegetable</Button>}
+        title={t("admin.vegetables.title")}
+        description={t("admin.vegetables.description")}
+        action={
+          <Button onClick={() => setOpen(true)}>
+            {t("admin.vegetables.add")}
+          </Button>
+        }
       />
       <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Vegetable</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.vegetable")}</TableHead>
+              <TableHead>{t("common.category")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {items.map((v) => (
               <TableRow key={v.id}>
-                <TableCell className="font-medium">{v.name}</TableCell>
+                <TableCell className="font-medium">
+                  {translateVegetableName(v.name, t)}
+                </TableCell>
                 <TableCell>{v.category}</TableCell>
                 <TableCell>
-                  <StatusBadge
-                    status={v.status === "Active" ? "Active" : "Closed"}
-                  />
+                  <StatusBadge status={v.status} />
                 </TableCell>
                 <TableCell className="space-x-2 text-right">
                   <Button size="sm" variant="outline" onClick={() => toggle(v.id)}>
-                    {v.status === "Active" ? "Disable" : "Enable"}
+                    {v.status === "Active"
+                      ? t("common.disable")
+                      : t("common.enable")}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -81,7 +90,7 @@ export default function AdminVegetablesPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add vegetable</DialogTitle>
+            <DialogTitle>{t("admin.vegetables.add")}</DialogTitle>
           </DialogHeader>
           <form
             className="space-y-4"
@@ -89,7 +98,7 @@ export default function AdminVegetablesPage() {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
               const name = String(fd.get("name") || "");
-              const category = String(fd.get("category") || "Other");
+              const category = String(fd.get("category") || t("common.other"));
               setItems((prev) => [
                 ...prev,
                 {
@@ -100,20 +109,20 @@ export default function AdminVegetablesPage() {
                   status: "Active",
                 },
               ]);
-              toast.success("Vegetable added");
+              toast.success(t("admin.vegetables.added"));
               setOpen(false);
             }}
           >
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t("common.name")}</Label>
               <Input id="name" name="name" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t("common.category")}</Label>
               <Input id="category" name="category" required />
             </div>
             <DialogFooter>
-              <Button type="submit">Create</Button>
+              <Button type="submit">{t("common.create")}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

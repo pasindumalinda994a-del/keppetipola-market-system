@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -15,33 +16,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { fillTemplate, type MessageKey } from "@/lib/i18n/messages";
 import { users } from "@/lib/mock";
 import type { UserRole } from "@/types";
 
+function roleLabel(role: UserRole, t: (key: MessageKey) => string) {
+  if (role === "farmer") return t("common.farmer");
+  if (role === "trader") return t("common.trader");
+  return t("common.admins");
+}
+
 function UserTable({ role }: { role: UserRole }) {
+  const { t } = useLocale();
   const rows = users.filter((u) => u.role === role);
   return (
     <div className="overflow-hidden rounded-lg bg-card">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{t("common.name")}</TableHead>
+            <TableHead>{t("common.role")}</TableHead>
+            <TableHead>{t("common.status")}</TableHead>
+            <TableHead className="text-right">{t("common.actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rows.map((u) => (
             <TableRow key={u.id}>
               <TableCell className="font-medium">{u.name}</TableCell>
-              <TableCell className="capitalize">{u.role}</TableCell>
+              <TableCell>{roleLabel(u.role, t)}</TableCell>
               <TableCell>
                 <StatusBadge status={u.status} />
               </TableCell>
               <TableCell className="text-right">
                 <Button size="sm" variant="outline" asChild>
-                  <Link href={`/admin/users/${u.id}`}>View</Link>
+                  <Link href={`/admin/users/${u.id}`}>{t("common.view")}</Link>
                 </Button>
               </TableCell>
             </TableRow>
@@ -53,6 +62,7 @@ function UserTable({ role }: { role: UserRole }) {
 }
 
 export default function AdminUsersPage() {
+  const { t } = useLocale();
   const [q, setQ] = useState("");
   const filteredCount = useMemo(() => {
     if (!q) return users.length;
@@ -64,20 +74,22 @@ export default function AdminUsersPage() {
   return (
     <div>
       <PageHeader
-        title="User Management"
-        description={`${filteredCount} users in the marketplace.`}
+        title={t("admin.users.title")}
+        description={fillTemplate(t("admin.users.description"), {
+          count: filteredCount,
+        })}
       />
       <SearchBar
         className="mb-6 max-w-sm"
         value={q}
         onChange={setQ}
-        placeholder="Search users…"
+        placeholder={t("search.users")}
       />
       <Tabs defaultValue="farmer">
         <TabsList>
-          <TabsTrigger value="farmer">Farmers</TabsTrigger>
-          <TabsTrigger value="trader">Traders</TabsTrigger>
-          <TabsTrigger value="admin">Admins</TabsTrigger>
+          <TabsTrigger value="farmer">{t("common.farmers")}</TabsTrigger>
+          <TabsTrigger value="trader">{t("common.traders")}</TabsTrigger>
+          <TabsTrigger value="admin">{t("common.admins")}</TabsTrigger>
         </TabsList>
         <TabsContent value="farmer" className="mt-4">
           <UserTable role="farmer" />

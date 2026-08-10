@@ -1,17 +1,25 @@
+"use client";
+
 import { BarSummaryChart } from "@/components/market/bar-summary-chart";
 import { PageHeader } from "@/components/shared/page-header";
+import { useLocale } from "@/components/providers/locale-provider";
+import { translateVegetableName } from "@/lib/i18n/messages";
 import { monthlySpending, topVegetablesPurchased } from "@/lib/mock";
 
 export default function TraderReportsPage() {
+  const { t } = useLocale();
+
   return (
     <div>
       <PageHeader
-        title="Reports"
-        description="Purchases, top vegetables, and monthly spending."
+        title={t("trader.reports.title")}
+        description={t("trader.reports.description")}
       />
       <div className="grid gap-8 lg:grid-cols-2">
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Monthly spending</h2>
+          <h2 className="mb-3 text-lg font-semibold">
+            {t("trader.reports.monthlySpending")}
+          </h2>
           <BarSummaryChart
             data={monthlySpending.map((m) => ({
               name: m.month,
@@ -22,10 +30,12 @@ export default function TraderReportsPage() {
           />
         </section>
         <section>
-          <h2 className="mb-3 text-lg font-semibold">Top vegetables</h2>
+          <h2 className="mb-3 text-lg font-semibold">
+            {t("trader.reports.topVegetables")}
+          </h2>
           <BarSummaryChart
             data={topVegetablesPurchased.map((v) => ({
-              name: v.name,
+              name: translateVegetableName(v.name, t),
               kg: v.kg,
             }))}
             dataKey="kg"
@@ -33,7 +43,9 @@ export default function TraderReportsPage() {
         </section>
       </div>
       <section className="mt-8">
-        <h2 className="mb-3 text-lg font-semibold">Purchases overview</h2>
+        <h2 className="mb-3 text-lg font-semibold">
+          {t("trader.reports.purchasesOverview")}
+        </h2>
         <BarSummaryChart
           data={monthlySpending.map((m) => ({
             name: m.month,

@@ -116,8 +116,14 @@ export function PortalShell({
                 <p className="truncate text-sm font-semibold text-sidebar-foreground">
                   {user.name}
                 </p>
-                <p className="truncate text-xs text-sidebar-foreground/45 capitalize">
-                  {user.role}
+                <p className="truncate text-xs text-sidebar-foreground/45">
+                  {t(
+                    user.role === "farmer"
+                      ? "common.role.farmer"
+                      : user.role === "trader"
+                        ? "common.role.trader"
+                        : "common.role.admin"
+                  )}
                 </p>
               </div>
             </Link>

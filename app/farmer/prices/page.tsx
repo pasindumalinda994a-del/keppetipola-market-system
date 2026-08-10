@@ -1,29 +1,30 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale } from "@/components/providers/locale-provider";
 import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { PriceTable } from "@/components/market/price-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
+import { vegetableMatchesQuery } from "@/lib/i18n/messages";
 import { marketPrices } from "@/lib/mock";
 
 export default function FarmerPricesPage() {
+  const { t } = useLocale();
   const [q, setQ] = useState("");
 
   const filtered = useMemo(() => {
-    return marketPrices.filter((p) => {
-      return !q || p.vegetableName.toLowerCase().includes(q.toLowerCase());
-    });
-  }, [q]);
+    return marketPrices.filter((p) => vegetableMatchesQuery(p.vegetableName, q, t));
+  }, [q, t]);
 
   return (
     <div>
       <PageHeader
-        title="Market Prices"
-        description="Live prices with bookmarks for vegetables you grow."
+        title={t("farmer.prices.title")}
+        description={t("farmer.prices.description")}
       />
       <div className="mb-6">
-        <SearchBar value={q} onChange={setQ} placeholder="Search vegetable…" />
+        <SearchBar value={q} onChange={setQ} placeholder={t("search.vegetable")} />
       </div>
       <BookmarkedPriceChart showRangeFilter searchQuery={q} />
       <div className="mt-8">

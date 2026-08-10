@@ -19,6 +19,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/components/providers/locale-provider";
+import { statusMessageKeys, translateVegetableName } from "@/lib/i18n/messages";
 
 export type FilterValues = {
   vegetable?: string;
@@ -42,12 +44,13 @@ export function FilterPanel({
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const { t } = useLocale();
 
   const fields = (
     <div className="grid gap-4 sm:grid-cols-3">
       {vegetables.length > 0 ? (
         <div className="space-y-2">
-          <Label>Vegetable</Label>
+          <Label>{t("filter.vegetable")}</Label>
           <Select
             value={values.vegetable ?? "all"}
             onValueChange={(v) =>
@@ -58,13 +61,13 @@ export function FilterPanel({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All vegetables" />
+              <SelectValue placeholder={t("filter.allVegetables")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All vegetables</SelectItem>
+              <SelectItem value="all">{t("filter.allVegetables")}</SelectItem>
               {vegetables.map((v) => (
                 <SelectItem key={v} value={v}>
-                  {v}
+                  {translateVegetableName(v, t)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -73,7 +76,7 @@ export function FilterPanel({
       ) : null}
       {traders.length > 0 ? (
         <div className="space-y-2">
-          <Label>Trader</Label>
+          <Label>{t("filter.trader")}</Label>
           <Select
             value={values.trader ?? "all"}
             onValueChange={(v) =>
@@ -84,13 +87,13 @@ export function FilterPanel({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All traders" />
+              <SelectValue placeholder={t("filter.allTraders")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All traders</SelectItem>
-              {traders.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {t}
+              <SelectItem value="all">{t("filter.allTraders")}</SelectItem>
+              {traders.map((tr) => (
+                <SelectItem key={tr} value={tr}>
+                  {tr}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -99,7 +102,7 @@ export function FilterPanel({
       ) : null}
       {statuses.length > 0 ? (
         <div className="space-y-2">
-          <Label>Status</Label>
+          <Label>{t("filter.status")}</Label>
           <Select
             value={values.status ?? "all"}
             onValueChange={(v) =>
@@ -110,15 +113,18 @@ export function FilterPanel({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All statuses" />
+              <SelectValue placeholder={t("filter.allStatuses")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              {statuses.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s}
-                </SelectItem>
-              ))}
+              <SelectItem value="all">{t("filter.allStatuses")}</SelectItem>
+              {statuses.map((s) => {
+                const key = statusMessageKeys[s];
+                return (
+                  <SelectItem key={s} value={s}>
+                    {key ? t(key) : s}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
@@ -137,11 +143,11 @@ export function FilterPanel({
             }
           >
             <Filter className="size-4" />
-            Filters
+            {t("filter.title")}
           </SheetTrigger>
           <SheetContent side="bottom" className="rounded-t-lg">
             <SheetHeader>
-              <SheetTitle>Filters</SheetTitle>
+              <SheetTitle>{t("filter.title")}</SheetTitle>
             </SheetHeader>
             <div className="mt-4 px-4 pb-6">{fields}</div>
           </SheetContent>

@@ -1,12 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { FilterPanel } from "@/components/shared/filter-panel";
 import { formatDateTime } from "@/lib/format";
+import { statusMessageKeys } from "@/lib/i18n/messages";
 import { systemLogs } from "@/lib/mock";
 
 export default function AdminLogsPage() {
+  const { t, locale } = useLocale();
   const [filters, setFilters] = useState<{ status?: string }>({});
 
   const filtered = useMemo(() => {
@@ -17,8 +20,8 @@ export default function AdminLogsPage() {
   return (
     <div>
       <PageHeader
-        title="System Logs"
-        description="Login, price updates, transactions, and errors."
+        title={t("admin.logs.title")}
+        description={t("admin.logs.description")}
       />
       <div className="mb-6">
         <FilterPanel
@@ -34,9 +37,13 @@ export default function AdminLogsPage() {
             className="rounded-lg bg-card px-4 py-3 text-sm"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="font-medium text-primary">{log.type}</span>
+              <span className="font-medium text-primary">
+                {statusMessageKeys[log.type]
+                  ? t(statusMessageKeys[log.type])
+                  : log.type}
+              </span>
               <span className="text-xs text-muted-foreground">
-                {formatDateTime(log.createdAt)}
+                {formatDateTime(log.createdAt, locale)}
               </span>
             </div>
             <p className="mt-1 text-muted-foreground">{log.message}</p>

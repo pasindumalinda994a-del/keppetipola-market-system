@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -20,13 +21,14 @@ import { announcements as seed } from "@/lib/mock";
 import type { Announcement } from "@/types";
 
 export default function AdminAnnouncementsPage() {
+  const { t, locale } = useLocale();
   const [items, setItems] = useState<Announcement[]>(seed);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Announcement | null>(null);
 
   function remove(id: string) {
     setItems((prev) => prev.filter((a) => a.id !== id));
-    toast.message("Announcement deleted");
+    toast.message(t("admin.announcements.deleted"));
   }
 
   function publish(id: string) {
@@ -35,14 +37,14 @@ export default function AdminAnnouncementsPage() {
         a.id === id ? { ...a, status: "Published" } : a
       )
     );
-    toast.success("Published");
+    toast.success(t("admin.announcements.published"));
   }
 
   return (
     <div>
       <PageHeader
-        title="Announcements"
-        description="Create and publish market announcements."
+        title={t("admin.announcements.title")}
+        description={t("admin.announcements.description")}
         action={
           <Button
             onClick={() => {
@@ -50,7 +52,7 @@ export default function AdminAnnouncementsPage() {
               setOpen(true);
             }}
           >
-            Create
+            {t("common.create")}
           </Button>
         }
       />
@@ -64,7 +66,7 @@ export default function AdminAnnouncementsPage() {
                   <StatusBadge status={a.status} />
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {formatDate(a.publishedAt)}
+                  {formatDate(a.publishedAt, locale)}
                 </p>
                 <p className="mt-2 text-sm text-muted-foreground">{a.body}</p>
               </div>
@@ -77,11 +79,11 @@ export default function AdminAnnouncementsPage() {
                     setOpen(true);
                   }}
                 >
-                  Edit
+                  {t("common.edit")}
                 </Button>
                 {a.status !== "Published" ? (
                   <Button size="sm" onClick={() => publish(a.id)}>
-                    Publish
+                    {t("common.publish")}
                   </Button>
                 ) : null}
                 <Button
@@ -90,7 +92,7 @@ export default function AdminAnnouncementsPage() {
                   className="text-destructive"
                   onClick={() => remove(a.id)}
                 >
-                  Delete
+                  {t("common.delete")}
                 </Button>
               </div>
             </div>
@@ -102,7 +104,9 @@ export default function AdminAnnouncementsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editing ? "Edit announcement" : "Create announcement"}
+              {editing
+                ? t("admin.announcements.edit")
+                : t("admin.announcements.create")}
             </DialogTitle>
           </DialogHeader>
           <form
@@ -118,7 +122,7 @@ export default function AdminAnnouncementsPage() {
                     a.id === editing.id ? { ...a, title, body } : a
                   )
                 );
-                toast.success("Announcement updated");
+                toast.success(t("admin.announcements.updated"));
               } else {
                 setItems((prev) => [
                   {
@@ -130,13 +134,13 @@ export default function AdminAnnouncementsPage() {
                   },
                   ...prev,
                 ]);
-                toast.success("Draft created");
+                toast.success(t("admin.announcements.draftCreated"));
               }
               setOpen(false);
             }}
           >
             <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">{t("common.title")}</Label>
               <Input
                 id="title"
                 name="title"
@@ -145,7 +149,7 @@ export default function AdminAnnouncementsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="body">Body</Label>
+              <Label htmlFor="body">{t("common.body")}</Label>
               <Textarea
                 id="body"
                 name="body"
@@ -155,7 +159,7 @@ export default function AdminAnnouncementsPage() {
               />
             </div>
             <DialogFooter>
-              <Button type="submit">Save</Button>
+              <Button type="submit">{t("common.save")}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

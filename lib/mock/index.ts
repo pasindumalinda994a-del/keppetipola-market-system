@@ -3,6 +3,10 @@ import type {
   Application,
   BuyingRequest,
   Harvest,
+  LoyaltyBalance,
+  LoyaltyProgress,
+  LoyaltyRule,
+  LoyaltyTokenEvent,
   MarketPrice,
   MarketStats,
   NotificationItem,
@@ -238,3 +242,147 @@ export const topVegetablesPurchased = [
   { name: "Beans", kg: 1900 },
   { name: "Tomato", kg: 1600 },
 ];
+
+export const loyaltyRules: LoyaltyRule[] = [
+  {
+    id: "rule-1",
+    traderId: "trader-1",
+    tokenThreshold: 10,
+    discountPercent: 5,
+    isActive: true,
+    updatedAt: "2026-07-01T08:00:00Z",
+  },
+  {
+    id: "rule-2",
+    traderId: "trader-2",
+    tokenThreshold: 8,
+    discountPercent: 3,
+    isActive: true,
+    updatedAt: "2026-06-15T08:00:00Z",
+  },
+  {
+    id: "rule-3",
+    traderId: "trader-3",
+    tokenThreshold: 10,
+    discountPercent: 5,
+    isActive: true,
+    updatedAt: "2026-05-20T08:00:00Z",
+  },
+];
+
+export const loyaltyBalances: LoyaltyBalance[] = [
+  {
+    id: "lb-1",
+    farmerId: "farmer-1",
+    farmerName: "Sunil Bandara",
+    traderId: "trader-1",
+    traderName: "Trader ABC",
+    tokenCount: 8,
+    tokensTowardReward: 8,
+    rewardUnlocked: false,
+    lastEarnedAt: "2026-07-10",
+  },
+  {
+    id: "lb-2",
+    farmerId: "farmer-1",
+    farmerName: "Sunil Bandara",
+    traderId: "trader-2",
+    traderName: "Green Valley Stall",
+    tokenCount: 4,
+    tokensTowardReward: 4,
+    rewardUnlocked: false,
+    lastEarnedAt: "2026-07-08",
+  },
+  {
+    id: "lb-3",
+    farmerId: "farmer-1",
+    farmerName: "Sunil Bandara",
+    traderId: "trader-3",
+    traderName: "Hill Country Traders",
+    tokenCount: 12,
+    tokensTowardReward: 10,
+    rewardUnlocked: true,
+    lastEarnedAt: "2026-07-05",
+  },
+  {
+    id: "lb-4",
+    farmerId: "farmer-2",
+    farmerName: "Nimal Silva",
+    traderId: "trader-1",
+    traderName: "Trader ABC",
+    tokenCount: 10,
+    tokensTowardReward: 10,
+    rewardUnlocked: true,
+    lastEarnedAt: "2026-07-11",
+  },
+  {
+    id: "lb-5",
+    farmerId: "farmer-3",
+    farmerName: "Kumari Jayasuriya",
+    traderId: "trader-1",
+    traderName: "Trader ABC",
+    tokenCount: 3,
+    tokensTowardReward: 3,
+    rewardUnlocked: false,
+    lastEarnedAt: "2026-07-09",
+  },
+];
+
+export const loyaltyTokenEvents: LoyaltyTokenEvent[] = [
+  {
+    id: "lte-1",
+    saleId: "sale-1",
+    farmerId: "farmer-1",
+    traderId: "trader-1",
+    tokensIssued: 1,
+    createdAt: "2026-07-10T14:00:00Z",
+  },
+  {
+    id: "lte-2",
+    saleId: "sale-2",
+    farmerId: "farmer-1",
+    traderId: "trader-2",
+    tokensIssued: 1,
+    createdAt: "2026-07-08T11:30:00Z",
+  },
+  {
+    id: "lte-3",
+    saleId: "sale-3",
+    farmerId: "farmer-1",
+    traderId: "trader-3",
+    tokensIssued: 1,
+    createdAt: "2026-07-05T09:15:00Z",
+  },
+];
+
+export function getLoyaltyRuleForTrader(
+  traderId: string,
+  rules: LoyaltyRule[] = loyaltyRules
+): LoyaltyRule | undefined {
+  return rules.find((r) => r.traderId === traderId);
+}
+
+export function getLoyaltyProgress(
+  balance: LoyaltyBalance,
+  rule?: LoyaltyRule | null
+): LoyaltyProgress {
+  const threshold = rule?.tokenThreshold ?? 10;
+  const discountPercent = rule?.discountPercent ?? 0;
+  const ruleActive = rule?.isActive ?? false;
+  const unlocked =
+    ruleActive && (balance.rewardUnlocked || balance.tokenCount >= threshold);
+  const current = unlocked
+    ? threshold
+    : Math.min(balance.tokensTowardReward, threshold);
+  const percent =
+    threshold <= 0 ? 0 : Math.min(100, Math.round((current / threshold) * 100));
+
+  return {
+    current,
+    threshold,
+    percent,
+    unlocked,
+    discountPercent,
+    ruleActive,
+  };
+}

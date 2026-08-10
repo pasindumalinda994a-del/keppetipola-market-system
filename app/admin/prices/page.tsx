@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,11 +22,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { fillTemplate, translateVegetableName } from "@/lib/i18n/messages";
 import { formatLKR, formatRelativeTime } from "@/lib/format";
 import { marketPrices as seed } from "@/lib/mock";
 import type { MarketPrice } from "@/types";
 
 export default function AdminPricesPage() {
+  const { t, locale } = useLocale();
   const [prices, setPrices] = useState<MarketPrice[]>(seed);
   const [selected, setSelected] = useState<MarketPrice | null>(null);
   const [open, setOpen] = useState(false);
@@ -56,38 +59,40 @@ export default function AdminPricesPage() {
       )
     );
     setOpen(false);
-    toast.success("Price corrected (exceptional override)");
+    toast.success(t("admin.prices.corrected"));
   }
 
   return (
     <div>
       <PageHeader
-        title="Market Prices"
-        description="Auto-generated from deals. Manual correction only in exceptional cases."
+        title={t("admin.prices.title")}
+        description={t("admin.prices.description")}
       />
       <div className="overflow-hidden rounded-lg bg-card">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Vegetable</TableHead>
-              <TableHead>Lowest</TableHead>
-              <TableHead>Highest</TableHead>
-              <TableHead>Average</TableHead>
-              <TableHead>Updated</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("common.vegetable")}</TableHead>
+              <TableHead>{t("common.lowest")}</TableHead>
+              <TableHead>{t("common.highest")}</TableHead>
+              <TableHead>{t("common.average")}</TableHead>
+              <TableHead>{t("common.updated")}</TableHead>
+              <TableHead className="text-right">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {prices.map((p) => (
               <TableRow key={p.vegetableId}>
-                <TableCell className="font-medium">{p.vegetableName}</TableCell>
-                <TableCell>{formatLKR(p.lowest)}</TableCell>
-                <TableCell>{formatLKR(p.highest)}</TableCell>
+                <TableCell className="font-medium">
+                  {translateVegetableName(p.vegetableName, t)}
+                </TableCell>
+                <TableCell>{formatLKR(p.lowest, locale)}</TableCell>
+                <TableCell>{formatLKR(p.highest, locale)}</TableCell>
                 <TableCell className="font-semibold text-price-foreground">
-                  {formatLKR(p.average)}
+                  {formatLKR(p.average, locale)}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {formatRelativeTime(p.lastUpdated)}
+                  {formatRelativeTime(p.lastUpdated, locale)}
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
@@ -95,7 +100,7 @@ export default function AdminPricesPage() {
                     variant="outline"
                     onClick={() => openCorrect(p)}
                   >
-                    Correct
+                    {t("admin.prices.correct")}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -108,12 +113,16 @@ export default function AdminPricesPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Correct price{selected ? ` — ${selected.vegetableName}` : ""}
+              {selected
+                ? fillTemplate(t("admin.prices.correctDesc"), {
+                    name: translateVegetableName(selected.vegetableName, t),
+                  })
+                : t("admin.prices.correctTitle")}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="lowest">Lowest</Label>
+              <Label htmlFor="lowest">{t("common.lowest")}</Label>
               <Input
                 id="lowest"
                 name="lowest"
@@ -123,7 +132,7 @@ export default function AdminPricesPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="highest">Highest</Label>
+              <Label htmlFor="highest">{t("common.highest")}</Label>
               <Input
                 id="highest"
                 name="highest"
@@ -133,7 +142,7 @@ export default function AdminPricesPage() {
               />
             </div>
             <DialogFooter>
-              <Button type="submit">Save correction</Button>
+              <Button type="submit">{t("admin.prices.saveCorrection")}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

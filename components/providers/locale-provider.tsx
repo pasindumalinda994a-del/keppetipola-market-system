@@ -22,6 +22,15 @@ type LocaleContextValue = {
   t: (key: MessageKey) => string;
 };
 
+const fallbackT = (key: MessageKey) => translate("en", key);
+
+const fallbackValue: LocaleContextValue = {
+  locale: "en",
+  setLocale: () => {},
+  toggleLocale: () => {},
+  t: fallbackT,
+};
+
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 function isLocale(value: string | null): value is Locale {
@@ -64,9 +73,5 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useLocale() {
-  const ctx = useContext(LocaleContext);
-  if (!ctx) {
-    throw new Error("useLocale must be used within LocaleProvider");
-  }
-  return ctx;
+  return useContext(LocaleContext) ?? fallbackValue;
 }

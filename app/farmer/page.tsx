@@ -18,16 +18,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatKg, formatLKR } from "@/lib/format";
+import { translateVegetableName } from "@/lib/i18n/messages";
 import {
   buyingRequests,
   farmerDashboardStats,
   harvests,
+  loyaltyBalances,
   marketPrices,
   offers,
 } from "@/lib/mock";
+import { getMockUser } from "@/lib/mock-auth";
 
 export default function FarmerDashboardPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const farmer = getMockUser("farmer");
+  const farmerLoyaltyTokens = loyaltyBalances
+    .filter((b) => b.farmerId === farmer.id)
+    .reduce((sum, b) => sum + b.tokenCount, 0);
   const topPrices = [...marketPrices].sort((a, b) => b.highest - a.highest).slice(0, 4);
   const recommended = [...buyingRequests]
     .filter((r) => r.status === "Active")
@@ -71,11 +78,25 @@ export default function FarmerDashboardPage() {
         />
         <StatCard
           title={t("farmer.dash.totalEarnings")}
-          value={formatLKR(farmerDashboardStats.totalEarnings)}
+          value={formatLKR(farmerDashboardStats.totalEarnings, locale)}
           change={5.2}
           changeLabel={t("common.thanLastMonth")}
           chartData={[5, 6, 5, 8, 9]}
         />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
+        <div>
+          <p className="text-sm text-muted-foreground">
+            {t("farmer.dash.loyaltyTokens")}
+          </p>
+          <p className="font-heading text-xl font-semibold tabular-nums">
+            {farmerLoyaltyTokens}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/farmer/loyalty">{t("farmer.dash.viewLoyalty")}</Link>
+        </Button>
       </div>
 
       <section className="mt-8">
@@ -143,11 +164,11 @@ export default function FarmerDashboardPage() {
               {recentOffers.map((o) => (
                 <TableRow key={o.id}>
                   <TableCell className="font-medium">{o.traderName}</TableCell>
-                  <TableCell>{o.vegetableName}</TableCell>
+                  <TableCell>{translateVegetableName(o.vegetableName, t)}</TableCell>
                   <TableCell className="font-semibold text-price-foreground">
-                    {formatLKR(o.price)}
+                    {formatLKR(o.price, locale)}
                   </TableCell>
-                  <TableCell>{formatKg(o.quantityKg)}</TableCell>
+                  <TableCell>{formatKg(o.quantityKg, locale)}</TableCell>
                   <TableCell>
                     <StatusBadge status={o.status} />
                   </TableCell>
@@ -183,10 +204,10 @@ export default function FarmerDashboardPage() {
                       href={`/farmer/harvest/${h.id}`}
                       className="hover:underline"
                     >
-                      {h.vegetableName}
+                      {translateVegetableName(h.vegetableName, t)}
                     </Link>
                   </TableCell>
-                  <TableCell>{formatKg(h.quantityKg)}</TableCell>
+                  <TableCell>{formatKg(h.quantityKg, locale)}</TableCell>
                   <TableCell>{h.applications}</TableCell>
                   <TableCell>
                     <StatusBadge status={h.status} />

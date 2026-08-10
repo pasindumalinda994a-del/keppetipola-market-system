@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Award,
   Bell,
   ClipboardList,
   FileText,
@@ -22,6 +23,7 @@ const nav = [
   { href: "/trader/applications", labelKey: "nav.farmerApplications" as const, icon: Users },
   { href: "/trader/orders", labelKey: "nav.purchaseOrders" as const, icon: FileText },
   { href: "/trader/history", labelKey: "nav.purchaseHistory" as const, icon: History },
+  { href: "/trader/loyalty", labelKey: "nav.loyalty" as const, icon: Award },
   { href: "/trader/prices", labelKey: "nav.marketPrices" as const, icon: TrendingUp },
   { href: "/trader/reports", labelKey: "nav.reports" as const, icon: TrendingUp },
   { href: "/trader/notifications", labelKey: "nav.notifications" as const, icon: Bell },

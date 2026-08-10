@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -11,19 +14,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime, formatKg, formatLKR } from "@/lib/format";
+import { translateVegetableName } from "@/lib/i18n/messages";
 import { buyingRequests } from "@/lib/mock";
 
 export default function TraderRequestsPage() {
+  const { t, locale } = useLocale();
   const mine = buyingRequests.filter((r) => r.traderId === "trader-1");
 
   return (
     <div>
       <PageHeader
-        title="Buying Requests"
-        description="Create demand so farmers can apply."
+        title={t("trader.requests.title")}
+        description={t("trader.requests.description")}
         action={
           <Button asChild>
-            <Link href="/trader/requests/new">New Buying Request</Link>
+            <Link href="/trader/requests/new">{t("trader.requests.new")}</Link>
           </Button>
         }
       />
@@ -31,22 +36,24 @@ export default function TraderRequestsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Vegetable</TableHead>
-              <TableHead>Needed Qty</TableHead>
-              <TableHead>Price Range</TableHead>
-              <TableHead>Deadline</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t("common.vegetable")}</TableHead>
+              <TableHead>{t("common.neededQty")}</TableHead>
+              <TableHead>{t("common.priceRange")}</TableHead>
+              <TableHead>{t("common.deadline")}</TableHead>
+              <TableHead>{t("common.status")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {mine.map((r) => (
               <TableRow key={r.id}>
-                <TableCell className="font-medium">{r.vegetableName}</TableCell>
-                <TableCell>{formatKg(r.quantityKg)}</TableCell>
-                <TableCell>
-                  {formatLKR(r.minPrice)}–{formatLKR(r.maxPrice)}
+                <TableCell className="font-medium">
+                  {translateVegetableName(r.vegetableName, t)}
                 </TableCell>
-                <TableCell>{formatDateTime(r.closingTime)}</TableCell>
+                <TableCell>{formatKg(r.quantityKg, locale)}</TableCell>
+                <TableCell>
+                  {formatLKR(r.minPrice, locale)}–{formatLKR(r.maxPrice, locale)}
+                </TableCell>
+                <TableCell>{formatDateTime(r.closingTime, locale)}</TableCell>
                 <TableCell>
                   <StatusBadge status={r.status} />
                 </TableCell>

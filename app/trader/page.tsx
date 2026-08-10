@@ -16,15 +16,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatKg, formatLKR } from "@/lib/format";
+import { translateVegetableName } from "@/lib/i18n/messages";
 import {
   applications,
   buyingRequests,
+  loyaltyBalances,
   purchaseOrders,
   traderDashboardStats,
 } from "@/lib/mock";
+import { getMockUser } from "@/lib/mock-auth";
 
 export default function TraderDashboardPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const trader = getMockUser("trader");
+  const loyaltyFarmers = loyaltyBalances.filter(
+    (b) => b.traderId === trader.id
+  ).length;
 
   return (
     <div>
@@ -61,11 +68,25 @@ export default function TraderDashboardPage() {
         />
         <StatCard
           title={t("trader.dash.todaySpending")}
-          value={formatLKR(traderDashboardStats.todaySpending)}
+          value={formatLKR(traderDashboardStats.todaySpending, locale)}
           change={3.6}
           changeLabel={t("common.thanLastMonth")}
           chartData={[5, 4, 6, 7, 8]}
         />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
+        <div>
+          <p className="text-sm text-muted-foreground">
+            {t("trader.dash.loyaltyFarmers")}
+          </p>
+          <p className="font-heading text-xl font-semibold tabular-nums">
+            {loyaltyFarmers}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/trader/loyalty">{t("trader.dash.viewLoyalty")}</Link>
+        </Button>
       </div>
 
       <section className="mt-8">
@@ -91,8 +112,8 @@ export default function TraderDashboardPage() {
               {applications.slice(0, 4).map((a) => (
                 <TableRow key={a.id}>
                   <TableCell className="font-medium">{a.farmerName}</TableCell>
-                  <TableCell>{a.vegetableName}</TableCell>
-                  <TableCell>{formatKg(a.quantityKg)}</TableCell>
+                  <TableCell>{translateVegetableName(a.vegetableName, t)}</TableCell>
+                  <TableCell>{formatKg(a.quantityKg, locale)}</TableCell>
                   <TableCell>
                     <StatusBadge status={a.status} />
                   </TableCell>
@@ -112,10 +133,12 @@ export default function TraderDashboardPage() {
             .filter((r) => r.traderId === "trader-1")
             .map((r) => (
               <article key={r.id} className="rounded-lg bg-card p-4">
-                <h3 className="font-semibold">{r.vegetableName}</h3>
+                <h3 className="font-semibold">
+                  {translateVegetableName(r.vegetableName, t)}
+                </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {t("trader.dash.need")} {formatKg(r.quantityKg)} ·{" "}
-                  {formatLKR(r.minPrice)}–{formatLKR(r.maxPrice)}
+                  {t("trader.dash.need")} {formatKg(r.quantityKg, locale)} ·{" "}
+                  {formatLKR(r.minPrice, locale)}–{formatLKR(r.maxPrice, locale)}
                 </p>
                 <StatusBadge status={r.status} className="mt-3" />
               </article>
@@ -140,9 +163,9 @@ export default function TraderDashboardPage() {
               {purchaseOrders.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell>{p.farmerName}</TableCell>
-                  <TableCell>{p.vegetableName}</TableCell>
+                  <TableCell>{translateVegetableName(p.vegetableName, t)}</TableCell>
                   <TableCell>
-                    {formatLKR(p.price * p.quantityKg)}
+                    {formatLKR(p.price * p.quantityKg, locale)}
                   </TableCell>
                 </TableRow>
               ))}

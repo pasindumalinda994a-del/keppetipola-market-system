@@ -17,18 +17,23 @@ import {
   chartAxisTick,
   chartMargin,
 } from "@/components/market/chart-ui";
+import { useLocale } from "@/components/providers/locale-provider";
 
 function BarTooltip({
   active,
   payload,
   label,
   valueIsCurrency,
+  amountLabel,
+  quantityLabel,
 }: {
   active?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: readonly any[];
   label?: string | number;
   valueIsCurrency: boolean;
+  amountLabel: string;
+  quantityLabel: string;
 }) {
   if (!active || !payload?.length) return null;
 
@@ -43,7 +48,7 @@ function BarTooltip({
       label={String(label ?? "")}
       items={[
         {
-          name: valueIsCurrency ? "Amount" : "Quantity",
+          name: valueIsCurrency ? amountLabel : quantityLabel,
           value,
           color:
             typeof entry.color === "string" ? entry.color : "var(--primary)",
@@ -66,6 +71,7 @@ export function BarSummaryChart({
   height?: number;
   valueIsCurrency?: boolean;
 }) {
+  const { t } = useLocale();
   const max = Math.max(...data.map((d) => Number(d[dataKey]) || 0), 1);
 
   return (
@@ -100,7 +106,12 @@ export function BarSummaryChart({
             <Tooltip
               cursor={{ fill: "var(--muted)", opacity: 0.45 }}
               content={(props) => (
-                <BarTooltip {...props} valueIsCurrency={valueIsCurrency} />
+                <BarTooltip
+                  {...props}
+                  valueIsCurrency={valueIsCurrency}
+                  amountLabel={t("common.amount")}
+                  quantityLabel={t("common.quantity")}
+                />
               )}
             />
             <Bar dataKey={dataKey} radius={[8, 8, 4, 4]} maxBarSize={44}>

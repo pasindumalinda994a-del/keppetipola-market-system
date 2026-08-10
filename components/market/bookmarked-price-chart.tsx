@@ -17,58 +17,10 @@ import { ChartSegmentedControl } from "@/components/market/chart-ui";
 import { cn } from "@/lib/utils";
 import { vegetables as vegSeed, type PriceHistoryRange } from "@/lib/mock";
 import type { Vegetable } from "@/types";
+import { useLocale } from "@/components/providers/locale-provider";
+import { fillTemplate, type MessageKey, translateVegetableName, vegetableMatchesQuery } from "@/lib/i18n/messages";
 
 const MAX_BOOKMARKS = 5;
-
-const RANGE_OPTIONS: { value: PriceHistoryRange; label: string }[] = [
-  { value: "week", label: "Week" },
-  { value: "month", label: "Month" },
-  { value: "year", label: "Year" },
-];
-
-const CHART_TYPE_OPTIONS: {
-  value: PriceChartType;
-  label: string;
-  icon: typeof ChartLine;
-  title: string;
-}[] = [
-  {
-    value: "line",
-    label: "Line",
-    icon: ChartLine,
-    title: "Best for spotting price movement over time",
-  },
-  {
-    value: "bar",
-    label: "Bar",
-    icon: ChartColumn,
-    title: "Best for comparing prices on each day or month",
-  },
-  {
-    value: "area",
-    label: "Area",
-    icon: ChartArea,
-    title: "Shows how large price swings are over time",
-  },
-];
-
-const METRIC_OPTIONS: { value: PriceChartMetric; label: string }[] = [
-  { value: "average", label: "Avg" },
-  { value: "highest", label: "High" },
-  { value: "lowest", label: "Low" },
-];
-
-const METRIC_LABEL: Record<PriceChartMetric, string> = {
-  average: "average",
-  highest: "highest",
-  lowest: "lowest",
-};
-
-const RANGE_LABEL: Record<PriceHistoryRange, string> = {
-  week: "this week",
-  month: "this month",
-  year: "this year",
-};
 
 function initialVegetables(): Vegetable[] {
   let selected = 0;
@@ -80,7 +32,7 @@ function initialVegetables(): Vegetable[] {
 }
 
 export function BookmarkedPriceChart({
-  title = "Price trend",
+  title,
   height = 340,
   showRangeFilter = false,
   searchQuery = "",
@@ -90,6 +42,7 @@ export function BookmarkedPriceChart({
   showRangeFilter?: boolean;
   searchQuery?: string;
 }) {
+  const { t } = useLocale();
   const [vegs, setVegs] = useState<Vegetable[]>(initialVegetables);
   const [range, setRange] = useState<PriceHistoryRange>("week");
   const [chartType, setChartType] = useState<PriceChartType>("line");
@@ -97,12 +50,62 @@ export function BookmarkedPriceChart({
 
   const query = searchQuery.trim().toLowerCase();
 
+  const rangeOptions: { value: PriceHistoryRange; label: string }[] = [
+    { value: "week", label: t("chart.week") },
+    { value: "month", label: t("chart.month") },
+    { value: "year", label: t("chart.year") },
+  ];
+
+  const chartTypeOptions: {
+    value: PriceChartType;
+    label: string;
+    icon: typeof ChartLine;
+    title: string;
+  }[] = [
+    {
+      value: "line",
+      label: t("chart.line"),
+      icon: ChartLine,
+      title: t("chart.lineHint"),
+    },
+    {
+      value: "bar",
+      label: t("chart.bar"),
+      icon: ChartColumn,
+      title: t("chart.barHint"),
+    },
+    {
+      value: "area",
+      label: t("chart.area"),
+      icon: ChartArea,
+      title: t("chart.areaHint"),
+    },
+  ];
+
+  const metricOptions: { value: PriceChartMetric; label: string }[] = [
+    { value: "average", label: t("chart.avg") },
+    { value: "highest", label: t("chart.high") },
+    { value: "lowest", label: t("chart.low") },
+  ];
+
+  const metricLabelKeys: Record<PriceChartMetric, MessageKey> = {
+    average: "chart.metric.average",
+    highest: "chart.metric.highest",
+    lowest: "chart.metric.lowest",
+  };
+
+  const rangeLabelKeys: Record<PriceHistoryRange, MessageKey> = {
+    week: "chart.range.week",
+    month: "chart.range.month",
+    year: "chart.range.year",
+  };
+
   const visibleVegs = useMemo(
     () =>
       query
-        ? vegs.filter((v) => v.name.toLowerCase().includes(query))
+        ? vegs.filter((v) => vegetableMatchesQuery(v.name, query, t))
         : vegs,
-    [vegs, query]
+    [vegs, query, t]
   );
 
   const bookmarkedAll = useMemo(
@@ -116,15 +119,23 @@ export function BookmarkedPriceChart({
   );
 
   const chartVegetables = useMemo(
-    () => bookmarked.map((v) => ({ id: v.id, name: v.name })),
-    [bookmarked]
+    () =>
+      bookmarked.map((v) => ({
+        id: v.id,
+        name: translateVegetableName(v.name, t),
+      })),
+    [bookmarked, t]
   );
 
   const activeChartHint =
-    CHART_TYPE_OPTIONS.find((o) => o.value === chartType)?.title ?? "";
+    chartTypeOptions.find((o) => o.value === chartType)?.title ?? "";
 
   const chartSummary = showRangeFilter
-    ? `Showing ${METRIC_LABEL[metric]} price ${RANGE_LABEL[range]}. ${activeChartHint}.`
+    ? fillTemplate(t("chart.summary"), {
+        metric: t(metricLabelKeys[metric]),
+        range: t(rangeLabelKeys[range]),
+        hint: activeChartHint,
+      })
     : null;
 
   function toggleBookmark(id: string) {
@@ -134,7 +145,9 @@ export function BookmarkedPriceChart({
     if (!current.bookmarked) {
       const count = vegs.filter((v) => v.bookmarked).length;
       if (count >= MAX_BOOKMARKS) {
-        toast.error(`You can bookmark up to ${MAX_BOOKMARKS} vegetables`);
+        toast.error(
+          fillTemplate(t("chart.bookmarkLimit"), { max: MAX_BOOKMARKS })
+        );
         return;
       }
     }
@@ -146,39 +159,47 @@ export function BookmarkedPriceChart({
     );
   }
 
+  const heading = title ?? t("chart.priceTrend");
+
   return (
     <section className="rounded-2xl bg-card/40 p-4 sm:p-5">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+          <h2 className="text-lg font-semibold tracking-tight">{heading}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {bookmarkedAll.length > 0
-              ? `Watching ${bookmarkedAll.length}/${MAX_BOOKMARKS}: ${bookmarkedAll.map((v) => v.name).join(", ")}`
-              : `Bookmark up to ${MAX_BOOKMARKS} vegetables to compare on the chart.`}
+              ? fillTemplate(t("chart.watching"), {
+                  n: bookmarkedAll.length,
+                  max: MAX_BOOKMARKS,
+                  names: bookmarkedAll
+                    .map((v) => translateVegetableName(v.name, t))
+                    .join(", "),
+                })
+              : fillTemplate(t("chart.bookmarkHint"), { max: MAX_BOOKMARKS })}
           </p>
         </div>
 
         {showRangeFilter ? (
           <div className="flex shrink-0 flex-wrap items-center gap-2">
             <ChartSegmentedControl
-              ariaLabel="Chart type"
+              ariaLabel={t("chart.typeAria")}
               value={chartType}
               onChange={setChartType}
-              options={CHART_TYPE_OPTIONS}
+              options={chartTypeOptions}
             />
             <ChartSegmentedControl
-              ariaLabel="Price metric"
+              ariaLabel={t("chart.metricAria")}
               size="sm"
               value={metric}
               onChange={setMetric}
-              options={METRIC_OPTIONS}
+              options={metricOptions}
             />
             <ChartSegmentedControl
-              ariaLabel="Time range"
+              ariaLabel={t("chart.rangeAria")}
               size="sm"
               value={range}
               onChange={setRange}
-              options={RANGE_OPTIONS}
+              options={rangeOptions}
             />
           </div>
         ) : null}
@@ -186,9 +207,7 @@ export function BookmarkedPriceChart({
 
       <div className="mb-4 flex flex-wrap gap-2">
         {visibleVegs.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No vegetables match your search.
-          </p>
+          <p className="text-sm text-muted-foreground">{t("chart.noMatch")}</p>
         ) : (
           visibleVegs.map((v) => {
             const active = Boolean(v.bookmarked);
@@ -208,7 +227,7 @@ export function BookmarkedPriceChart({
                   className="size-3.5"
                   fill={active ? "currentColor" : "none"}
                 />
-                {v.name}
+                {translateVegetableName(v.name, t)}
               </button>
             );
           })
