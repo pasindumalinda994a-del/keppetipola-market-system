@@ -4,7 +4,7 @@ import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProfileForm } from "@/components/shared/profile-form";
 
-export default function FarmerProfilePage() {
+export default function TraderProfilePage() {
   const { t } = useLocale();
 
   return (

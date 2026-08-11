@@ -62,6 +62,10 @@ async function login(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    if (user.status !== "Active") {
+      return res.status(403).json({ message: "Account is inactive" });
+    }
+
     const token = signToken(user._id);
     return res.json({ user: user.toJSON(), token });
   } catch (err) {
@@ -74,4 +78,64 @@ async function me(req, res) {
   return res.json({ user: req.user.toJSON() });
 }
 
-module.exports = { register, login, me };
+async function updateMe(req, res) {
+  try {
+    const { name, phone, address } = req.body;
+    const user = req.user;
+
+    if (name !== undefined) {
+      if (!String(name).trim()) {
+        return res.status(400).json({ message: "Name is required" });
+      }
+      user.name = String(name).trim();
+    }
+    if (phone !== undefined) {
+      if (!String(phone).trim()) {
+        return res.status(400).json({ message: "Phone is required" });
+      }
+      user.phone = String(phone).trim();
+    }
+    if (address !== undefined) {
+      user.address = String(address).trim();
+    }
+
+    await user.save();
+    return res.json({ user: user.toJSON() });
+  } catch (err) {
+    console.error("updateMe error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
+async function changePassword(req, res) {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Current and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
+    }
+
+    const user = req.user;
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    return res.json({ message: "Password updated" });
+  } catch (err) {
+    console.error("changePassword error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
+module.exports = { register, login, me, updateMe, changePassword };

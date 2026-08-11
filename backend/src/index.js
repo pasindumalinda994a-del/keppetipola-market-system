@@ -5,6 +5,8 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const vegetableRoutes = require("./routes/vegetable.routes");
+const priceRoutes = require("./routes/price.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +39,8 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/vegetables", vegetableRoutes);
+app.use("/api/prices", priceRoutes);
 
 async function start() {
   await connectDB();

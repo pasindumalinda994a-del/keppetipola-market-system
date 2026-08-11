@@ -131,6 +131,8 @@ const en = {
   "common.optionalMessage": "Optional message",
   "common.comingSoon": "Coming soon",
   "common.comingSoonLater": "Coming soon in a later release.",
+  "common.saving": "Saving…",
+  "common.requestFailed": "Request failed. Please try again.",
   "common.showLess": "Show less",
   "common.unitPrice": "Unit price",
   "common.priceRange": "Price Range",
@@ -315,7 +317,12 @@ const en = {
   "farmer.profile.fullName": "Full name",
   "farmer.profile.bankDetails": "Bank details (future)",
   "farmer.profile.newPassword": "New password",
+  "farmer.profile.currentPassword": "Current password",
+  "farmer.profile.confirmPassword": "Confirm new password",
   "farmer.profile.passwordPlaceholder": "Leave blank to keep",
+  "farmer.profile.passwordMismatch": "New passwords do not match",
+  "farmer.profile.currentPasswordRequired":
+    "Enter your current password to set a new one",
   "farmer.profile.save": "Save profile",
   "farmer.profile.saved": "Profile saved",
 
@@ -455,6 +462,12 @@ const en = {
   "admin.users.title": "User Management",
   "admin.users.description": "{count} users in the marketplace.",
   "admin.users.noActivity": "No recent login activity.",
+  "admin.users.noUsers": "No users in this category.",
+  "admin.users.noTransactions": "No transactions yet.",
+  "admin.users.activate": "Activate",
+  "admin.users.deactivate": "Deactivate",
+  "admin.users.activated": "User activated",
+  "admin.users.deactivated": "User deactivated",
 
   // Admin stalls
   "admin.stalls.title": "Stall Management",
@@ -488,6 +501,7 @@ const en = {
   "admin.prices.correctDesc": "Correct price — {name}",
   "admin.prices.saveCorrection": "Save correction",
   "admin.prices.corrected": "Price corrected (exceptional override)",
+  "admin.prices.empty": "No prices yet. Run seed:catalog or add vegetables.",
 
   // Admin reports
   "admin.reports.title": "Reports",
@@ -691,6 +705,8 @@ const si: Record<MessageKey, string> = {
   "common.optionalMessage": "විකල්ප පණිවිඩය",
   "common.comingSoon": "ළඟදීම",
   "common.comingSoonLater": "පසු නිකුතුවකදී ලබා දෙනු ඇත.",
+  "common.saving": "සුරකිමින්…",
+  "common.requestFailed": "ඉල්ලීම අසාර්ථක විය. නැවත උත්සාහ කරන්න.",
   "common.showLess": "අඩුවෙන් පෙන්වන්න",
   "common.unitPrice": "ඒකක මිල",
   "common.priceRange": "මිල පරාසය",
@@ -861,7 +877,12 @@ const si: Record<MessageKey, string> = {
   "farmer.profile.fullName": "සම්පූර්ණ නම",
   "farmer.profile.bankDetails": "බැංකු විස්තර (අනාගත)",
   "farmer.profile.newPassword": "නව මුරපදය",
+  "farmer.profile.currentPassword": "වත්මන් මුරපදය",
+  "farmer.profile.confirmPassword": "නව මුරපදය තහවුරු කරන්න",
   "farmer.profile.passwordPlaceholder": "තබා ගැනීමට හිස්ව තබන්න",
+  "farmer.profile.passwordMismatch": "නව මුරපද නොගැලපේ",
+  "farmer.profile.currentPasswordRequired":
+    "නව මුරපදයක් සැකසීමට වත්මන් මුරපදය ඇතුළත් කරන්න",
   "farmer.profile.save": "පැතිකඩ සුරකින්න",
   "farmer.profile.saved": "පැතිකඩ සුරකින ලදී",
 
@@ -987,6 +1008,12 @@ const si: Record<MessageKey, string> = {
   "admin.users.title": "පරිශීලක කළමනාකරණය",
   "admin.users.description": "වෙළඳපොළේ පරිශීලකයින් {count} ක්.",
   "admin.users.noActivity": "මෑත පිවිසුම් ක්‍රියාකාරකම් නැත.",
+  "admin.users.noUsers": "මෙම කාණ්ඩයේ පරිශීලකයින් නැත.",
+  "admin.users.noTransactions": "ගනුදෙනු තවම නැත.",
+  "admin.users.activate": "සක්‍රිය කරන්න",
+  "admin.users.deactivate": "අක්‍රිය කරන්න",
+  "admin.users.activated": "පරිශීලකයා සක්‍රිය කරන ලදී",
+  "admin.users.deactivated": "පරිශීලකයා අක්‍රිය කරන ලදී",
 
   "admin.stalls.title": "කුටි කළමනාකරණය",
   "admin.stalls.description": "වෙළෙන්දා කුටි අනුමත කර කළමනාකරණය කරන්න.",
@@ -1016,6 +1043,7 @@ const si: Record<MessageKey, string> = {
   "admin.prices.correctDesc": "මිල නිවැරදි කරන්න — {name}",
   "admin.prices.saveCorrection": "නිවැරදි කිරීම සුරකින්න",
   "admin.prices.corrected": "මිල නිවැරදි කරන ලදී (විශේෂ අභිබවා යාම)",
+  "admin.prices.empty": "මිල තවම නැත. seed:catalog ධාවනය කරන්න හෝ එළවළු එකතු කරන්න.",
 
   "admin.reports.title": "වාර්තා",
   "admin.reports.description": "දෛනික, සතිපතා සහ මාසික වෙළඳපල සාරාංශ.",

@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { HeroSlider } from "@/components/marketing/hero-slider";
-import { PriceHighlights } from "@/components/market/price-highlights";
+import { HomePriceHighlights } from "@/components/marketing/home-price-highlights";
 import { MarketDemandHighlights } from "@/components/market/market-demand-highlights";
 import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
-import {
-  announcements,
-  buyingRequests,
-  marketPrices,
-  marketStats,
-} from "@/lib/mock";
+import { announcements, buyingRequests, marketStats } from "@/lib/mock";
 import { formatDate } from "@/lib/format";
 
 export default function HomePage() {
@@ -45,7 +40,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <PriceHighlights prices={marketPrices} />
+      <HomePriceHighlights />
 
       <MarketDemandHighlights requests={buyingRequests} />
 

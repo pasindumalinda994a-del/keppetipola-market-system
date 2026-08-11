@@ -1,7 +1,13 @@
-import type { User, UserRole } from "@/types";
+import type { MarketPrice, User, UserRole, Vegetable } from "@/types";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:5000";
+export function getApiBase(): string {
+  return (
+    process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+    "http://localhost:5000"
+  );
+}
+
+const API_BASE = getApiBase();
 
 export class ApiError extends Error {
   status: number;
@@ -80,3 +86,125 @@ export type RegisterPayload = {
   password: string;
   role: Extract<UserRole, "farmer" | "trader">;
 };
+
+export type UpdateProfilePayload = {
+  name: string;
+  phone: string;
+  address: string;
+};
+
+export type UsersResponse = {
+  users: User[];
+};
+
+export type UserResponse = {
+  user: User;
+};
+
+export type VegetablesResponse = {
+  vegetables: Vegetable[];
+};
+
+export type VegetableResponse = {
+  vegetable: Vegetable;
+};
+
+export type PricesResponse = {
+  prices: MarketPrice[];
+};
+
+export type PriceResponse = {
+  price: MarketPrice;
+};
+
+export function updateProfile(token: string, payload: UpdateProfilePayload) {
+  return apiFetch<UserResponse>("/auth/me", {
+    method: "PATCH",
+    body: payload,
+    token,
+  });
+}
+
+export function changePassword(
+  token: string,
+  payload: { currentPassword: string; newPassword: string }
+) {
+  return apiFetch<{ message: string }>("/auth/me/password", {
+    method: "PATCH",
+    body: payload,
+    token,
+  });
+}
+
+export function fetchUsers(token: string) {
+  return apiFetch<UsersResponse>("/users", { token });
+}
+
+export function fetchUser(token: string, id: string) {
+  return apiFetch<UserResponse>(`/users/${id}`, { token });
+}
+
+export function updateUserStatus(
+  token: string,
+  id: string,
+  status: "Active" | "Inactive"
+) {
+  return apiFetch<UserResponse>(`/users/${id}/status`, {
+    method: "PATCH",
+    body: { status },
+    token,
+  });
+}
+
+export function fetchVegetables() {
+  return apiFetch<VegetablesResponse>("/vegetables");
+}
+
+export function fetchAllVegetables(token: string) {
+  return apiFetch<VegetablesResponse>("/vegetables/all", { token });
+}
+
+export function createVegetable(
+  token: string,
+  body: { name: string; category: string; unit?: string; imageUrl?: string }
+) {
+  return apiFetch<VegetableResponse>("/vegetables", {
+    method: "POST",
+    body,
+    token,
+  });
+}
+
+export function updateVegetable(
+  token: string,
+  id: string,
+  body: Partial<{
+    name: string;
+    category: string;
+    unit: string;
+    status: "Active" | "Inactive";
+    imageUrl: string;
+  }>
+) {
+  return apiFetch<VegetableResponse>(`/vegetables/${id}`, {
+    method: "PATCH",
+    body,
+    token,
+  });
+}
+
+export function fetchPrices() {
+  return apiFetch<PricesResponse>("/prices");
+}
+
+export function updatePrice(
+  token: string,
+  vegetableId: string,
+  body: { lowest: number; highest: number }
+) {
+  return apiFetch<PriceResponse>(`/prices/${vegetableId}`, {
+    method: "PATCH",
+    body,
+    token,
+  });
+}

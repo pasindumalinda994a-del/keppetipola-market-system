@@ -4,8 +4,11 @@ import { useMemo, useState } from "react";
 import { PriceTrendChart } from "@/components/market/price-trend-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatLKR } from "@/lib/format";
-import { getPriceHistory, marketPrices, vegetables } from "@/lib/mock";
+import { useMarketPrices } from "@/lib/hooks/use-market-prices";
+import { useVegetables } from "@/lib/hooks/use-vegetables";
+import { getPriceHistory } from "@/lib/mock";
 import {
   Table,
   TableBody,
@@ -17,17 +20,21 @@ import {
 
 export default function PriceTrendsPage() {
   const [q, setQ] = useState("");
+  const { vegetables, loading: vegLoading } = useVegetables();
+  const { prices, loading: pricesLoading } = useMarketPrices();
 
   const selected = useMemo(() => {
-    if (!q.trim()) return vegetables[0]?.id ?? "veg-1";
+    if (!vegetables.length) return "";
+    if (!q.trim()) return vegetables[0]?.id ?? "";
     const match = vegetables.find((v) =>
       v.name.toLowerCase().includes(q.toLowerCase())
     );
-    return match?.id ?? vegetables[0]?.id ?? "veg-1";
-  }, [q]);
+    return match?.id ?? vegetables[0]?.id ?? "";
+  }, [q, vegetables]);
 
-  const history = getPriceHistory(selected);
-  const current = marketPrices.find((p) => p.vegetableId === selected);
+  const history = selected ? getPriceHistory(selected) : [];
+  const current = prices.find((p) => p.vegetableId === selected);
+  const loading = vegLoading || pricesLoading;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -43,7 +50,9 @@ export default function PriceTrendsPage() {
           className="sm:max-w-xs"
         />
       </div>
-      {current ? (
+      {loading ? (
+        <Skeleton className="mb-4 h-5 w-64" />
+      ) : current ? (
         <p className="mb-4 text-sm text-muted-foreground">
           {current.vegetableName} average today:{" "}
           <span className="font-semibold text-price-foreground">
@@ -51,7 +60,11 @@ export default function PriceTrendsPage() {
           </span>
         </p>
       ) : null}
-      <PriceTrendChart data={history} height={360} />
+      {loading ? (
+        <Skeleton className="h-[360px] w-full" />
+      ) : (
+        <PriceTrendChart data={history} height={360} />
+      )}
       <div className="mt-8 overflow-hidden rounded-xl bg-card">
         <Table>
           <TableHeader>
