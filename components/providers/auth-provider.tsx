@@ -10,9 +10,12 @@ import {
 } from "react";
 import {
   apiFetch,
+  changePassword as changePasswordApi,
   type AuthResponse,
   type MeResponse,
   type RegisterPayload,
+  updateProfile as updateProfileApi,
+  type UpdateProfilePayload,
 } from "@/lib/api";
 import {
   clearStoredAuth,
@@ -28,6 +31,11 @@ type AuthContextValue = {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
   register: (payload: RegisterPayload) => Promise<User>;
+  updateProfile: (payload: UpdateProfilePayload) => Promise<User>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<void>;
   logout: () => void;
 };
 
@@ -109,9 +117,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
+  const updateProfile = useCallback(
+    async (payload: UpdateProfilePayload) => {
+      if (!token) throw new Error("Not authenticated");
+      const data = await updateProfileApi(token, payload);
+      return persist(token, data.user);
+    },
+    [token, persist]
+  );
+
+  const changePassword = useCallback(
+    async (currentPassword: string, newPassword: string) => {
+      if (!token) throw new Error("Not authenticated");
+      await changePasswordApi(token, { currentPassword, newPassword });
+    },
+    [token]
+  );
+
   const value = useMemo(
-    () => ({ user, token, isLoading, login, register, logout }),
-    [user, token, isLoading, login, register, logout]
+    () => ({
+      user,
+      token,
+      isLoading,
+      login,
+      register,
+      updateProfile,
+      changePassword,
+      logout,
+    }),
+    [
+      user,
+      token,
+      isLoading,
+      login,
+      register,
+      updateProfile,
+      changePassword,
+      logout,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

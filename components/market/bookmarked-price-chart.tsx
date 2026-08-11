@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Bookmark,
   ChartArea,
@@ -22,13 +22,17 @@ import { fillTemplate, type MessageKey, translateVegetableName, vegetableMatches
 
 const MAX_BOOKMARKS = 5;
 
-function initialVegetables(): Vegetable[] {
+function buildInitialVegetables(source: Vegetable[]): Vegetable[] {
   let selected = 0;
-  return vegSeed.map((v) => {
+  return source.map((v) => {
     const bookmarked = Boolean(v.bookmarked) && selected < MAX_BOOKMARKS;
     if (bookmarked) selected += 1;
     return { ...v, bookmarked };
   });
+}
+
+function initialVegetables(): Vegetable[] {
+  return buildInitialVegetables(vegSeed);
 }
 
 export function BookmarkedPriceChart({
@@ -36,17 +40,40 @@ export function BookmarkedPriceChart({
   height = 340,
   showRangeFilter = false,
   searchQuery = "",
+  vegetables: vegetablesProp,
 }: {
   title?: string;
   height?: number;
   showRangeFilter?: boolean;
   searchQuery?: string;
+  vegetables?: Vegetable[];
 }) {
   const { t } = useLocale();
-  const [vegs, setVegs] = useState<Vegetable[]>(initialVegetables);
+  const [vegs, setVegs] = useState<Vegetable[]>(() =>
+    vegetablesProp?.length
+      ? buildInitialVegetables(
+          vegetablesProp.map((v, i) => ({
+            ...v,
+            bookmarked: i < 2,
+          }))
+        )
+      : initialVegetables()
+  );
   const [range, setRange] = useState<PriceHistoryRange>("week");
   const [chartType, setChartType] = useState<PriceChartType>("line");
   const [metric, setMetric] = useState<PriceChartMetric>("average");
+
+  useEffect(() => {
+    if (!vegetablesProp?.length) return;
+    setVegs(
+      buildInitialVegetables(
+        vegetablesProp.map((v, i) => ({
+          ...v,
+          bookmarked: i < 2,
+        }))
+      )
+    );
+  }, [vegetablesProp]);
 
   const query = searchQuery.trim().toLowerCase();
 

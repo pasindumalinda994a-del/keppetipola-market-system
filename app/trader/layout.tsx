@@ -55,7 +55,7 @@ export default function TraderLayout({
           mobileNav={mobileNav}
           notificationHref="/trader/notifications"
           notificationGroups={["Applications", "Accepted Offers", "Announcements"]}
-          profileHref="/trader/stall"
+          profileHref="/trader/profile"
         >
           {children}
         </PortalShell>
