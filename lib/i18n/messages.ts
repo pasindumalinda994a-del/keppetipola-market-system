@@ -501,7 +501,7 @@ const en = {
   "admin.prices.correctDesc": "Correct price — {name}",
   "admin.prices.saveCorrection": "Save correction",
   "admin.prices.corrected": "Price corrected (exceptional override)",
-  "admin.prices.empty": "No prices yet. Run seed:catalog or add vegetables.",
+  "admin.prices.empty": "No prices yet. Add vegetables to create price rows.",
 
   // Admin reports
   "admin.reports.title": "Reports",
@@ -1043,7 +1043,7 @@ const si: Record<MessageKey, string> = {
   "admin.prices.correctDesc": "මිල නිවැරදි කරන්න — {name}",
   "admin.prices.saveCorrection": "නිවැරදි කිරීම සුරකින්න",
   "admin.prices.corrected": "මිල නිවැරදි කරන ලදී (විශේෂ අභිබවා යාම)",
-  "admin.prices.empty": "මිල තවම නැත. seed:catalog ධාවනය කරන්න හෝ එළවළු එකතු කරන්න.",
+  "admin.prices.empty": "මිල තවම නැත. මිල පේළි සඳහා එළවළු එකතු කරන්න.",
 
   "admin.reports.title": "වාර්තා",
   "admin.reports.description": "දෛනික, සතිපතා සහ මාසික වෙළඳපල සාරාංශ.",

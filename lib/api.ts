@@ -1,10 +1,7 @@
 import type { MarketPrice, User, UserRole, Vegetable } from "@/types";
 
 export function getApiBase(): string {
-  return (
-    process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
-    "http://localhost:5000"
-  );
+  return process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
 }
 
 const API_BASE = getApiBase();
