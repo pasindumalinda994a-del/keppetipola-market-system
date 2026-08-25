@@ -15,6 +15,7 @@ export type IUser = {
   identityFrontUrl: string;
   identityBackUrl: string;
   taxBillUrl: string;
+  memberId?: string;
   status: AccountStatus;
   rejectionReason: string;
   reviewedAt?: Date;
@@ -73,6 +74,12 @@ const userSchema = new Schema<IUser>(
     taxBillUrl: {
       type: String,
       default: "",
+      trim: true,
+    },
+    memberId: {
+      type: String,
+      unique: true,
+      sparse: true,
       trim: true,
     },
     status: {

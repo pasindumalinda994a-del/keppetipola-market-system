@@ -152,6 +152,7 @@ export interface User {
   identityFrontUrl?: string;
   identityBackUrl?: string;
   taxBillUrl?: string;
+  memberId?: string;
   status: AccountStatus;
   rejectionReason?: string;
   reviewedAt?: string;
@@ -201,7 +202,7 @@ export interface MarketStats {
   vegetablesSoldTons: number;
 }
 
-/** Trader-defined loyalty program: N completed sales unlock a % discount. */
+/** Trader-defined loyalty program: N completed sales unlock a % offer. */
 export interface LoyaltyRule {
   id: string;
   traderId: string;

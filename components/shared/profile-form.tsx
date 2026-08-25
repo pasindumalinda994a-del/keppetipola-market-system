@@ -67,6 +67,12 @@ export function ProfileForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 rounded-lg bg-card p-6">
+      {user.memberId ? (
+        <div className="space-y-2">
+          <Label htmlFor="memberId">{t("common.memberId")}</Label>
+          <Input id="memberId" value={user.memberId} disabled />
+        </div>
+      ) : null}
       <div className="space-y-2">
         <Label htmlFor="name">{t("farmer.profile.fullName")}</Label>
         <Input id="name" name="name" defaultValue={user.name} required />

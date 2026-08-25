@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { User } from "@/database/user.model";
+import { isDuplicateKeyError, nextMemberId } from "@/lib/member-id";
 import {
   assertValidUpload,
   removeRegistrationFiles,
@@ -82,16 +83,30 @@ export async function POST(request: Request) {
     }
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({
-      name,
-      email,
-      phone,
-      password: hashed,
-      role,
-      address,
-      ruralServicesDivision: role === "farmer" ? ruralServicesDivision : "",
-      status: "Pending",
-    });
+    let user = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const memberId = await nextMemberId(role);
+      try {
+        user = await User.create({
+          name,
+          email,
+          phone,
+          password: hashed,
+          role,
+          address,
+          ruralServicesDivision: role === "farmer" ? ruralServicesDivision : "",
+          memberId,
+          status: "Pending",
+        });
+        break;
+      } catch (err) {
+        if (isDuplicateKeyError(err) && attempt === 0) continue;
+        throw err;
+      }
+    }
+    if (!user) {
+      return NextResponse.json({ message: "Server error" }, { status: 500 });
+    }
 
     try {
       const userId = user._id.toString();

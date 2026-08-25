@@ -88,7 +88,10 @@ function RegisterForm() {
   const [identityBack, setIdentityBack] = useState<File | null>(null);
   const [taxBill, setTaxBill] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState<{
+    message: string;
+    memberId?: string;
+  } | null>(null);
   const [showMismatch, setShowMismatch] = useState(false);
 
   const passwordsMatch = password === confirmPassword;
@@ -108,7 +111,7 @@ function RegisterForm() {
     }
     setSubmitting(true);
     try {
-      const message = await register({
+      const data = await register({
         name: name.trim(),
         email: email.trim(),
         phone: phone.trim(),
@@ -121,7 +124,10 @@ function RegisterForm() {
         identityBack,
         taxBill,
       });
-      setSubmittedMessage(message);
+      setSubmitted({
+        message: data.message,
+        memberId: data.user.memberId,
+      });
     } catch (err) {
       const message =
         err instanceof ApiError ? err.message : "Could not create account";
@@ -133,14 +139,20 @@ function RegisterForm() {
 
   const roleLabel = role === "farmer" ? "Farmer" : "Trader";
 
-  if (submittedMessage) {
+  if (submitted) {
     return (
       <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/90 p-6 text-center shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
         <CheckCircle2 className="mx-auto size-10 text-primary" />
         <h1 className="mt-4 font-heading text-2xl font-semibold tracking-tight text-foreground">
           Application submitted
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">{submittedMessage}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{submitted.message}</p>
+        {submitted.memberId ? (
+          <p className="mt-4 rounded-xl bg-muted/70 px-4 py-3 font-mono text-lg font-semibold tracking-wide text-foreground">
+            {role === "farmer" ? "Your farmer ID" : "Your trader ID"}:{" "}
+            {submitted.memberId}
+          </p>
+        ) : null}
         <Button asChild size="lg" className="mt-6 h-11 w-full rounded-xl">
           <Link href="/login">Go to login</Link>
         </Button>

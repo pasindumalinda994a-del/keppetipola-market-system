@@ -139,7 +139,7 @@ export default function AdminUserDetailPage() {
     <div>
       <PageHeader
         title={user.name}
-        description={`${roleLabel(user.role, t)} · ${user.email}`}
+        description={`${roleLabel(user.role, t)}${user.memberId ? ` · ${user.memberId}` : ""} · ${user.email}`}
         action={
           <div className="flex flex-wrap gap-2">
             {isApplicant && (isPending || user.status === "Rejected") ? (
@@ -183,6 +183,12 @@ export default function AdminUserDetailPage() {
         }
       />
       <div className="grid gap-4 rounded-lg bg-card p-6 sm:grid-cols-2 lg:grid-cols-3">
+        {user.memberId ? (
+          <div>
+            <p className="text-sm text-muted-foreground">{t("common.memberId")}</p>
+            <p className="font-mono font-medium">{user.memberId}</p>
+          </div>
+        ) : null}
         <div>
           <p className="text-sm text-muted-foreground">{t("common.phone")}</p>
           <p className="font-medium">{user.phone}</p>

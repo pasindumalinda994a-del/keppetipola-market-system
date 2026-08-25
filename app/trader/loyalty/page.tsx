@@ -133,11 +133,11 @@ export default function TraderLoyaltyPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="discount-percent">
+            <Label htmlFor="offer-percent">
               {t("trader.loyalty.discountPercent")}
             </Label>
             <Input
-              id="discount-percent"
+              id="offer-percent"
               type="number"
               min={0}
               max={100}

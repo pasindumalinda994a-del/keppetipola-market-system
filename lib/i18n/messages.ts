@@ -144,6 +144,7 @@ const en = {
   "common.lastUpdated": "Last Updated",
   "common.ruralServicesDivision": "Rural Services Division",
   "common.documents": "Documents",
+  "common.memberId": "ID",
 
   "auth.pendingApproval": "Your application is awaiting admin approval",
   "auth.rejected": "Your application was rejected",
@@ -299,15 +300,15 @@ const en = {
   // Farmer loyalty
   "farmer.loyalty.title": "Trader Loyalty",
   "farmer.loyalty.description":
-    "Each completed sale with a trader earns 1 token. Reach their threshold to unlock a percentage discount.",
+    "Each completed sale with a trader earns 1 token. Reach their threshold to unlock a percentage offer.",
   "farmer.loyalty.emptyTitle": "No loyalty balances yet",
   "farmer.loyalty.emptyDescription":
     "Complete sales with traders to start earning loyalty tokens.",
   "farmer.loyalty.tokensWithTrader": "{count} tokens with this trader",
   "farmer.loyalty.rewardUnlocked":
-    "Reward unlocked: {percent}% discount on your next deal",
+    "Reward unlocked: {percent}% offer on your next deal",
   "farmer.loyalty.keepTrading":
-    "{remaining} more completed sales to unlock {percent}% off",
+    "{remaining} more completed sales to unlock {percent}% offer",
 
   // Farmer requests
   "farmer.requests.title": "Trader Requests",
@@ -402,12 +403,12 @@ const en = {
   // Trader loyalty
   "trader.loyalty.title": "Loyalty Program",
   "trader.loyalty.description":
-    "Set a token threshold and percentage discount. Farmers earn 1 token per completed sale with you.",
+    "Set a token threshold and percentage offer. Farmers earn 1 token per completed sale with you.",
   "trader.loyalty.ruleTitle": "Your loyalty rule",
   "trader.loyalty.ruleDescription":
-    "When a farmer reaches the threshold, they unlock your discount reward.",
+    "When a farmer reaches the threshold, they unlock your offer reward.",
   "trader.loyalty.tokenThreshold": "Token threshold",
-  "trader.loyalty.discountPercent": "Discount percentage",
+  "trader.loyalty.discountPercent": "Offer percentage",
   "trader.loyalty.programActive": "Program active",
   "trader.loyalty.programActiveDesc":
     "Issue tokens and unlock rewards for farmers who trade with you",
@@ -590,12 +591,12 @@ const en = {
   // Shared loyalty
   "loyalty.tokens": "Tokens",
   "loyalty.threshold": "Threshold",
-  "loyalty.discountPercent": "Discount",
+  "loyalty.discountPercent": "Offer",
   "loyalty.progressLabel": "{current} / {threshold} tokens",
   "loyalty.status.inProgress": "In progress",
   "loyalty.status.rewardReady": "Reward ready",
   "loyalty.status.inactive": "Inactive",
-  "loyalty.discountOff": "{percent}% off",
+  "loyalty.discountOff": "{percent}% offer",
 
   // Language toggle
   "lang.en": "EN",
@@ -739,6 +740,7 @@ const si: Record<MessageKey, string> = {
   "common.lastUpdated": "අවසන් යාවත්කාලීනය",
   "common.ruralServicesDivision": "ග්‍රාමීය සේවා අංශය",
   "common.documents": "ලේඛන",
+  "common.memberId": "අංකය",
 
   "auth.pendingApproval": "ඔබේ අයදුම්පත පරිපාලක අනුමැතිය එනතුරු රැඳී සිටී",
   "auth.rejected": "ඔබේ අයදුම්පත ප්‍රතික්ෂේප කෙරිණි",
@@ -883,15 +885,15 @@ const si: Record<MessageKey, string> = {
 
   "farmer.loyalty.title": "වෙළෙන්දා පක්ෂපාතිත්වය",
   "farmer.loyalty.description":
-    "වෙළෙන්දෙකු සමඟ සෑම සම්පූර්ණ විකුණුමකින්ම ටෝකන් 1 ක් ලැබේ. ඔවුන්ගේ සීමාවට ළඟා වී ප්‍රතිශත වට්ටමක් අගුළු හරින්න.",
+    "වෙළෙන්දෙකු සමඟ සෑම සම්පූර්ණ විකුණුමකින්ම ටෝකන් 1 ක් ලැබේ. ඔවුන්ගේ සීමාවට ළඟා වී ප්‍රතිශත පිරිනැමීමක් අගුළු හරින්න.",
   "farmer.loyalty.emptyTitle": "තවම පක්ෂපාති ශේෂ නැත",
   "farmer.loyalty.emptyDescription":
     "ටෝකන් උපයා ගැනීමට වෙළෙන්දන් සමඟ විකුණුම් සම්පූර්ණ කරන්න.",
   "farmer.loyalty.tokensWithTrader": "මෙම වෙළෙන්දා සමඟ ටෝකන් {count} ක්",
   "farmer.loyalty.rewardUnlocked":
-    "ත්‍යාගය අගුළු හැර ඇත: ඊළඟ ගනුදෙනුවට {percent}% වට්ටම",
+    "ත්‍යාගය අගුළු හැර ඇත: ඊළඟ ගනුදෙනුවට {percent}% පිරිනැමීම",
   "farmer.loyalty.keepTrading":
-    "{percent}% වට්ටම අගුළු හැරීමට තවත් සම්පූර්ණ විකුණුම් {remaining} ක්",
+    "{percent}% පිරිනැමීම අගුළු හැරීමට තවත් සම්පූර්ණ විකුණුම් {remaining} ක්",
 
   "farmer.requests.title": "වෙළෙන්දා ඉල්ලීම්",
   "farmer.requests.description": "ඉහළම මිල අනුව මිලදී ඉල්ලීම් වලට අයදුම් කරන්න.",
@@ -975,12 +977,12 @@ const si: Record<MessageKey, string> = {
 
   "trader.loyalty.title": "පක්ෂපාති වැඩසටහන",
   "trader.loyalty.description":
-    "ටෝකන් සීමාවක් සහ ප්‍රතිශත වට්ටමක් සකසන්න. ගොවීන් ඔබ සමඟ සෑම සම්පූර්ණ විකුණුමකින්ම ටෝකන් 1 ක් ලබයි.",
+    "ටෝකන් සීමාවක් සහ ප්‍රතිශත පිරිනැමීමක් සකසන්න. ගොවීන් ඔබ සමඟ සෑම සම්පූර්ණ විකුණුමකින්ම ටෝකන් 1 ක් ලබයි.",
   "trader.loyalty.ruleTitle": "ඔබේ පක්ෂපාති නීතිය",
   "trader.loyalty.ruleDescription":
-    "ගොවියෙකු සීමාවට ළඟා වූ විට ඔබේ වට්ටම් ත්‍යාගය අගුළු හැරේ.",
+    "ගොවියෙකු සීමාවට ළඟා වූ විට ඔබේ පිරිනැමීම් ත්‍යාගය අගුළු හැරේ.",
   "trader.loyalty.tokenThreshold": "ටෝකන් සීමාව",
-  "trader.loyalty.discountPercent": "වට්ටම් ප්‍රතිශතය",
+  "trader.loyalty.discountPercent": "පිරිනැමීම් ප්‍රතිශතය",
   "trader.loyalty.programActive": "වැඩසටහන සක්‍රියයි",
   "trader.loyalty.programActiveDesc":
     "ඔබ සමඟ වෙළඳාම් කරන ගොවීන්ට ටෝකන් නිකුත් කර ත්‍යාග අගුළු හරින්න",
@@ -1147,12 +1149,12 @@ const si: Record<MessageKey, string> = {
 
   "loyalty.tokens": "ටෝකන්",
   "loyalty.threshold": "සීමාව",
-  "loyalty.discountPercent": "වට්ටම",
+  "loyalty.discountPercent": "පිරිනැමීම",
   "loyalty.progressLabel": "ටෝකන් {current} / {threshold}",
   "loyalty.status.inProgress": "ප්‍රගතියේ",
   "loyalty.status.rewardReady": "ත්‍යාගය සූදානම්",
   "loyalty.status.inactive": "අක්‍රිය",
-  "loyalty.discountOff": "{percent}% වට්ටම",
+  "loyalty.discountOff": "{percent}% පිරිනැමීම",
 
   "lang.en": "EN",
   "lang.si": "සිංහල",
