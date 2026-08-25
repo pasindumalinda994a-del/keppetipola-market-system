@@ -9,7 +9,10 @@ export type Status =
   | "Active"
   | "Closed"
   | "Published"
-  | "Draft";
+  | "Draft"
+  | "Rejected";
+
+export type AccountStatus = "Pending" | "Active" | "Inactive" | "Rejected";
 
 export type QualityGrade = "A" | "B" | "C";
 
@@ -145,7 +148,13 @@ export interface User {
   phone: string;
   role: UserRole;
   address: string;
-  status: Status;
+  ruralServicesDivision?: string;
+  identityFrontUrl?: string;
+  identityBackUrl?: string;
+  taxBillUrl?: string;
+  status: AccountStatus;
+  rejectionReason?: string;
+  reviewedAt?: string;
   joinedAt: string;
 }
 

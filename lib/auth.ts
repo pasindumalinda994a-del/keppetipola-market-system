@@ -34,14 +34,23 @@ export function clearStoredAuth(): void {
   localStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
-/** Normalize API user so joinedAt is always a string. */
+function toIso(value: string | Date | undefined): string | undefined {
+  if (!value) return undefined;
+  if (typeof value === "string") return value;
+  return new Date(value).toISOString();
+}
+
+/** Normalize API user so dates are always strings. */
 export function normalizeUser(user: User): User {
   return {
     ...user,
     address: user.address ?? "",
-    joinedAt:
-      typeof user.joinedAt === "string"
-        ? user.joinedAt
-        : new Date(user.joinedAt as unknown as string).toISOString(),
+    ruralServicesDivision: user.ruralServicesDivision ?? "",
+    identityFrontUrl: user.identityFrontUrl ?? "",
+    identityBackUrl: user.identityBackUrl ?? "",
+    taxBillUrl: user.taxBillUrl ?? "",
+    rejectionReason: user.rejectionReason ?? "",
+    joinedAt: toIso(user.joinedAt) ?? new Date().toISOString(),
+    reviewedAt: toIso(user.reviewedAt),
   };
 }

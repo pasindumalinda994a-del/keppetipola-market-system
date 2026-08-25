@@ -4,12 +4,15 @@ import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { RegistrationDocumentPreview } from "@/components/admin/registration-document-preview";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -22,7 +25,7 @@ import { ApiError, fetchUser, updateUserStatus } from "@/lib/api";
 import { formatDate, formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName, type MessageKey } from "@/lib/i18n/messages";
 import { sales, systemLogs, transactions } from "@/lib/mock";
-import type { User, UserRole } from "@/types";
+import type { AccountStatus, User, UserRole } from "@/types";
 
 function roleLabel(role: UserRole, t: (key: MessageKey) => string) {
   if (role === "farmer") return t("common.farmer");
@@ -39,6 +42,7 @@ export default function AdminUserDetailPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [notFoundUser, setNotFoundUser] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   useEffect(() => {
     if (!token || !id) return;
@@ -49,7 +53,10 @@ export default function AdminUserDetailPage() {
       setLoading(true);
       try {
         const data = await fetchUser(token!, id);
-        if (!cancelled) setUser(data.user);
+        if (!cancelled) {
+          setUser(data.user);
+          setRejectionReason(data.user.rejectionReason || "");
+        }
       } catch (err) {
         if (!cancelled) {
           if (err instanceof ApiError && err.status === 404) {
@@ -91,19 +98,34 @@ export default function AdminUserDetailPage() {
       txn.traderName.includes(user.name.split(" ")[0])
   );
   const activity = systemLogs.filter((l) => l.user === user.email);
+  const isApplicant = user.role === "farmer" || user.role === "trader";
+  const isPending = user.status === "Pending";
+  const hasDocuments = Boolean(
+    user.identityFrontUrl || user.identityBackUrl || user.taxBillUrl
+  );
 
-  async function toggleStatus() {
+  async function setStatus(nextStatus: AccountStatus) {
     if (!token || !user) return;
-    const nextStatus = user.status === "Active" ? "Inactive" : "Active";
     setUpdating(true);
     try {
-      const data = await updateUserStatus(token, user.id, nextStatus);
-      setUser(data.user);
-      toast.success(
-        nextStatus === "Active"
-          ? t("admin.users.activated")
-          : t("admin.users.deactivated")
+      const data = await updateUserStatus(
+        token,
+        user.id,
+        nextStatus,
+        nextStatus === "Rejected" ? rejectionReason : undefined
       );
+      setUser(data.user);
+      if (nextStatus === "Active" && (user.status === "Pending" || user.status === "Rejected")) {
+        toast.success(t("admin.users.approved"));
+      } else if (nextStatus === "Rejected") {
+        toast.success(t("admin.users.rejected"));
+      } else {
+        toast.success(
+          nextStatus === "Active"
+            ? t("admin.users.activated")
+            : t("admin.users.deactivated")
+        );
+      }
     } catch (err) {
       toast.error(
         err instanceof ApiError ? err.message : t("common.requestFailed")
@@ -119,31 +141,68 @@ export default function AdminUserDetailPage() {
         title={user.name}
         description={`${roleLabel(user.role, t)} · ${user.email}`}
         action={
-          <div className="flex gap-2">
-            <Button
-              variant={user.status === "Active" ? "destructive" : "default"}
-              onClick={toggleStatus}
-              disabled={updating}
-            >
-              {user.status === "Active"
-                ? t("admin.users.deactivate")
-                : t("admin.users.activate")}
-            </Button>
+          <div className="flex flex-wrap gap-2">
+            {isApplicant && (isPending || user.status === "Rejected") ? (
+              <Button
+                onClick={() => void setStatus("Active")}
+                disabled={updating}
+              >
+                {t("admin.users.approve")}
+              </Button>
+            ) : null}
+            {isApplicant && isPending ? (
+              <Button
+                variant="destructive"
+                onClick={() => void setStatus("Rejected")}
+                disabled={updating}
+              >
+                {t("admin.users.reject")}
+              </Button>
+            ) : null}
+            {user.status === "Active" ? (
+              <Button
+                variant="destructive"
+                onClick={() => void setStatus("Inactive")}
+                disabled={updating}
+              >
+                {t("admin.users.deactivate")}
+              </Button>
+            ) : null}
+            {user.status === "Inactive" ? (
+              <Button
+                onClick={() => void setStatus("Active")}
+                disabled={updating}
+              >
+                {t("admin.users.activate")}
+              </Button>
+            ) : null}
             <Button variant="outline" asChild>
               <Link href="/admin/users">{t("common.back")}</Link>
             </Button>
           </div>
         }
       />
-      <div className="grid gap-4 rounded-lg bg-card p-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 rounded-lg bg-card p-6 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <p className="text-sm text-muted-foreground">{t("common.phone")}</p>
           <p className="font-medium">{user.phone}</p>
         </div>
         <div>
+          <p className="text-sm text-muted-foreground">{t("common.email")}</p>
+          <p className="font-medium">{user.email}</p>
+        </div>
+        <div>
           <p className="text-sm text-muted-foreground">{t("common.address")}</p>
           <p className="font-medium">{user.address || "—"}</p>
         </div>
+        {user.role === "farmer" ? (
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {t("common.ruralServicesDivision")}
+            </p>
+            <p className="font-medium">{user.ruralServicesDivision || "—"}</p>
+          </div>
+        ) : null}
         <div>
           <p className="text-sm text-muted-foreground">{t("common.joined")}</p>
           <p className="font-medium">{formatDate(user.joinedAt, locale)}</p>
@@ -152,7 +211,74 @@ export default function AdminUserDetailPage() {
           <p className="text-sm text-muted-foreground">{t("common.status")}</p>
           <StatusBadge status={user.status} className="mt-1" />
         </div>
+        {user.reviewedAt ? (
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {t("admin.users.reviewedAt")}
+            </p>
+            <p className="font-medium">{formatDate(user.reviewedAt, locale)}</p>
+          </div>
+        ) : null}
+        {user.status === "Rejected" && user.rejectionReason ? (
+          <div className="sm:col-span-2">
+            <p className="text-sm text-muted-foreground">
+              {t("admin.users.rejectionReason")}
+            </p>
+            <p className="font-medium">{user.rejectionReason}</p>
+          </div>
+        ) : null}
       </div>
+
+      {isApplicant && isPending ? (
+        <div className="mt-4 space-y-2 rounded-lg bg-card p-6">
+          <Label htmlFor="rejectionReason">
+            {t("admin.users.rejectionReason")}
+          </Label>
+          <Textarea
+            id="rejectionReason"
+            value={rejectionReason}
+            onChange={(e) => setRejectionReason(e.target.value)}
+            placeholder={t("admin.users.rejectionReasonPlaceholder")}
+          />
+        </div>
+      ) : null}
+
+      {isApplicant ? (
+        <section className="mt-8">
+          <h2 className="mb-3 text-lg font-semibold">
+            {t("admin.users.documents")}
+          </h2>
+          {token && hasDocuments ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              <RegistrationDocumentPreview
+                token={token}
+                userId={user.id}
+                kind="identityFront"
+                label={t("admin.users.identityFront")}
+                hasFile={Boolean(user.identityFrontUrl)}
+              />
+              <RegistrationDocumentPreview
+                token={token}
+                userId={user.id}
+                kind="identityBack"
+                label={t("admin.users.identityBack")}
+                hasFile={Boolean(user.identityBackUrl)}
+              />
+              <RegistrationDocumentPreview
+                token={token}
+                userId={user.id}
+                kind="taxBill"
+                label={t("admin.users.taxBill")}
+                hasFile={Boolean(user.taxBillUrl)}
+              />
+            </div>
+          ) : (
+            <p className="rounded-lg bg-card px-4 py-6 text-sm text-muted-foreground">
+              {t("admin.users.noDocuments")}
+            </p>
+          )}
+        </section>
+      ) : null}
 
       <section className="mt-8">
         <h2 className="mb-3 text-lg font-semibold">{t("common.activity")}</h2>

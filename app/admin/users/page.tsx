@@ -28,17 +28,10 @@ function roleLabel(role: UserRole, t: (key: MessageKey) => string) {
   return t("common.admins");
 }
 
-function UserTable({
-  role,
-  users,
-}: {
-  role: UserRole;
-  users: User[];
-}) {
+function UserTable({ users }: { users: User[] }) {
   const { t } = useLocale();
-  const rows = users.filter((u) => u.role === role);
 
-  if (rows.length === 0) {
+  if (users.length === 0) {
     return (
       <p className="rounded-lg bg-card px-4 py-8 text-center text-sm text-muted-foreground">
         {t("admin.users.noUsers")}
@@ -58,7 +51,7 @@ function UserTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((u) => (
+          {users.map((u) => (
             <TableRow key={u.id}>
               <TableCell className="font-medium">{u.name}</TableCell>
               <TableCell>{roleLabel(u.role, t)}</TableCell>
@@ -117,8 +110,17 @@ export default function AdminUsersPage() {
   const filtered = useMemo(() => {
     if (!q.trim()) return users;
     const query = q.toLowerCase();
-    return users.filter((u) => u.name.toLowerCase().includes(query));
+    return users.filter(
+      (u) =>
+        u.name.toLowerCase().includes(query) ||
+        u.email.toLowerCase().includes(query)
+    );
   }, [q, users]);
+
+  const pending = filtered.filter(
+    (u) =>
+      u.status === "Pending" && (u.role === "farmer" || u.role === "trader")
+  );
 
   return (
     <div>
@@ -146,20 +148,27 @@ export default function AdminUsersPage() {
           {error}
         </p>
       ) : (
-        <Tabs defaultValue="farmer">
+        <Tabs defaultValue={pending.length > 0 ? "pending" : "farmer"}>
           <TabsList>
+            <TabsTrigger value="pending">
+              {t("admin.users.pending")}
+              {pending.length > 0 ? ` (${pending.length})` : ""}
+            </TabsTrigger>
             <TabsTrigger value="farmer">{t("common.farmers")}</TabsTrigger>
             <TabsTrigger value="trader">{t("common.traders")}</TabsTrigger>
             <TabsTrigger value="admin">{t("common.admins")}</TabsTrigger>
           </TabsList>
+          <TabsContent value="pending" className="mt-4">
+            <UserTable users={pending} />
+          </TabsContent>
           <TabsContent value="farmer" className="mt-4">
-            <UserTable role="farmer" users={filtered} />
+            <UserTable users={filtered.filter((u) => u.role === "farmer")} />
           </TabsContent>
           <TabsContent value="trader" className="mt-4">
-            <UserTable role="trader" users={filtered} />
+            <UserTable users={filtered.filter((u) => u.role === "trader")} />
           </TabsContent>
           <TabsContent value="admin" className="mt-4">
-            <UserTable role="admin" users={filtered} />
+            <UserTable users={filtered.filter((u) => u.role === "admin")} />
           </TabsContent>
         </Tabs>
       )}

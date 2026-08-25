@@ -30,14 +30,14 @@ export default function AuthLayout({
         style={{ background: "rgba(15, 15, 15, 0.06)" }}
       />
 
-      <header className="mb-8 flex w-full max-w-md flex-col items-center text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <header className="mb-8 flex w-full max-w-2xl flex-col items-center text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
         <BrandLogo href="/" size="xl" priority />
         <p className="mt-3 text-sm text-muted-foreground">
           Wholesale prices &amp; demand for farmers and traders
         </p>
       </header>
 
-      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both [animation-delay:80ms]">
+      <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both [animation-delay:80ms]">
         {children}
       </div>
     </div>

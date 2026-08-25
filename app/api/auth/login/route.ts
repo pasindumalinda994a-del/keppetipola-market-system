@@ -33,6 +33,25 @@ export async function POST(request: Request) {
       );
     }
 
+    if (user.status === "Pending") {
+      return NextResponse.json(
+        { message: "Your application is awaiting admin approval" },
+        { status: 403 }
+      );
+    }
+
+    if (user.status === "Rejected") {
+      const reason = user.rejectionReason?.trim();
+      return NextResponse.json(
+        {
+          message: reason
+            ? `Your application was rejected: ${reason}`
+            : "Your application was rejected",
+        },
+        { status: 403 }
+      );
+    }
+
     if (user.status !== "Active") {
       return NextResponse.json(
         { message: "Account is inactive" },

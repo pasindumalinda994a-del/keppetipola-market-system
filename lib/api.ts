@@ -1,4 +1,4 @@
-import type { MarketPrice, User, UserRole, Vegetable } from "@/types";
+import type { AccountStatus, MarketPrice, User, UserRole, Vegetable } from "@/types";
 
 export function getApiBase(): string {
   return process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
@@ -76,13 +76,70 @@ export type MeResponse = {
   user: User;
 };
 
+export type RegisterResponse = {
+  user: User;
+  message: string;
+};
+
 export type RegisterPayload = {
   name: string;
   email: string;
   phone: string;
   password: string;
   role: Extract<UserRole, "farmer" | "trader">;
+  address: string;
+  ruralServicesDivision?: string;
+  identityFront: File;
+  identityBack: File;
+  taxBill: File;
 };
+
+export async function registerAccount(
+  payload: RegisterPayload
+): Promise<RegisterResponse> {
+  const form = new FormData();
+  form.set("name", payload.name);
+  form.set("email", payload.email);
+  form.set("phone", payload.phone);
+  form.set("password", payload.password);
+  form.set("role", payload.role);
+  form.set("address", payload.address);
+  if (payload.ruralServicesDivision) {
+    form.set("ruralServicesDivision", payload.ruralServicesDivision);
+  }
+  form.set("identityFront", payload.identityFront);
+  form.set("identityBack", payload.identityBack);
+  form.set("taxBill", payload.taxBill);
+
+  const res = await fetch(`${API_BASE}/api/auth/register`, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    body: form,
+  });
+
+  let data: unknown = null;
+  const text = await res.text();
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: text };
+    }
+  }
+
+  if (!res.ok) {
+    const message =
+      data &&
+      typeof data === "object" &&
+      "message" in data &&
+      typeof (data as { message: unknown }).message === "string"
+        ? (data as { message: string }).message
+        : "Request failed";
+    throw new ApiError(message, res.status);
+  }
+
+  return data as RegisterResponse;
+}
 
 export type UpdateProfilePayload = {
   name: string;
@@ -141,14 +198,42 @@ export function fetchUser(token: string, id: string) {
   return apiFetch<UserResponse>(`/users/${id}`, { token });
 }
 
+export async function fetchUserDocument(
+  token: string,
+  userId: string,
+  kind: "identityFront" | "identityBack" | "taxBill"
+): Promise<{ blob: Blob; contentType: string }> {
+  const res = await fetch(`${API_BASE}/api/users/${userId}/documents/${kind}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    let message = "Document not found";
+    try {
+      const data = (await res.json()) as { message?: string };
+      if (data.message) message = data.message;
+    } catch {
+      // ignore parse errors
+    }
+    throw new ApiError(message, res.status);
+  }
+
+  const contentType = res.headers.get("content-type") || "application/octet-stream";
+  const blob = await res.blob();
+  return { blob, contentType };
+}
+
 export function updateUserStatus(
   token: string,
   id: string,
-  status: "Active" | "Inactive"
+  status: AccountStatus,
+  rejectionReason?: string
 ) {
   return apiFetch<UserResponse>(`/users/${id}/status`, {
     method: "PATCH",
-    body: { status },
+    body: { status, rejectionReason },
     token,
   });
 }

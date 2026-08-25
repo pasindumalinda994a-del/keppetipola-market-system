@@ -16,6 +16,7 @@ const statusStyles: Record<Status, string> = {
   Closed: "bg-muted text-muted-foreground border-border",
   Published: "bg-primary/15 text-primary border-primary/20",
   Draft: "bg-muted text-muted-foreground border-border",
+  Rejected: "bg-red-100 text-red-800 border-red-200",
 };
 
 export function StatusBadge({
