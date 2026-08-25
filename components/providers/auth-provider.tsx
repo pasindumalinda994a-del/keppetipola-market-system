@@ -11,6 +11,7 @@ import {
 import {
   apiFetch,
   changePassword as changePasswordApi,
+  registerAccount,
   type AuthResponse,
   type MeResponse,
   type RegisterPayload,
@@ -30,7 +31,7 @@ type AuthContextValue = {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
-  register: (payload: RegisterPayload) => Promise<User>;
+  register: (payload: RegisterPayload) => Promise<string>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<User>;
   changePassword: (
     currentPassword: string,
@@ -100,16 +101,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [persist]
   );
 
-  const register = useCallback(
-    async (payload: RegisterPayload) => {
-      const data = await apiFetch<AuthResponse>("/auth/register", {
-        method: "POST",
-        body: payload,
-      });
-      return persist(data.token, data.user);
-    },
-    [persist]
-  );
+  const register = useCallback(async (payload: RegisterPayload) => {
+    const data = await registerAccount(payload);
+    return data.message;
+  }, []);
 
   const logout = useCallback(() => {
     clearStoredAuth();

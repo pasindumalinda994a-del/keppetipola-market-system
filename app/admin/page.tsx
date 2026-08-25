@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { fetchUsers } from "@/lib/api";
 import { formatKg, formatLKR, formatRelativeTime } from "@/lib/format";
 import { statusMessageKeys, translateVegetableName } from "@/lib/i18n/messages";
 import {
@@ -22,13 +25,34 @@ import {
   stalls,
   systemLogs,
   transactions,
-  users,
 } from "@/lib/mock";
+import type { User } from "@/types";
 
 export default function AdminDashboardPage() {
   const { t, locale } = useLocale();
+  const { token } = useAuth();
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    fetchUsers(token)
+      .then((data) => {
+        if (!cancelled) setUsers(data.users);
+      })
+      .catch(() => {
+        if (!cancelled) setUsers([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
   const pendingFarmers = users.filter(
     (u) => u.role === "farmer" && u.status === "Pending"
+  ).length;
+  const pendingTraders = users.filter(
+    (u) => u.role === "trader" && u.status === "Pending"
   ).length;
   const pendingStalls = stalls.filter((s) => s.status === "Pending").length;
 
@@ -83,7 +107,7 @@ export default function AdminDashboardPage() {
           </article>
           <article className="rounded-lg bg-card p-4">
             <p className="text-sm text-muted-foreground">{t("common.traders")}</p>
-            <p className="mt-1 text-2xl font-semibold">0</p>
+            <p className="mt-1 text-2xl font-semibold">{pendingTraders}</p>
             <Button variant="link" className="px-0" asChild>
               <Link href="/admin/users">{t("common.review")}</Link>
             </Button>

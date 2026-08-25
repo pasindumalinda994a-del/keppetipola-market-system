@@ -35,6 +35,10 @@ yarn-error.log*
 !.env.example
 !**/.env.example
 
+# user registration documents (NIC, tax bills)
+/uploads
+
+
 
 # vercel
 .vercel

@@ -10,6 +10,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-border/80 bg-card/90 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+    <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/90 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
           Welcome back
@@ -61,9 +62,8 @@ export default function LoginPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}

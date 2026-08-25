@@ -2,6 +2,8 @@ import mongoose, { Schema, type HydratedDocument, type Model } from "mongoose";
 
 export type UserRole = "farmer" | "trader" | "admin";
 
+export type AccountStatus = "Pending" | "Active" | "Inactive" | "Rejected";
+
 export type IUser = {
   name: string;
   email: string;
@@ -9,7 +11,13 @@ export type IUser = {
   password: string;
   role: UserRole;
   address: string;
-  status: string;
+  ruralServicesDivision: string;
+  identityFrontUrl: string;
+  identityBackUrl: string;
+  taxBillUrl: string;
+  status: AccountStatus;
+  rejectionReason: string;
+  reviewedAt?: Date;
   joinedAt: Date;
 };
 
@@ -47,9 +55,38 @@ const userSchema = new Schema<IUser>(
       default: "",
       trim: true,
     },
+    ruralServicesDivision: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    identityFrontUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    identityBackUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    taxBillUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     status: {
       type: String,
-      default: "Active",
+      enum: ["Pending", "Active", "Inactive", "Rejected"],
+      default: "Pending",
+    },
+    rejectionReason: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    reviewedAt: {
+      type: Date,
     },
     joinedAt: {
       type: Date,
@@ -72,8 +109,10 @@ const userSchema = new Schema<IUser>(
 
 export type UserDocument = HydratedDocument<IUser>;
 
-export const User: Model<IUser> =
-  (mongoose.models.User as Model<IUser>) ||
-  mongoose.model<IUser>("User", userSchema);
+if (mongoose.models.User) {
+  mongoose.deleteModel("User");
+}
+
+export const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 
 export default User;
