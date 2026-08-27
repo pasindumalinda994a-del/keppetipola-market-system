@@ -15,6 +15,7 @@ import {
   type AuthResponse,
   type MeResponse,
   type RegisterPayload,
+  type RegisterResponse,
   updateProfile as updateProfileApi,
   type UpdateProfilePayload,
 } from "@/lib/api";
@@ -31,7 +32,7 @@ type AuthContextValue = {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
-  register: (payload: RegisterPayload) => Promise<string>;
+  register: (payload: RegisterPayload) => Promise<RegisterResponse>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<User>;
   changePassword: (
     currentPassword: string,
@@ -102,8 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const register = useCallback(async (payload: RegisterPayload) => {
-    const data = await registerAccount(payload);
-    return data.message;
+    return registerAccount(payload);
   }, []);
 
   const logout = useCallback(() => {

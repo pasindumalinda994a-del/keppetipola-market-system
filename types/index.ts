@@ -51,6 +51,7 @@ export interface BuyingRequest {
   vegetableId: string;
   vegetableName: string;
   quantityKg: number;
+  remainingKg?: number;
   minPrice: number;
   maxPrice: number;
   preferredGrade: QualityGrade;
@@ -64,9 +65,11 @@ export interface BuyingRequest {
 export interface Harvest {
   id: string;
   farmerId: string;
+  farmerName?: string;
   vegetableId: string;
   vegetableName: string;
   quantityKg: number;
+  remainingKg?: number;
   qualityGrade: QualityGrade;
   harvestDate: string;
   expectedDelivery: string;
@@ -78,10 +81,14 @@ export interface Harvest {
 
 export interface Offer {
   id: string;
-  harvestId: string;
+  source?: "harvest" | "application";
+  harvestId?: string;
+  applicationId?: string;
+  requestId?: string;
   traderId: string;
   traderName: string;
   farmerId: string;
+  farmerName?: string;
   vegetableName: string;
   price: number;
   quantityKg: number;
@@ -98,10 +105,15 @@ export interface Sale {
   traderId: string;
   traderName: string;
   farmerName: string;
+  vegetableId?: string;
   vegetableName: string;
   quantityKg: number;
   unitPrice: number;
   total: number;
+  delivery?: string;
+  sourceOfferId?: string;
+  harvestId?: string;
+  requestId?: string;
   status: Status;
 }
 
@@ -152,6 +164,7 @@ export interface User {
   identityFrontUrl?: string;
   identityBackUrl?: string;
   taxBillUrl?: string;
+  memberId?: string;
   status: AccountStatus;
   rejectionReason?: string;
   reviewedAt?: string;
@@ -201,7 +214,7 @@ export interface MarketStats {
   vegetablesSoldTons: number;
 }
 
-/** Trader-defined loyalty program: N completed sales unlock a % discount. */
+/** Trader-defined loyalty program: N completed sales unlock a % offer. */
 export interface LoyaltyRule {
   id: string;
   traderId: string;

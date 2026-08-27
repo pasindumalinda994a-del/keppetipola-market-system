@@ -1,20 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
+import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
+import { ApiError, completeSale, fetchSale } from "@/lib/api";
 import { formatDate, formatKg, formatLKR } from "@/lib/format";
+import { useTokenQuery } from "@/lib/hooks/use-token-query";
 import { translateVegetableName } from "@/lib/i18n/messages";
-import { sales } from "@/lib/mock";
+import type { Sale } from "@/types";
 
 export default function SaleInvoicePage() {
   const { t, locale } = useLocale();
   const params = useParams<{ id: string }>();
-  const sale = sales.find((s) => s.id === params.id);
-  if (!sale) notFound();
+  const { token } = useAuth();
+  const { data: sale, setData: setSale, loading, error } = useTokenQuery(
+    token,
+    async (authToken) => (await fetchSale(authToken, params.id)).sale,
+    null as Sale | null,
+    params.id
+  );
+
+  async function onComplete() {
+    if (!token || !sale) return;
+    try {
+      const data = await completeSale(token, sale.id);
+      setSale(data.sale);
+      toast.success(t("farmer.sales.completed"));
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : t("common.retry"));
+    }
+  }
+
+  if (loading) {
+    return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
+  }
+  if (error || !sale) {
+    return (
+      <EmptyState
+        title={t("farmer.sales.notFound")}
+        action={
+          <Button variant="outline" asChild>
+            <Link href="/farmer/sales">{t("common.back")}</Link>
+          </Button>
+        }
+      />
+    );
+  }
 
   return (
     <div className="mx-auto max-w-lg">
@@ -69,13 +106,15 @@ export default function SaleInvoicePage() {
             </dd>
           </div>
         </dl>
+        {sale.status === "Accepted" ? (
+          <Button className="mt-6 w-full" onClick={() => void onComplete()}>
+            {t("common.markCompleted")}
+          </Button>
+        ) : null}
         {sale.status === "Completed" ? (
           <div className="mt-6 rounded-md border border-primary/20 bg-primary/5 p-4 text-sm">
             <p className="text-foreground">
-              {t("farmer.sales.loyaltyNote").replace(
-                "{trader}",
-                sale.traderName
-              )}
+              {t("farmer.sales.loyaltyNote").replace("{trader}", sale.traderName)}
             </p>
             <Link
               href="/farmer/loyalty"

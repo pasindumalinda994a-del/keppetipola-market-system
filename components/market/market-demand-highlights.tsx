@@ -1,20 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DemandRequestCard } from "@/components/market/demand-request-card";
 import { Button } from "@/components/ui/button";
+import { fetchRequests } from "@/lib/api";
 import type { BuyingRequest } from "@/types";
 
 const FIRST_ROW = 3;
 
 export function MarketDemandHighlights({
-  requests,
+  requests: initialRequests,
 }: {
-  requests: BuyingRequest[];
+  requests?: BuyingRequest[];
 }) {
+  const [requests, setRequests] = useState<BuyingRequest[]>(initialRequests ?? []);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchRequests()
+      .then((data) => {
+        if (!cancelled) setRequests(data.requests);
+      })
+      .catch(() => {
+        if (!cancelled && !initialRequests) setRequests([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [initialRequests]);
+
   const visible = expanded ? requests : requests.slice(0, FIRST_ROW);
   const canExpand = requests.length > FIRST_ROW;
+
+  if (requests.length === 0) return null;
 
   return (
     <section id="market-demand" className="scroll-mt-20 border-y bg-card/40 py-14">

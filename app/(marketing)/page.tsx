@@ -4,7 +4,7 @@ import { HomePriceHighlights } from "@/components/marketing/home-price-highlight
 import { MarketDemandHighlights } from "@/components/market/market-demand-highlights";
 import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
-import { announcements, buyingRequests, marketStats } from "@/lib/mock";
+import { announcements, marketStats } from "@/lib/mock";
 import { formatDate } from "@/lib/format";
 
 export default function HomePage() {
@@ -42,7 +42,7 @@ export default function HomePage() {
 
       <HomePriceHighlights />
 
-      <MarketDemandHighlights requests={buyingRequests} />
+      <MarketDemandHighlights />
 
       <section className="mx-auto max-w-6xl px-4 py-14">
         <h2 className="font-satoshi mb-6 text-2xl font-semibold tracking-tight">

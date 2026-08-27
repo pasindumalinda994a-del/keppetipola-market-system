@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import { formatRelativeTime } from "@/lib/format";
-import { notifications as allNotifications } from "@/lib/mock";
+import { useNotifications } from "@/lib/hooks/use-notifications";
 import { useLocale } from "@/components/providers/locale-provider";
 import { notifGroupKeys } from "@/lib/i18n/messages";
 import { Button } from "@/components/ui/button";
@@ -24,19 +24,25 @@ export function NotificationDrawer({
   groups?: string[];
 }) {
   const { t, locale } = useLocale();
-  const items = allNotifications
+  const { notifications, unread, refetch } = useNotifications();
+  const items = notifications
     .filter((n) => !groups || groups.includes(n.group))
     .slice(0, 8);
-  const unread = items.filter((n) => !n.read).length;
+  const unreadInView = items.filter((n) => !n.read).length;
+  const badge = groups ? unreadInView : unread;
 
   return (
-    <Sheet>
+    <Sheet
+      onOpenChange={(open) => {
+        if (open) void refetch();
+      }}
+    >
       <SheetTrigger
         render={<Button variant="ghost" size="icon" className="relative" />}
         aria-label={t("shell.notifications")}
       >
         <Bell className="size-5" />
-        {unread > 0 ? (
+        {badge > 0 ? (
           <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-primary" />
         ) : null}
       </SheetTrigger>
@@ -45,28 +51,34 @@ export function NotificationDrawer({
           <SheetTitle>{t("shell.notifications")}</SheetTitle>
         </SheetHeader>
         <div className="mt-4 space-y-3 overflow-y-auto px-1 pb-6">
-          {items.map((n) => (
-            <div
-              key={n.id}
-              className={cn(
-                "rounded-lg bg-card p-3",
-                !n.read && "border-primary/30 bg-accent/40"
-              )}
-            >
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm font-medium">{n.title}</p>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {formatRelativeTime(n.createdAt, locale)}
-                </span>
+          {items.length === 0 ? (
+            <p className="px-1 text-sm text-muted-foreground">
+              {t("common.emptyList")}
+            </p>
+          ) : (
+            items.map((n) => (
+              <div
+                key={n.id}
+                className={cn(
+                  "rounded-lg bg-card p-3",
+                  !n.read && "border-primary/30 bg-accent/40"
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-medium">{n.title}</p>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {formatRelativeTime(n.createdAt, locale)}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">{n.message}</p>
+                <p className="mt-2 text-xs font-medium text-primary">
+                  {notifGroupKeys[n.group]
+                    ? t(notifGroupKeys[n.group])
+                    : n.group}
+                </p>
               </div>
-              <p className="mt-1 text-sm text-muted-foreground">{n.message}</p>
-              <p className="mt-2 text-xs font-medium text-primary">
-                {notifGroupKeys[n.group]
-                  ? t(notifGroupKeys[n.group])
-                  : n.group}
-              </p>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         <div className="border-t px-1 pt-3">
           <Button asChild variant="outline" className="w-full">

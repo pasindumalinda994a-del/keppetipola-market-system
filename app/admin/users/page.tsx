@@ -44,6 +44,7 @@ function UserTable({ users }: { users: User[] }) {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>{t("common.memberId")}</TableHead>
             <TableHead>{t("common.name")}</TableHead>
             <TableHead>{t("common.role")}</TableHead>
             <TableHead>{t("common.status")}</TableHead>
@@ -53,6 +54,9 @@ function UserTable({ users }: { users: User[] }) {
         <TableBody>
           {users.map((u) => (
             <TableRow key={u.id}>
+              <TableCell className="font-mono text-sm">
+                {u.memberId || "—"}
+              </TableCell>
               <TableCell className="font-medium">{u.name}</TableCell>
               <TableCell>{roleLabel(u.role, t)}</TableCell>
               <TableCell>
@@ -113,7 +117,8 @@ export default function AdminUsersPage() {
     return users.filter(
       (u) =>
         u.name.toLowerCase().includes(query) ||
-        u.email.toLowerCase().includes(query)
+        u.email.toLowerCase().includes(query) ||
+        (u.memberId ?? "").toLowerCase().includes(query)
     );
   }, [q, users]);
 

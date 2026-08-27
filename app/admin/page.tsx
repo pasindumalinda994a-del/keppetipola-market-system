@@ -17,32 +17,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fetchUsers } from "@/lib/api";
+import { fetchSales, fetchUsers } from "@/lib/api";
 import { formatKg, formatLKR, formatRelativeTime } from "@/lib/format";
 import { statusMessageKeys, translateVegetableName } from "@/lib/i18n/messages";
 import {
-  adminDashboardStats,
   stalls,
   systemLogs,
-  transactions,
 } from "@/lib/mock";
-import type { User } from "@/types";
+import type { Sale, User } from "@/types";
 
 export default function AdminDashboardPage() {
   const { t, locale } = useLocale();
   const { token } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
+  const [sales, setSales] = useState<Sale[]>([]);
 
   useEffect(() => {
     if (!token) return;
     let cancelled = false;
-    fetchUsers(token)
-      .then((data) => {
-        if (!cancelled) setUsers(data.users);
-      })
-      .catch(() => {
-        if (!cancelled) setUsers([]);
-      });
+    Promise.all([
+      fetchUsers(token).catch(() => ({ users: [] as User[] })),
+      fetchSales(token).catch(() => ({ sales: [] as Sale[] })),
+    ]).then(([userData, saleData]) => {
+      if (cancelled) return;
+      setUsers(userData.users);
+      setSales(saleData.sales);
+    });
     return () => {
       cancelled = true;
     };
@@ -55,6 +55,15 @@ export default function AdminDashboardPage() {
     (u) => u.role === "trader" && u.status === "Pending"
   ).length;
   const pendingStalls = stalls.filter((s) => s.status === "Pending").length;
+  const activeFarmers = users.filter(
+    (u) => u.role === "farmer" && u.status === "Active"
+  ).length;
+  const activeTraders = users.filter(
+    (u) => u.role === "trader" && u.status === "Active"
+  ).length;
+  const today = new Date().toISOString().slice(0, 10);
+  const todaySales = sales.filter((s) => s.date.slice(0, 10) === today);
+  const todaySalesTotal = todaySales.reduce((sum, s) => sum + s.total, 0);
 
   return (
     <div>
@@ -65,31 +74,19 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title={t("admin.dash.farmers")}
-          value={String(adminDashboardStats.farmers)}
-          change={4.2}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[5, 6, 5, 7, 8]}
+          value={String(activeFarmers)}
         />
         <StatCard
           title={t("admin.dash.traders")}
-          value={String(adminDashboardStats.traders)}
-          change={2.1}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[4, 5, 6, 5, 7]}
+          value={String(activeTraders)}
         />
         <StatCard
           title={t("admin.dash.transactions")}
-          value={String(adminDashboardStats.transactions)}
-          change={-2.3}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[8, 6, 7, 5, 4]}
+          value={String(sales.length)}
         />
         <StatCard
           title={t("admin.dash.todaySales")}
-          value={formatLKR(adminDashboardStats.todaySales, locale)}
-          change={6.8}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[4, 6, 5, 8, 9]}
+          value={formatLKR(todaySalesTotal, locale)}
         />
       </div>
 
@@ -142,7 +139,7 @@ export default function AdminDashboardPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions.slice(0, 4).map((txn) => (
+              {sales.slice(0, 4).map((txn) => (
                 <TableRow key={txn.id}>
                   <TableCell className="font-mono text-xs">{txn.id}</TableCell>
                   <TableCell className="text-sm">
@@ -153,7 +150,7 @@ export default function AdminDashboardPage() {
                       {formatKg(txn.quantityKg, locale)}
                     </span>
                   </TableCell>
-                  <TableCell>{formatLKR(txn.amount, locale)}</TableCell>
+                  <TableCell>{formatLKR(txn.total, locale)}</TableCell>
                   <TableCell>
                     <StatusBadge status={txn.status} />
                   </TableCell>
