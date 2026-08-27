@@ -54,7 +54,13 @@ export default function FarmerLayout({
           nav={nav}
           mobileNav={mobileNav}
           notificationHref="/farmer/notifications"
-          notificationGroups={["Offers", "Sales", "Announcements", "System"]}
+          notificationGroups={[
+            "Offers",
+            "Applications",
+            "Sales",
+            "Announcements",
+            "System",
+          ]}
           profileHref="/farmer/profile"
         >
           {children}

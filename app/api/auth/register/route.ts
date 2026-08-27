@@ -55,9 +55,9 @@ export async function POST(request: Request) {
       );
     }
 
-    let identityFront: File;
-    let identityBack: File;
-    let taxBill: File;
+    let identityFront;
+    let identityBack;
+    let taxBill;
     try {
       identityFront = assertValidUpload(
         form.get("identityFront"),

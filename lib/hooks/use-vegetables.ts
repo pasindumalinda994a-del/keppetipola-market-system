@@ -10,21 +10,31 @@ export function useVegetables() {
   const [error, setError] = useState<string | null>(null);
 
   const refetch = useCallback(async () => {
-    setLoading(true);
+    const data = await fetchVegetables();
+    setVegetables(data.vegetables);
     setError(null);
-    try {
-      const data = await fetchVegetables();
-      setVegetables(data.vegetables);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Request failed");
-    } finally {
-      setLoading(false);
-    }
+    return data.vegetables;
   }, []);
 
   useEffect(() => {
-    void refetch();
-  }, [refetch]);
+    let cancelled = false;
+    fetchVegetables()
+      .then((data) => {
+        if (cancelled) return;
+        setVegetables(data.vegetables);
+        setError(null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err instanceof ApiError ? err.message : "Request failed");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return { vegetables, loading, error, refetch };
 }

@@ -8,6 +8,7 @@ import {
   History,
   Home,
   LayoutDashboard,
+  Leaf,
   MoreHorizontal,
   Settings,
   Store,
@@ -20,6 +21,7 @@ import { RequireAuth } from "@/components/providers/require-auth";
 
 const nav = [
   { href: "/trader", labelKey: "nav.dashboard" as const, icon: LayoutDashboard },
+  { href: "/trader/harvest", labelKey: "nav.availableHarvest" as const, icon: Leaf },
   { href: "/trader/requests", labelKey: "nav.buyingRequests" as const, icon: ClipboardList },
   { href: "/trader/applications", labelKey: "nav.farmerApplications" as const, icon: Users },
   { href: "/trader/orders", labelKey: "nav.purchaseOrders" as const, icon: FileText },
@@ -34,8 +36,8 @@ const nav = [
 
 const mobileNav = [
   { href: "/trader", labelKey: "nav.home" as const, icon: Home },
+  { href: "/trader/harvest", labelKey: "nav.harvest" as const, icon: Leaf },
   { href: "/trader/requests", labelKey: "nav.requests" as const, icon: ClipboardList },
-  { href: "/trader/applications", labelKey: "nav.apps" as const, icon: Users },
   { href: "/trader/orders", labelKey: "nav.orders" as const, icon: FileText },
   { href: "/trader/settings", labelKey: "nav.more" as const, icon: MoreHorizontal },
 ];
@@ -54,7 +56,13 @@ export default function TraderLayout({
           nav={nav}
           mobileNav={mobileNav}
           notificationHref="/trader/notifications"
-          notificationGroups={["Applications", "Accepted Offers", "Announcements"]}
+          notificationGroups={[
+            "Applications",
+            "Offers",
+            "Accepted Offers",
+            "Sales",
+            "Announcements",
+          ]}
           profileHref="/trader/profile"
         >
           {children}

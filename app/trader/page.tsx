@@ -17,22 +17,51 @@ import {
 } from "@/components/ui/table";
 import { formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName } from "@/lib/i18n/messages";
-import {
-  applications,
-  buyingRequests,
-  loyaltyBalances,
-  purchaseOrders,
-  traderDashboardStats,
-} from "@/lib/mock";
+import { loyaltyBalances } from "@/lib/mock";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useTokenQuery } from "@/lib/hooks/use-token-query";
+import {
+  fetchApplications,
+  fetchRequests,
+  fetchSales,
+} from "@/lib/api";
+import type { Application, BuyingRequest, Sale } from "@/types";
 
 export default function TraderDashboardPage() {
   const { t, locale } = useLocale();
-  const { user: trader } = useAuth();
+  const { user: trader, token } = useAuth();
+  const { data } = useTokenQuery(
+    token,
+    async (authToken) => {
+      const [requestData, appData, saleData] = await Promise.all([
+        fetchRequests(authToken, { mine: true }),
+        fetchApplications(authToken),
+        fetchSales(authToken),
+      ]);
+      return {
+        requests: requestData.requests,
+        applications: appData.applications,
+        sales: saleData.sales,
+      };
+    },
+    {
+      requests: [] as BuyingRequest[],
+      applications: [] as Application[],
+      sales: [] as Sale[],
+    }
+  );
+  const requests = data.requests;
+  const applications = data.applications;
+  const sales = data.sales;
+
   if (!trader) return null;
+
   const loyaltyFarmers = loyaltyBalances.filter(
     (b) => b.traderId === trader.id
   ).length;
+  const today = new Date().toISOString().slice(0, 10);
+  const todaySales = sales.filter((s) => s.date.slice(0, 10) === today);
+  const todaySpending = todaySales.reduce((sum, s) => sum + s.total, 0);
 
   return (
     <div>
@@ -48,31 +77,19 @@ export default function TraderDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title={t("trader.dash.buyingRequests")}
-          value={String(traderDashboardStats.buyingRequests)}
-          change={4.5}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[3, 4, 5, 4, 6]}
+          value={String(requests.length)}
         />
         <StatCard
           title={t("trader.dash.applications")}
-          value={String(traderDashboardStats.applications)}
-          change={9.2}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[4, 6, 5, 7, 8]}
+          value={String(applications.length)}
         />
         <StatCard
           title={t("trader.dash.purchasesToday")}
-          value={String(traderDashboardStats.purchasesToday)}
-          change={-1.8}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[6, 5, 7, 4, 3]}
+          value={String(todaySales.length)}
         />
         <StatCard
           title={t("trader.dash.todaySpending")}
-          value={formatLKR(traderDashboardStats.todaySpending, locale)}
-          change={3.6}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[5, 4, 6, 7, 8]}
+          value={formatLKR(todaySpending, locale)}
         />
       </div>
 
@@ -113,7 +130,9 @@ export default function TraderDashboardPage() {
               {applications.slice(0, 4).map((a) => (
                 <TableRow key={a.id}>
                   <TableCell className="font-medium">{a.farmerName}</TableCell>
-                  <TableCell>{translateVegetableName(a.vegetableName, t)}</TableCell>
+                  <TableCell>
+                    {translateVegetableName(a.vegetableName, t)}
+                  </TableCell>
                   <TableCell>{formatKg(a.quantityKg, locale)}</TableCell>
                   <TableCell>
                     <StatusBadge status={a.status} />
@@ -130,20 +149,18 @@ export default function TraderDashboardPage() {
           {t("trader.dash.todaysRequests")}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {buyingRequests
-            .filter((r) => r.traderId === "trader-1")
-            .map((r) => (
-              <article key={r.id} className="rounded-lg bg-card p-4">
-                <h3 className="font-semibold">
-                  {translateVegetableName(r.vegetableName, t)}
-                </h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {t("trader.dash.need")} {formatKg(r.quantityKg, locale)} ·{" "}
-                  {formatLKR(r.minPrice, locale)}–{formatLKR(r.maxPrice, locale)}
-                </p>
-                <StatusBadge status={r.status} className="mt-3" />
-              </article>
-            ))}
+          {requests.map((r) => (
+            <article key={r.id} className="rounded-lg bg-card p-4">
+              <h3 className="font-semibold">
+                {translateVegetableName(r.vegetableName, t)}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("trader.dash.need")} {formatKg(r.quantityKg, locale)} ·{" "}
+                {formatLKR(r.minPrice, locale)}–{formatLKR(r.maxPrice, locale)}
+              </p>
+              <StatusBadge status={r.status} className="mt-3" />
+            </article>
+          ))}
         </div>
       </section>
 
@@ -161,13 +178,13 @@ export default function TraderDashboardPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {purchaseOrders.map((p) => (
+              {sales.slice(0, 5).map((p) => (
                 <TableRow key={p.id}>
                   <TableCell>{p.farmerName}</TableCell>
-                  <TableCell>{translateVegetableName(p.vegetableName, t)}</TableCell>
                   <TableCell>
-                    {formatLKR(p.price * p.quantityKg, locale)}
+                    {translateVegetableName(p.vegetableName, t)}
                   </TableCell>
+                  <TableCell>{formatLKR(p.total, locale)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

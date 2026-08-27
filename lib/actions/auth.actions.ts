@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import { User, type UserDocument } from "@/database/user.model";
+import { User, type UserDocument, type UserRole } from "@/database/user.model";
 
 type AuthSuccess = { user: UserDocument };
 type AuthFailure = { error: NextResponse };
@@ -57,24 +57,54 @@ export async function requireAuth(
   }
 }
 
-export async function requireAdmin(
-  request: Request
+export async function requireRole(
+  request: Request,
+  roles: UserRole | UserRole[]
 ): Promise<AuthSuccess | AuthFailure> {
   const result = await requireAuth(request);
   if ("error" in result) {
     return result;
   }
 
-  if (result.user.role !== "admin") {
+  const allowed = Array.isArray(roles) ? roles : [roles];
+  if (!allowed.includes(result.user.role)) {
     return {
-      error: NextResponse.json(
-        { message: "Admin access required" },
-        { status: 403 }
-      ),
+      error: NextResponse.json({ message: "Forbidden" }, { status: 403 }),
     };
   }
 
   return result;
+}
+
+export function requireActive(
+  result: AuthSuccess
+): AuthSuccess | AuthFailure {
+  if (result.user.status !== "Active") {
+    return {
+      error: NextResponse.json(
+        { message: "Account is not active" },
+        { status: 403 }
+      ),
+    };
+  }
+  return result;
+}
+
+export async function requireActiveRole(
+  request: Request,
+  roles: UserRole | UserRole[]
+): Promise<AuthSuccess | AuthFailure> {
+  const result = await requireRole(request, roles);
+  if ("error" in result) {
+    return result;
+  }
+  return requireActive(result);
+}
+
+export async function requireAdmin(
+  request: Request
+): Promise<AuthSuccess | AuthFailure> {
+  return requireRole(request, "admin");
 }
 
 export function isAuthError(

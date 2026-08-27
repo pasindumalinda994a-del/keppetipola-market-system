@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,12 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ApiError, createBuyingRequest } from "@/lib/api";
+import { useVegetables } from "@/lib/hooks/use-vegetables";
 import { translateVegetableName } from "@/lib/i18n/messages";
-import { vegetables } from "@/lib/mock";
 
 export default function CreateBuyingRequestPage() {
   const { t } = useLocale();
   const router = useRouter();
+  const { token } = useAuth();
+  const { vegetables, loading } = useVegetables();
   const [vegetable, setVegetable] = useState("");
   const [grade, setGrade] = useState("A");
   const [pending, setPending] = useState(false);
@@ -31,17 +35,49 @@ export default function CreateBuyingRequestPage() {
     vegetables.map((v) => [v.id, translateVegetableName(v.name, t)])
   );
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!token) return;
     if (!vegetable) {
       toast.error(t("common.selectVegetableToast"));
       return;
     }
+    const form = e.currentTarget;
+    const quantityKg = Number(
+      (form.elements.namedItem("qty") as HTMLInputElement).value
+    );
+    const minPrice = Number(
+      (form.elements.namedItem("min") as HTMLInputElement).value
+    );
+    const maxPrice = Number(
+      (form.elements.namedItem("max") as HTMLInputElement).value
+    );
+    const pickupDate = (form.elements.namedItem("pickup") as HTMLInputElement)
+      .value;
+    const closingTime = (form.elements.namedItem("closing") as HTMLInputElement)
+      .value;
+    const notes = (form.elements.namedItem("notes") as HTMLTextAreaElement)
+      .value;
+
     setPending(true);
-    setTimeout(() => {
+    try {
+      await createBuyingRequest(token, {
+        vegetableId: vegetable,
+        quantityKg,
+        minPrice,
+        maxPrice,
+        preferredGrade: grade,
+        pickupDate,
+        closingTime,
+        notes: notes || undefined,
+      });
       toast.success(t("trader.requests.published"));
       router.push("/trader/requests");
-    }, 500);
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : t("common.retry"));
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
@@ -57,6 +93,7 @@ export default function CreateBuyingRequestPage() {
             value={vegetable || undefined}
             onValueChange={(v) => setVegetable(v ?? "")}
             items={vegetableItems}
+            disabled={loading}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder={t("common.selectVegetable")} />
@@ -72,16 +109,16 @@ export default function CreateBuyingRequestPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="qty">{t("trader.requests.quantityNeeded")}</Label>
-          <Input id="qty" type="number" min={1} required />
+          <Input id="qty" name="qty" type="number" min={1} required />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="min">{t("trader.requests.minPrice")}</Label>
-            <Input id="min" type="number" min={1} required />
+            <Input id="min" name="min" type="number" min={1} required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="max">{t("trader.requests.maxPrice")}</Label>
-            <Input id="max" type="number" min={1} required />
+            <Input id="max" name="max" type="number" min={1} required />
           </div>
         </div>
         <div className="space-y-2">
@@ -100,17 +137,18 @@ export default function CreateBuyingRequestPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="pickup">{t("trader.requests.pickupDate")}</Label>
-            <Input id="pickup" type="date" required />
+            <Input id="pickup" name="pickup" type="date" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="closing">{t("trader.requests.closingTime")}</Label>
-            <Input id="closing" type="datetime-local" required />
+            <Input id="closing" name="closing" type="datetime-local" required />
           </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="notes">{t("common.notes")}</Label>
           <Textarea
             id="notes"
+            name="notes"
             rows={3}
             placeholder={t("trader.requests.notesPlaceholder")}
           />

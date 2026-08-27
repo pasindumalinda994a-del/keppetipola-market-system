@@ -19,29 +19,68 @@ import {
 } from "@/components/ui/table";
 import { formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName } from "@/lib/i18n/messages";
-import {
-  buyingRequests,
-  farmerDashboardStats,
-  harvests,
-  loyaltyBalances,
-  marketPrices,
-  offers,
-} from "@/lib/mock";
+import { loyaltyBalances } from "@/lib/mock";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useMarketPrices } from "@/lib/hooks/use-market-prices";
+import { useTokenQuery } from "@/lib/hooks/use-token-query";
+import {
+  fetchHarvests,
+  fetchOffers,
+  fetchRequests,
+  fetchSales,
+} from "@/lib/api";
+import type { BuyingRequest, Harvest, Offer, Sale } from "@/types";
 
 export default function FarmerDashboardPage() {
   const { t, locale } = useLocale();
-  const { user: farmer } = useAuth();
+  const { user: farmer, token } = useAuth();
+  const { prices } = useMarketPrices();
+  const { data } = useTokenQuery(
+    token,
+    async (authToken) => {
+      const [harvestData, offerData, saleData, requestData] = await Promise.all([
+        fetchHarvests(authToken, { mine: true }),
+        fetchOffers(authToken),
+        fetchSales(authToken),
+        fetchRequests(authToken),
+      ]);
+      return {
+        harvests: harvestData.harvests,
+        offers: offerData.offers,
+        sales: saleData.sales,
+        requests: requestData.requests,
+      };
+    },
+    {
+      harvests: [] as Harvest[],
+      offers: [] as Offer[],
+      sales: [] as Sale[],
+      requests: [] as BuyingRequest[],
+    }
+  );
+  const harvests = data.harvests;
+  const offers = data.offers;
+  const sales = data.sales;
+  const requests = data.requests;
+
   if (!farmer) return null;
+
   const farmerLoyaltyTokens = loyaltyBalances
     .filter((b) => b.farmerId === farmer.id)
     .reduce((sum, b) => sum + b.tokenCount, 0);
-  const topPrices = [...marketPrices].sort((a, b) => b.highest - a.highest).slice(0, 4);
-  const recommended = [...buyingRequests]
+  const topPrices = [...prices].sort((a, b) => b.highest - a.highest).slice(0, 4);
+  const recommended = [...requests]
     .filter((r) => r.status === "Active")
     .sort((a, b) => b.maxPrice - a.maxPrice)
     .slice(0, 3);
-  const recentOffers = offers.filter((o) => o.status !== "Accepted").slice(0, 5);
+  const recentOffers = offers.filter((o) => o.status === "Pending").slice(0, 5);
+  const pendingOffers = offers.filter((o) => o.status === "Pending").length;
+  const acceptedSales = sales.filter(
+    (s) => s.status === "Accepted" || s.status === "Completed"
+  ).length;
+  const totalEarnings = sales
+    .filter((s) => s.status === "Completed")
+    .reduce((sum, s) => sum + s.total, 0);
 
   return (
     <div>
@@ -58,31 +97,19 @@ export default function FarmerDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title={t("farmer.dash.harvestListings")}
-          value={String(farmerDashboardStats.harvestListings)}
-          change={12.5}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[3, 5, 4, 6, 8]}
+          value={String(harvests.length)}
         />
         <StatCard
           title={t("farmer.dash.pendingOffers")}
-          value={String(farmerDashboardStats.pendingOffers)}
-          change={-3.1}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[7, 6, 5, 4, 3]}
+          value={String(pendingOffers)}
         />
         <StatCard
           title={t("farmer.dash.acceptedSales")}
-          value={String(farmerDashboardStats.acceptedSales)}
-          change={8.4}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[4, 5, 6, 7, 9]}
+          value={String(acceptedSales)}
         />
         <StatCard
           title={t("farmer.dash.totalEarnings")}
-          value={formatLKR(farmerDashboardStats.totalEarnings, locale)}
-          change={5.2}
-          changeLabel={t("common.thanLastMonth")}
-          chartData={[5, 6, 5, 8, 9]}
+          value={formatLKR(totalEarnings, locale)}
         />
       </div>
 
@@ -131,15 +158,19 @@ export default function FarmerDashboardPage() {
             <Link href="/farmer/requests">{t("common.viewAll")}</Link>
           </Button>
         </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {recommended.map((r) => (
-            <DemandRequestCard
-              key={r.id}
-              request={r}
-              applyHref="/farmer/requests"
-            />
-          ))}
-        </div>
+        {recommended.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t("farmer.requests.empty")}</p>
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-3">
+            {recommended.map((r) => (
+              <DemandRequestCard
+                key={r.id}
+                request={r}
+                applyHref="/farmer/requests"
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="mt-8">
@@ -162,24 +193,34 @@ export default function FarmerDashboardPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentOffers.map((o) => (
-                <TableRow key={o.id}>
-                  <TableCell className="font-medium">{o.traderName}</TableCell>
-                  <TableCell>{translateVegetableName(o.vegetableName, t)}</TableCell>
-                  <TableCell className="font-semibold text-price-foreground">
-                    {formatLKR(o.price, locale)}
-                  </TableCell>
-                  <TableCell>{formatKg(o.quantityKg, locale)}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={o.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button size="sm" variant="outline" asChild>
-                      <Link href="/farmer/offers">{t("common.view")}</Link>
-                    </Button>
+              {recentOffers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-muted-foreground">
+                    {t("farmer.offers.empty")}
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                recentOffers.map((o) => (
+                  <TableRow key={o.id}>
+                    <TableCell className="font-medium">{o.traderName}</TableCell>
+                    <TableCell>
+                      {translateVegetableName(o.vegetableName, t)}
+                    </TableCell>
+                    <TableCell className="font-semibold text-price-foreground">
+                      {formatLKR(o.price, locale)}
+                    </TableCell>
+                    <TableCell>{formatKg(o.quantityKg, locale)}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={o.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button size="sm" variant="outline" asChild>
+                        <Link href="/farmer/offers">{t("common.view")}</Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
@@ -208,7 +249,9 @@ export default function FarmerDashboardPage() {
                       {translateVegetableName(h.vegetableName, t)}
                     </Link>
                   </TableCell>
-                  <TableCell>{formatKg(h.quantityKg, locale)}</TableCell>
+                  <TableCell>
+                    {formatKg(h.remainingKg ?? h.quantityKg, locale)}
+                  </TableCell>
                   <TableCell>{h.applications}</TableCell>
                   <TableCell>
                     <StatusBadge status={h.status} />

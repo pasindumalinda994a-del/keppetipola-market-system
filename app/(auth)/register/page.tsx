@@ -6,6 +6,10 @@ import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Store, Wheat } from "lucide-react";
 import { ApiError } from "@/lib/api";
+import {
+  CompressError,
+  prepareRegistrationFiles,
+} from "@/lib/compress-image";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +67,7 @@ function FileField({
         className="h-11 rounded-xl bg-background/70 px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1 file:text-sm file:font-medium"
       />
       <p className="text-xs text-muted-foreground">
-        {file ? file.name : "JPG, PNG, or PDF · max 5 MB"}
+        {file ? file.name : "JPG, PNG, or PDF · images compressed automatically · PDFs max 1 MB"}
       </p>
     </div>
   );
@@ -111,6 +115,11 @@ function RegisterForm() {
     }
     setSubmitting(true);
     try {
+      const documents = await prepareRegistrationFiles({
+        identityFront,
+        identityBack,
+        taxBill,
+      });
       const data = await register({
         name: name.trim(),
         email: email.trim(),
@@ -120,9 +129,9 @@ function RegisterForm() {
         address: address.trim(),
         ruralServicesDivision:
           role === "farmer" ? ruralServicesDivision.trim() : undefined,
-        identityFront,
-        identityBack,
-        taxBill,
+        identityFront: documents.identityFront,
+        identityBack: documents.identityBack,
+        taxBill: documents.taxBill,
       });
       setSubmitted({
         message: data.message,
@@ -130,7 +139,9 @@ function RegisterForm() {
       });
     } catch (err) {
       const message =
-        err instanceof ApiError ? err.message : "Could not create account";
+        err instanceof ApiError || err instanceof CompressError
+          ? err.message
+          : "Could not create account";
       toast.error(message);
     } finally {
       setSubmitting(false);

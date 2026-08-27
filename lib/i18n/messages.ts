@@ -44,6 +44,7 @@ const en = {
   "nav.stallProfile": "Stall Profile",
   "nav.apps": "Apps",
   "nav.orders": "Orders",
+  "nav.availableHarvest": "Available Harvest",
 
   // Admin nav
   "nav.userManagement": "User Management",
@@ -114,6 +115,12 @@ const en = {
   "common.exportExcel": "Export Excel",
   "common.submitting": "Submitting…",
   "common.publishing": "Publishing…",
+  "common.loading": "Loading…",
+  "common.emptyList": "Nothing here yet",
+  "common.closeListing": "Close listing",
+  "common.markCompleted": "Mark completed",
+  "common.remaining": "Remaining",
+  "common.retry": "Retry",
   "common.selectVegetable": "Select vegetable",
   "common.selectVegetableToast": "Select a vegetable",
   "common.settingsSaved": "Settings saved",
@@ -276,7 +283,18 @@ const en = {
   "farmer.harvest.expectedDelivery": "Expected Delivery",
   "farmer.harvest.availableUntilLabel": "Available Until",
   "farmer.harvest.photos": "Photos (optional)",
+  "farmer.harvest.photosHint": "JPG or PNG · photos are compressed automatically",
   "farmer.harvest.submit": "Submit listing",
+  "farmer.harvest.deleted": "Harvest listing deleted",
+  "farmer.harvest.closed": "Harvest listing closed",
+  "farmer.harvest.updated": "Harvest listing updated",
+  "farmer.harvest.empty": "No harvest listings yet",
+  "farmer.harvest.emptyDescription":
+    "List what you have so traders can send offers.",
+  "farmer.harvest.editTitle": "Edit harvest listing",
+  "farmer.harvest.offersEmpty": "No offers yet",
+  "farmer.harvest.loadError": "Could not load this harvest",
+  "farmer.harvest.deleteConfirm": "Delete this harvest listing?",
 
   // Farmer offers
   "farmer.offers.title": "Trader Offers",
@@ -286,6 +304,7 @@ const en = {
   "farmer.offers.accepted": "Offer accepted",
   "farmer.offers.rejected": "Offer rejected",
   "farmer.offers.counterTitle": "Counter offer",
+  "farmer.offers.empty": "No trader offers yet",
 
   // Farmer sales
   "farmer.sales.title": "My Sales",
@@ -296,6 +315,9 @@ const en = {
   "farmer.sales.loyaltyNote":
     "This completed sale earned 1 loyalty token with {trader}.",
   "farmer.sales.viewLoyalty": "View loyalty progress",
+  "farmer.sales.empty": "No sales yet",
+  "farmer.sales.completed": "Sale marked completed",
+  "farmer.sales.notFound": "Sale not found",
 
   // Farmer loyalty
   "farmer.loyalty.title": "Trader Loyalty",
@@ -314,6 +336,10 @@ const en = {
   "farmer.requests.title": "Trader Requests",
   "farmer.requests.description": "Apply to buying requests sorted by highest price.",
   "farmer.requests.applied": "Applied to {name}",
+  "farmer.requests.empty": "No active buying requests",
+  "farmer.requests.applyTitle": "Apply to request",
+  "farmer.requests.alreadyApplied": "Already applied",
+  "farmer.requests.applySubmit": "Submit application",
 
   // Farmer prices
   "farmer.prices.title": "Market Prices",
@@ -349,6 +375,8 @@ const en = {
   "farmer.notifications.title": "Notifications",
   "farmer.notifications.description":
     "Offers, sales, announcements, and system alerts.",
+  "farmer.notifications.empty": "No notifications yet",
+  "farmer.notifications.markRead": "Mark all read",
 
   // Trader dashboard
   "trader.dash.title": "Dashboard",
@@ -380,6 +408,8 @@ const en = {
   "trader.requests.pickupDate": "Pickup date",
   "trader.requests.closingTime": "Closing time",
   "trader.requests.notesPlaceholder": "Optional notes for farmers",
+  "trader.requests.empty": "No buying requests yet",
+  "trader.requests.closed": "Buying request closed",
 
   // Trader applications
   "trader.applications.title": "Farmer Applications",
@@ -393,12 +423,25 @@ const en = {
   "trader.applications.buyingQty": "Buying quantity (kg)",
   "trader.applications.pickupTime": "Pickup time",
   "trader.applications.submitOffer": "Submit offer",
+  "trader.applications.empty": "No applications yet",
+
+  // Trader harvest browse
+  "trader.harvest.title": "Available Harvest",
+  "trader.harvest.description": "Browse farmer listings and send offers.",
+  "trader.harvest.offer": "Make offer",
+  "trader.harvest.offerSent": "Offer sent",
+  "trader.harvest.dialogTitle": "Offer on {vegetable}",
+  "trader.harvest.empty": "No harvest listings available",
+  "trader.harvest.farmer": "Farmer",
 
   // Trader orders / history
   "trader.orders.title": "Purchase Orders",
   "trader.orders.description": "Active and pending purchases with farmers.",
   "trader.history.title": "Purchase History",
   "trader.history.description": "Past purchases and settled amounts.",
+  "trader.orders.empty": "No purchase orders yet",
+  "trader.orders.completed": "Purchase marked completed",
+  "trader.history.empty": "No completed purchases yet",
 
   // Trader loyalty
   "trader.loyalty.title": "Loyalty Program",
@@ -453,6 +496,8 @@ const en = {
   "trader.notifications.title": "Notifications",
   "trader.notifications.description":
     "Applications, accepted offers, and announcements.",
+  "trader.notifications.empty": "No notifications yet",
+  "trader.notifications.markRead": "Mark all read",
 
   // Admin dashboard
   "admin.dash.title": "Admin Dashboard",
@@ -642,6 +687,7 @@ const si: Record<MessageKey, string> = {
   "nav.stallProfile": "කුටි පැතිකඩ",
   "nav.apps": "අයදුම්",
   "nav.orders": "ඇණවුම්",
+  "nav.availableHarvest": "ලබා ගත හැකි අස්වැන්න",
 
   "nav.userManagement": "පරිශීලක කළමනාකරණය",
   "nav.stallManagement": "කුටි කළමනාකරණය",
@@ -710,6 +756,12 @@ const si: Record<MessageKey, string> = {
   "common.exportExcel": "Excel අපනයනය",
   "common.submitting": "ඉදිරිපත් කරමින්…",
   "common.publishing": "ප්‍රකාශයට පත් කරමින්…",
+  "common.loading": "පූරණය වෙමින්…",
+  "common.emptyList": "තවම කිසිවක් නැත",
+  "common.closeListing": "ලැයිස්තුව වසන්න",
+  "common.markCompleted": "සම්පූර්ණ කළ ලෙස සලකුණු කරන්න",
+  "common.remaining": "ඉතිරි",
+  "common.retry": "නැවත උත්සාහ කරන්න",
   "common.selectVegetable": "එළවළු තෝරන්න",
   "common.selectVegetableToast": "එළවළුවක් තෝරන්න",
   "common.settingsSaved": "සැකසුම් සුරකින ලදී",
@@ -864,7 +916,18 @@ const si: Record<MessageKey, string> = {
   "farmer.harvest.expectedDelivery": "බලාපොරොත්තු බෙදාහැරීම",
   "farmer.harvest.availableUntilLabel": "ලබා ගත හැකි තෙක්",
   "farmer.harvest.photos": "ඡායාරූප (විකල්ප)",
+  "farmer.harvest.photosHint": "JPG හෝ PNG · ඡායාරූප ස්වයංක්‍රීයව සම්පීඩනය වේ",
   "farmer.harvest.submit": "ලැයිස්තුව ඉදිරිපත් කරන්න",
+  "farmer.harvest.deleted": "අස්වැන්න ලැයිස්තුව මකන ලදී",
+  "farmer.harvest.closed": "අස්වැන්න ලැයිස්තුව වසන ලදී",
+  "farmer.harvest.updated": "අස්වැන්න ලැයිස්තුව යාවත්කාලීන කරන ලදී",
+  "farmer.harvest.empty": "අස්වැන්න ලැයිස්තු නැත",
+  "farmer.harvest.emptyDescription":
+    "ඔබ සතු දේ ලැයිස්තුගත කරන්න — වෙළෙන්දෝ යෝජනා යැවිය හැක.",
+  "farmer.harvest.editTitle": "අස්වැන්න ලැයිස්තුව සංස්කරණය",
+  "farmer.harvest.offersEmpty": "තවම යෝජනා නැත",
+  "farmer.harvest.loadError": "මෙම අස්වැන්න පූරණය කළ නොහැක",
+  "farmer.harvest.deleteConfirm": "මෙම අස්වැන්න ලැයිස්තුව මකන්නද?",
 
   "farmer.offers.title": "වෙළෙන්දා යෝජනා",
   "farmer.offers.description": "යෝජනා සසඳන්න — ඉහළම මිල ඉස්මතු කර ඇත.",
@@ -873,6 +936,7 @@ const si: Record<MessageKey, string> = {
   "farmer.offers.accepted": "යෝජනාව පිළිගන්නා ලදී",
   "farmer.offers.rejected": "යෝජනාව ප්‍රතික්ෂේප කරන ලදී",
   "farmer.offers.counterTitle": "ප්‍රති යෝජනාව",
+  "farmer.offers.empty": "වෙළෙන්දා යෝජනා නැත",
 
   "farmer.sales.title": "මගේ විකුණුම්",
   "farmer.sales.description": "සම්පූර්ණ සහ සිදුවෙමින් පවතින විකුණුම්.",
@@ -882,6 +946,9 @@ const si: Record<MessageKey, string> = {
   "farmer.sales.loyaltyNote":
     "මෙම සම්පූර්ණ විකුණුමෙන් {trader} සමඟ පක්ෂපාති ටෝකන් 1 ක් ලැබුණි.",
   "farmer.sales.viewLoyalty": "පක්ෂපාති ප්‍රගතිය බලන්න",
+  "farmer.sales.empty": "විකුණුම් නැත",
+  "farmer.sales.completed": "විකුණුම සම්පූර්ණ ලෙස සලකුණු කරන ලදී",
+  "farmer.sales.notFound": "විකුණුම හමු නොවීය",
 
   "farmer.loyalty.title": "වෙළෙන්දා පක්ෂපාතිත්වය",
   "farmer.loyalty.description":
@@ -898,6 +965,10 @@ const si: Record<MessageKey, string> = {
   "farmer.requests.title": "වෙළෙන්දා ඉල්ලීම්",
   "farmer.requests.description": "ඉහළම මිල අනුව මිලදී ඉල්ලීම් වලට අයදුම් කරන්න.",
   "farmer.requests.applied": "{name} වෙත අයදුම් කරන ලදී",
+  "farmer.requests.empty": "ක්‍රියාකාරී මිලදී ඉල්ලීම් නැත",
+  "farmer.requests.applyTitle": "ඉල්ලීමට අයදුම් කරන්න",
+  "farmer.requests.alreadyApplied": "දැනටමත් අයදුම් කර ඇත",
+  "farmer.requests.applySubmit": "අයදුම්පත ඉදිරිපත් කරන්න",
 
   "farmer.prices.title": "වෙළඳපල මිල",
   "farmer.prices.description": "ඔබ වගා කරන එළවළු සඳහා පොත්සල් සහිත සජීවී මිල.",
@@ -928,6 +999,8 @@ const si: Record<MessageKey, string> = {
 
   "farmer.notifications.title": "දැනුම්දීම්",
   "farmer.notifications.description": "යෝජනා, විකුණුම්, නිවේදන සහ පද්ධති ඇඟවීම්.",
+  "farmer.notifications.empty": "දැනුම්දීම් නැත",
+  "farmer.notifications.markRead": "සියල්ල කියවූ ලෙස සලකුණු කරන්න",
 
   "trader.dash.title": "මුල් පිටුව",
   "trader.dash.description": "ඉල්ලුම කළමනාකරණය කර ගොවි අයදුම් සමාලෝචනය කරන්න.",
@@ -957,6 +1030,8 @@ const si: Record<MessageKey, string> = {
   "trader.requests.pickupDate": "එකතු කරන දිනය",
   "trader.requests.closingTime": "වැසෙන වේලාව",
   "trader.requests.notesPlaceholder": "ගොවීන් සඳහා විකල්ප සටහන්",
+  "trader.requests.empty": "මිලදී ඉල්ලීම් නැත",
+  "trader.requests.closed": "මිලදී ඉල්ලීම වසන ලදී",
 
   "trader.applications.title": "ගොවි අයදුම්",
   "trader.applications.description": "අයදුම්කරුවන් සමාලෝචනය කර යෝජනා යවන්න.",
@@ -969,11 +1044,23 @@ const si: Record<MessageKey, string> = {
   "trader.applications.buyingQty": "මිලදී ප්‍රමාණය (kg)",
   "trader.applications.pickupTime": "එකතු කරන වේලාව",
   "trader.applications.submitOffer": "යෝජනාව ඉදිරිපත් කරන්න",
+  "trader.applications.empty": "අයදුම්පත් නැත",
+
+  "trader.harvest.title": "ලබා ගත හැකි අස්වැන්න",
+  "trader.harvest.description": "ගොවි ලැයිස්තු බලා යෝජනා යවන්න.",
+  "trader.harvest.offer": "යෝජනාවක් යවන්න",
+  "trader.harvest.offerSent": "යෝජනාව යවන ලදී",
+  "trader.harvest.dialogTitle": "{vegetable} සඳහා යෝජනාව",
+  "trader.harvest.empty": "අස්වැන්න ලැයිස්තු නැත",
+  "trader.harvest.farmer": "ගොවියා",
 
   "trader.orders.title": "මිලදී ඇණවුම්",
   "trader.orders.description": "ගොවීන් සමඟ සක්‍රිය සහ පොරොත්තු මිලදී ගැනීම්.",
   "trader.history.title": "මිලදී ඉතිහාසය",
   "trader.history.description": "පසුගිය මිලදී ගැනීම් සහ බේරුණු මුදල්.",
+  "trader.orders.empty": "මිලදී ඇණවුම් නැත",
+  "trader.orders.completed": "මිලදී ගැනීම සම්පූර්ණ ලෙස සලකුණු කරන ලදී",
+  "trader.history.empty": "සම්පූර්ණ මිලදී ගැනීම් නැත",
 
   "trader.loyalty.title": "පක්ෂපාති වැඩසටහන",
   "trader.loyalty.description":
@@ -1023,6 +1110,8 @@ const si: Record<MessageKey, string> = {
   "trader.settings.save": "සැකසුම් සුරකින්න",
   "trader.notifications.title": "දැනුම්දීම්",
   "trader.notifications.description": "අයදුම්, පිළිගත් යෝජනා සහ නිවේදන.",
+  "trader.notifications.empty": "දැනුම්දීම් නැත",
+  "trader.notifications.markRead": "සියල්ල කියවූ ලෙස සලකුණු කරන්න",
 
   "admin.dash.title": "පරිපාලක මුල් පිටුව",
   "admin.dash.description": "වෙළඳපල දළ විශ්ලේෂණය සහ පොරොත්තු අනුමත කිරීම්.",
