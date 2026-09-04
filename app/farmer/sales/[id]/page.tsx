@@ -99,6 +99,26 @@ export default function SaleInvoicePage() {
             <dt className="text-muted-foreground">{t("common.unitPrice")}</dt>
             <dd className="font-medium">{formatLKR(sale.unitPrice, locale)}</dd>
           </div>
+          {sale.loyaltyApplied ? (
+            <>
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">
+                  {t("farmer.sales.originalUnitPrice")}
+                </dt>
+                <dd className="font-medium text-muted-foreground line-through">
+                  {formatLKR(sale.originalUnitPrice ?? sale.unitPrice, locale)}
+                </dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">
+                  {t("farmer.sales.loyaltyDiscount")}
+                </dt>
+                <dd className="font-medium text-primary">
+                  {sale.loyaltyDiscountPercent ?? 0}%
+                </dd>
+              </div>
+            </>
+          ) : null}
           <div className="flex justify-between border-t pt-3 text-base">
             <dt className="font-semibold">{t("common.total")}</dt>
             <dd className="font-semibold text-price-foreground">
@@ -106,6 +126,14 @@ export default function SaleInvoicePage() {
             </dd>
           </div>
         </dl>
+        {sale.loyaltyApplied ? (
+          <p className="mt-4 text-sm font-medium text-primary">
+            {t("farmer.sales.loyaltyAppliedNote").replace(
+              "{percent}",
+              String(sale.loyaltyDiscountPercent ?? 0)
+            )}
+          </p>
+        ) : null}
         {sale.status === "Accepted" ? (
           <Button className="mt-6 w-full" onClick={() => void onComplete()}>
             {t("common.markCompleted")}

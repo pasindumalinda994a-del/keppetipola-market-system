@@ -5,7 +5,12 @@ import { Harvest } from "@/database/harvest.model";
 import { Notification, type NotificationGroup } from "@/database/notification.model";
 import { Offer, type OfferDocument } from "@/database/offer.model";
 import { Sale } from "@/database/sale.model";
-import type { UserDocument } from "@/database/user.model";
+import { User, type INotificationPrefs, type UserDocument } from "@/database/user.model";
+import {
+  applyDiscountOnAccept,
+  issueTokenForCompletedSale,
+} from "@/lib/actions/loyalty.actions";
+import { writeSystemLog } from "@/lib/actions/log.actions";
 
 export class MarketplaceError extends Error {
   status: number;
@@ -17,12 +22,28 @@ export class MarketplaceError extends Error {
   }
 }
 
+function allowsNotification(
+  prefs: INotificationPrefs | undefined,
+  group: NotificationGroup
+): boolean {
+  if (!prefs) return true;
+  if (group === "Offers") return prefs.offerAlerts !== false;
+  if (group === "Announcements") return prefs.announcements !== false;
+  if (group === "Applications") return prefs.newApplications !== false;
+  if (group === "Accepted Offers") return prefs.acceptedOffers !== false;
+  return true;
+}
+
 export async function createNotification(
   userId: string | mongoose.Types.ObjectId,
   group: NotificationGroup,
   title: string,
   message: string
 ): Promise<void> {
+  const recipient = await User.findById(userId).select("notificationPrefs");
+  if (!recipient) return;
+  if (!allowsNotification(recipient.notificationPrefs, group)) return;
+
   await Notification.create({
     userId,
     group,
@@ -77,6 +98,12 @@ async function acceptHarvestOffer(offer: OfferDocument, farmer: UserDocument) {
     await harvest.save();
   }
 
+  const pricing = await applyDiscountOnAccept({
+    farmerId: String(farmer._id),
+    traderId: String(offer.traderId),
+    unitPrice: offer.price,
+  });
+
   const sale = await Sale.create({
     farmerId: harvest.farmerId,
     traderId: offer.traderId,
@@ -85,14 +112,23 @@ async function acceptHarvestOffer(offer: OfferDocument, farmer: UserDocument) {
     vegetableId: harvest.vegetableId,
     vegetableName: harvest.vegetableName,
     quantityKg: offer.quantityKg,
-    unitPrice: offer.price,
-    total: offer.price * offer.quantityKg,
+    unitPrice: pricing.unitPrice,
+    total: pricing.unitPrice * offer.quantityKg,
     delivery: offer.delivery,
     sourceOfferId: offer._id,
     harvestId: harvest._id,
     status: "Accepted",
     date: new Date(),
+    originalUnitPrice: pricing.originalUnitPrice,
+    loyaltyDiscountPercent: pricing.loyaltyDiscountPercent,
+    loyaltyApplied: pricing.loyaltyApplied,
   });
+
+  await writeSystemLog(
+    "Transaction",
+    `Sale created (${harvest.vegetableName}, ${offer.quantityKg} kg)`,
+    farmer.email
+  );
 
   offer.status = "Accepted";
   await offer.save();
@@ -112,6 +148,22 @@ async function acceptHarvestOffer(offer: OfferDocument, farmer: UserDocument) {
     "Offer accepted",
     `${farmer.name} accepted your offer for ${harvest.vegetableName} (${offer.quantityKg} kg).`
   );
+
+  if (pricing.loyaltyApplied) {
+    const percent = pricing.loyaltyDiscountPercent;
+    await createNotification(
+      farmer._id,
+      "Sales",
+      "Loyalty discount applied",
+      `${percent}% loyalty offer applied on your ${harvest.vegetableName} sale with ${offer.traderName}.`
+    );
+    await createNotification(
+      offer.traderId,
+      "Sales",
+      "Loyalty discount applied",
+      `${percent}% loyalty offer applied for ${farmer.name} on ${harvest.vegetableName}.`
+    );
+  }
 
   return sale;
 }
@@ -185,6 +237,12 @@ async function acceptApplicationOffer(
     );
   }
 
+  const pricing = await applyDiscountOnAccept({
+    farmerId: String(farmer._id),
+    traderId: String(offer.traderId),
+    unitPrice: offer.price,
+  });
+
   const sale = await Sale.create({
     farmerId: application.farmerId,
     traderId: offer.traderId,
@@ -193,14 +251,23 @@ async function acceptApplicationOffer(
     vegetableId: request.vegetableId,
     vegetableName: request.vegetableName,
     quantityKg: offer.quantityKg,
-    unitPrice: offer.price,
-    total: offer.price * offer.quantityKg,
+    unitPrice: pricing.unitPrice,
+    total: pricing.unitPrice * offer.quantityKg,
     delivery: offer.delivery,
     sourceOfferId: offer._id,
     requestId: request._id,
     status: "Accepted",
     date: new Date(),
+    originalUnitPrice: pricing.originalUnitPrice,
+    loyaltyDiscountPercent: pricing.loyaltyDiscountPercent,
+    loyaltyApplied: pricing.loyaltyApplied,
   });
+
+  await writeSystemLog(
+    "Transaction",
+    `Sale created (${request.vegetableName}, ${offer.quantityKg} kg)`,
+    farmer.email
+  );
 
   offer.status = "Accepted";
   await offer.save();
@@ -223,6 +290,22 @@ async function acceptApplicationOffer(
     "Offer accepted",
     `${farmer.name} accepted your offer for ${request.vegetableName} (${offer.quantityKg} kg).`
   );
+
+  if (pricing.loyaltyApplied) {
+    const percent = pricing.loyaltyDiscountPercent;
+    await createNotification(
+      farmer._id,
+      "Sales",
+      "Loyalty discount applied",
+      `${percent}% loyalty offer applied on your ${request.vegetableName} sale with ${offer.traderName}.`
+    );
+    await createNotification(
+      offer.traderId,
+      "Sales",
+      "Loyalty discount applied",
+      `${percent}% loyalty offer applied for ${farmer.name} on ${request.vegetableName}.`
+    );
+  }
 
   return sale;
 }
@@ -369,6 +452,14 @@ export async function completeSale(saleId: string, user: UserDocument) {
   sale.status = "Completed";
   await sale.save();
 
+  await writeSystemLog(
+    "Transaction",
+    `Sale completed (${sale.vegetableName}, ${sale.quantityKg} kg)`,
+    user.email
+  );
+
+  const tokenResult = await issueTokenForCompletedSale(sale);
+
   const otherId =
     String(sale.farmerId) === String(user._id) ? sale.traderId : sale.farmerId;
   await createNotification(
@@ -377,6 +468,23 @@ export async function completeSale(saleId: string, user: UserDocument) {
     "Sale completed",
     `${sale.vegetableName} sale (${sale.quantityKg} kg) was marked completed.`
   );
+
+  if (tokenResult.issued) {
+    await createNotification(
+      sale.farmerId,
+      "Sales",
+      "Loyalty token earned",
+      `You earned 1 loyalty token with ${sale.traderName}.`
+    );
+    if (tokenResult.unlockedNow) {
+      await createNotification(
+        sale.farmerId,
+        "Sales",
+        "Loyalty reward unlocked",
+        `You unlocked ${tokenResult.discountPercent}% off your next deal with ${sale.traderName}.`
+      );
+    }
+  }
 
   return sale;
 }

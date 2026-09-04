@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Users,
   Megaphone,
+  Mail,
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { LocaleProvider } from "@/components/providers/locale-provider";
@@ -27,6 +28,7 @@ const nav = [
   { href: "/admin/prices", labelKey: "nav.marketPrices" as const, icon: TrendingUp },
   { href: "/admin/reports", labelKey: "nav.reports" as const, icon: TrendingUp },
   { href: "/admin/announcements", labelKey: "nav.announcements" as const, icon: Megaphone },
+  { href: "/admin/contact", labelKey: "nav.contactInbox" as const, icon: Mail },
   { href: "/admin/logs", labelKey: "nav.systemLogs" as const, icon: ScrollText },
   { href: "/admin/settings", labelKey: "nav.settings" as const, icon: Settings },
 ];

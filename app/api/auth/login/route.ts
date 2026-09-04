@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { signToken } from "@/lib/actions/auth.actions";
+import { writeSystemLog } from "@/lib/actions/log.actions";
+import { sendPriceBookmarkDigest } from "@/lib/actions/bookmark.actions";
 import { User } from "@/database/user.model";
 
 export async function POST(request: Request) {
@@ -60,6 +62,12 @@ export async function POST(request: Request) {
     }
 
     const token = signToken(user._id);
+    await writeSystemLog(
+      "Login",
+      `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)} ${user.name} signed in`,
+      user.email
+    );
+    await sendPriceBookmarkDigest(user);
     return NextResponse.json({ user: user.toJSON(), token });
   } catch (err) {
     console.error("login error:", err);

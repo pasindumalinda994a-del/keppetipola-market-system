@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -15,10 +15,8 @@ import {
   YAxis,
 } from "recharts";
 import { formatLKR } from "@/lib/format";
-import {
-  getPriceHistory,
-  type PriceHistoryRange,
-} from "@/lib/mock";
+import { fetchPriceHistory } from "@/lib/api";
+import type { PriceHistoryPoint, PriceHistoryRange } from "@/types";
 import {
   CHART_SERIES_COLORS,
   ChartEmptyState,
@@ -29,6 +27,7 @@ import {
   chartMargin,
 } from "@/components/market/chart-ui";
 import { useLocale } from "@/components/providers/locale-provider";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type ChartVegetable = {
   id: string;
@@ -107,25 +106,62 @@ export function MultiVegetablePriceChart({
   metric?: PriceChartMetric;
 }) {
   const { t } = useLocale();
+  const [histories, setHistories] = useState<
+    Record<string, PriceHistoryPoint[]>
+  >({});
+  const [loading, setLoading] = useState(false);
+
+  const vegetableKey = vegetables.map((v) => v.id).join(",");
+
+  useEffect(() => {
+    if (vegetables.length === 0) {
+      setHistories({});
+      return;
+    }
+
+    let cancelled = false;
+    setLoading(true);
+    fetchPriceHistory(
+      vegetables.map((v) => v.id),
+      range
+    )
+      .then((data) => {
+        if (!cancelled) setHistories(data.histories);
+      })
+      .catch(() => {
+        if (!cancelled) setHistories({});
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [vegetableKey, range]);
+
   const data = useMemo(() => {
     if (vegetables.length === 0) return [];
 
-    const histories = vegetables.map((v) => ({
-      id: v.id,
-      name: v.name,
-      points: getPriceHistory(v.id, range),
-    }));
+    const dateSet = new Set<string>();
+    for (const v of vegetables) {
+      for (const point of histories[v.id] ?? []) {
+        dateSet.add(point.date);
+      }
+    }
+    const dates = [...dateSet].sort();
 
-    const dates = histories[0].points.map((p) => p.date);
-
-    return dates.map((date, i) => {
+    return dates.map((date) => {
       const row: Record<string, string | number> = { date };
-      for (const h of histories) {
-        row[h.name] = h.points[i]?.[metric] ?? 0;
+      for (const v of vegetables) {
+        const point = (histories[v.id] ?? []).find((p) => p.date === date);
+        if (point) {
+          row[v.name] = point[metric];
+        }
       }
       return row;
     });
-  }, [vegetables, range, metric]);
+  }, [vegetables, histories, metric]);
 
   const tickInterval =
     range === "month" ? 4 : range === "year" ? 0 : "preserveStartEnd";
@@ -180,6 +216,28 @@ export function MultiVegetablePriceChart({
           <ChartEmptyState
             title={t("chart.noSelected")}
             description={t("chart.bookmarkAbove")}
+          />
+        }
+      />
+    );
+  }
+
+  if (loading) {
+    return (
+      <ChartShell height={height}>
+        <Skeleton className="h-full w-full rounded-xl" />
+      </ChartShell>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <ChartShell
+        height={height}
+        empty={
+          <ChartEmptyState
+            title={t("chart.noHistory")}
+            description={t("chart.noHistoryDesc")}
           />
         }
       />

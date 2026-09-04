@@ -12,6 +12,7 @@ import {
 import type { PriceHistoryPoint } from "@/types";
 import { formatLKR } from "@/lib/format";
 import {
+  ChartEmptyState,
   ChartLegendRow,
   ChartShell,
   ChartTooltipContent,
@@ -81,6 +82,20 @@ export function PriceTrendChart({
   height?: number;
 }) {
   const { t } = useLocale();
+
+  if (data.length === 0) {
+    return (
+      <ChartShell
+        height={height}
+        empty={
+          <ChartEmptyState
+            title={t("chart.noHistory")}
+            description={t("chart.noHistoryDesc")}
+          />
+        }
+      />
+    );
+  }
   return (
     <ChartShell height={height}>
       <div className="min-h-0 flex-1">

@@ -6,6 +6,7 @@ import {
   requireActiveRole,
 } from "@/lib/actions/auth.actions";
 import { createNotification } from "@/lib/actions/marketplace.actions";
+import { formatOfferNotification } from "@/lib/actions/settings.actions";
 import { parseDate, parsePositiveNumber } from "@/lib/serialize";
 
 type Params = { params: Promise<{ id: string }> };
@@ -85,7 +86,11 @@ export async function POST(request: Request, { params }: Params) {
       harvest.farmerId,
       "Offers",
       `New offer on ${harvest.vegetableName}`,
-      `${auth.user.name} offered Rs.${price}/kg for ${quantityKg}kg.`
+      await formatOfferNotification({
+        trader: auth.user.name,
+        price,
+        vegetable: harvest.vegetableName,
+      })
     );
 
     return NextResponse.json({ offer: offer.toJSON() }, { status: 201 });

@@ -18,7 +18,7 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { name, phone, address } = body;
+    const { name, phone, address, notificationPrefs } = body;
     const user = auth.user;
 
     if (name !== undefined) {
@@ -41,6 +41,29 @@ export async function PATCH(request: Request) {
     }
     if (address !== undefined) {
       user.address = String(address).trim();
+    }
+    if (notificationPrefs && typeof notificationPrefs === "object") {
+      const current = user.notificationPrefs ?? {
+        offerAlerts: true,
+        priceBookmarks: true,
+        announcements: true,
+        newApplications: true,
+        acceptedOffers: true,
+      };
+      const next = { ...current };
+      for (const key of [
+        "offerAlerts",
+        "priceBookmarks",
+        "announcements",
+        "newApplications",
+        "acceptedOffers",
+      ] as const) {
+        if (typeof notificationPrefs[key] === "boolean") {
+          next[key] = notificationPrefs[key];
+        }
+      }
+      user.notificationPrefs = next;
+      user.markModified("notificationPrefs");
     }
 
     await user.save();

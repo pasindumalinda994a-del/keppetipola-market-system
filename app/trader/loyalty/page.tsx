@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { LoyaltyProgressBar } from "@/components/loyalty/loyalty-progress";
 import {
@@ -23,65 +22,68 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate } from "@/lib/format";
-import {
-  getLoyaltyProgress,
-  getLoyaltyRuleForTrader,
-  loyaltyBalances,
-} from "@/lib/mock";
 import { useAuth } from "@/components/providers/auth-provider";
-import type { LoyaltyRule } from "@/types";
+import { ApiError, fetchLoyaltyBalances, fetchLoyaltyRule, saveLoyaltyRule } from "@/lib/api";
+import { formatDate } from "@/lib/format";
+import { useTokenQuery } from "@/lib/hooks/use-token-query";
+import { defaultLoyaltyRule, getLoyaltyProgress } from "@/lib/loyalty";
+import type { LoyaltyBalance, LoyaltyRule } from "@/types";
+
+const emptyStats = { enrolled: 0, rewardsReady: 0, avgTokens: 0 };
 
 export default function TraderLoyaltyPage() {
   const { t, locale } = useLocale();
-  const { user: trader } = useAuth();
-  if (!trader) return null;
-  const traderId = trader.id;
-
-  const seedRule =
-    getLoyaltyRuleForTrader(traderId) ??
-    ({
-      id: "rule-new",
-      traderId,
-      tokenThreshold: 10,
-      discountPercent: 5,
-      isActive: true,
-      updatedAt: new Date().toISOString(),
-    } satisfies LoyaltyRule);
-
-  const [rule, setRule] = useState<LoyaltyRule>(seedRule);
-
-  const balances = useMemo(
-    () => loyaltyBalances.filter((b) => b.traderId === traderId),
-    [traderId]
+  const { user: trader, token } = useAuth();
+  const { data, setData, loading, refetch } = useTokenQuery(
+    token,
+    async (authToken) => {
+      const [ruleData, balanceData] = await Promise.all([
+        fetchLoyaltyRule(authToken),
+        fetchLoyaltyBalances(authToken),
+      ]);
+      return {
+        rule: ruleData.rule,
+        balances: balanceData.balances,
+        stats: balanceData.stats,
+      };
+    },
+    {
+      rule: defaultLoyaltyRule(trader?.id ?? ""),
+      balances: [] as LoyaltyBalance[],
+      stats: emptyStats,
+    }
   );
 
-  const enrolled = balances.length;
-  const rewardsReady = balances.filter((b) => {
-    const progress = getLoyaltyProgress(b, rule);
-    return progress.unlocked;
-  }).length;
-  const avgTokens =
-    enrolled === 0
-      ? 0
-      : Math.round(
-          balances.reduce((sum, b) => sum + b.tokenCount, 0) / enrolled
-        );
+  const rule = data.rule;
+  const balances = data.balances;
+  const stats = data.stats;
 
-  function handleSave() {
+  function patchRule(patch: Partial<LoyaltyRule>) {
+    setData((prev) => ({ ...prev, rule: { ...prev.rule, ...patch } }));
+  }
+
+  async function handleSave() {
+    if (!token) return;
     const threshold = Math.max(1, Math.floor(Number(rule.tokenThreshold) || 1));
     const discount = Math.min(
       100,
       Math.max(0, Number(rule.discountPercent) || 0)
     );
-    setRule((prev) => ({
-      ...prev,
-      tokenThreshold: threshold,
-      discountPercent: discount,
-      updatedAt: new Date().toISOString(),
-    }));
-    toast.success(t("trader.loyalty.saved"));
+    try {
+      const saved = await saveLoyaltyRule(token, {
+        tokenThreshold: threshold,
+        discountPercent: discount,
+        isActive: rule.isActive,
+      });
+      setData((prev) => ({ ...prev, rule: saved.rule }));
+      toast.success(t("trader.loyalty.saved"));
+      await refetch();
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : t("common.retry"));
+    }
   }
+
+  if (!trader) return null;
 
   return (
     <div className="space-y-6">
@@ -93,15 +95,15 @@ export default function TraderLoyaltyPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard
           title={t("trader.loyalty.enrolled")}
-          value={String(enrolled)}
+          value={String(stats.enrolled)}
         />
         <StatCard
           title={t("trader.loyalty.rewardsReady")}
-          value={String(rewardsReady)}
+          value={String(stats.rewardsReady)}
         />
         <StatCard
           title={t("trader.loyalty.avgTokens")}
-          value={String(avgTokens)}
+          value={String(stats.avgTokens)}
         />
       </div>
 
@@ -125,10 +127,7 @@ export default function TraderLoyaltyPage() {
               min={1}
               value={rule.tokenThreshold}
               onChange={(e) =>
-                setRule((prev) => ({
-                  ...prev,
-                  tokenThreshold: Number(e.target.value),
-                }))
+                patchRule({ tokenThreshold: Number(e.target.value) })
               }
             />
           </div>
@@ -143,10 +142,7 @@ export default function TraderLoyaltyPage() {
               max={100}
               value={rule.discountPercent}
               onChange={(e) =>
-                setRule((prev) => ({
-                  ...prev,
-                  discountPercent: Number(e.target.value),
-                }))
+                patchRule({ discountPercent: Number(e.target.value) })
               }
             />
           </div>
@@ -160,12 +156,12 @@ export default function TraderLoyaltyPage() {
           </div>
           <Switch
             checked={rule.isActive}
-            onCheckedChange={(checked) =>
-              setRule((prev) => ({ ...prev, isActive: checked }))
-            }
+            onCheckedChange={(checked) => patchRule({ isActive: checked })}
           />
         </div>
-        <Button onClick={handleSave}>{t("trader.loyalty.save")}</Button>
+        <Button onClick={() => void handleSave()} disabled={loading}>
+          {t("trader.loyalty.save")}
+        </Button>
       </div>
 
       <div>
@@ -177,7 +173,9 @@ export default function TraderLoyaltyPage() {
             {t("trader.loyalty.farmersDescription")}
           </p>
         </div>
-        {balances.length === 0 ? (
+        {loading ? (
+          <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+        ) : balances.length === 0 ? (
           <EmptyState
             title={t("trader.loyalty.emptyTitle")}
             description={t("trader.loyalty.emptyDescription")}

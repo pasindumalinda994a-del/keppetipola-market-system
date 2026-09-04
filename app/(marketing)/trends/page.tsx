@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PriceTrendChart } from "@/components/market/price-trend-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
@@ -8,7 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatLKR } from "@/lib/format";
 import { useMarketPrices } from "@/lib/hooks/use-market-prices";
 import { useVegetables } from "@/lib/hooks/use-vegetables";
-import { getPriceHistory } from "@/lib/mock";
+import { fetchPriceHistory } from "@/lib/api";
+import type { PriceHistoryPoint } from "@/types";
 import {
   Table,
   TableBody,
@@ -22,6 +23,8 @@ export default function PriceTrendsPage() {
   const [q, setQ] = useState("");
   const { vegetables, loading: vegLoading } = useVegetables();
   const { prices, loading: pricesLoading } = useMarketPrices();
+  const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   const selected = useMemo(() => {
     if (!vegetables.length) return "";
@@ -32,7 +35,28 @@ export default function PriceTrendsPage() {
     return match?.id ?? vegetables[0]?.id ?? "";
   }, [q, vegetables]);
 
-  const history = selected ? getPriceHistory(selected) : [];
+  useEffect(() => {
+    if (!selected) {
+      setHistory([]);
+      return;
+    }
+    let cancelled = false;
+    setHistoryLoading(true);
+    fetchPriceHistory([selected], "week")
+      .then((data) => {
+        if (!cancelled) setHistory(data.histories[selected] ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selected]);
+
   const current = prices.find((p) => p.vegetableId === selected);
   const loading = vegLoading || pricesLoading;
 
@@ -60,34 +84,40 @@ export default function PriceTrendsPage() {
           </span>
         </p>
       ) : null}
-      {loading ? (
+      {loading || historyLoading ? (
         <Skeleton className="h-[360px] w-full" />
       ) : (
         <PriceTrendChart data={history} height={360} />
       )}
       <div className="mt-8 overflow-hidden rounded-xl bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Lowest</TableHead>
-              <TableHead>Highest</TableHead>
-              <TableHead>Average</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[...history].reverse().map((row) => (
-              <TableRow key={row.date}>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{formatLKR(row.lowest)}</TableCell>
-                <TableCell>{formatLKR(row.highest)}</TableCell>
-                <TableCell className="font-medium">
-                  {formatLKR(row.average)}
-                </TableCell>
+        {history.length === 0 && !loading && !historyLoading ? (
+          <p className="p-5 text-sm text-muted-foreground">
+            No price history yet for this vegetable.
+          </p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Lowest</TableHead>
+                <TableHead>Highest</TableHead>
+                <TableHead>Average</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {[...history].reverse().map((row) => (
+                <TableRow key={row.date}>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{formatLKR(row.lowest)}</TableCell>
+                  <TableCell>{formatLKR(row.highest)}</TableCell>
+                  <TableCell className="font-medium">
+                    {formatLKR(row.average)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

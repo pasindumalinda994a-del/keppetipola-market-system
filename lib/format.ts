@@ -47,3 +47,14 @@ export function formatDateTime(iso: string, locale: Locale = "en"): string {
     minute: "2-digit",
   });
 }
+
+export function formatClockTime(hhmm: string, locale: Locale = "en"): string {
+  const [h, m] = hhmm.split(":").map(Number);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return hhmm;
+  const date = new Date(Date.UTC(2020, 0, 1, h, m));
+  return date.toLocaleTimeString(dateLocale(locale), {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "UTC",
+  });
+}

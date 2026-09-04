@@ -1,79 +1,83 @@
-# Loyalty Token & Discount Reward — Backend Guide
+# Loyalty Token & Discount Reward
 
-Frontend for this feature is mock-driven. Use this doc when wiring persistence and APIs.
+One **completed sale** between a farmer and a trader issues **1 loyalty token** for that pair. Each trader configures one loyalty rule (`tokenThreshold` and `discountPercent`). When cycle progress reaches the threshold and the rule is active, the farmer’s reward unlocks.
 
-## Rule summary
+**Discount policy:** when `rewardUnlocked` is true, the **next accepted offer** between that pair is discounted by `discountPercent`. The cycle then resets (`tokensTowardReward = 0`, `rewardUnlocked = false`). Lifetime `tokenCount` never resets. Completing the discounted sale still issues 1 token toward the new cycle.
 
-- One **completed sale** between a farmer and a trader issues **1 loyalty token** for that pair.
-- Each trader configures one loyalty rule: `tokenThreshold` and `discountPercent` (percentage only).
-- When `tokenCount >= tokenThreshold` and the rule is active, `rewardUnlocked` becomes true.
-- No predictive or ML logic — transactional counting + threshold check only.
+No predictive or ML logic — transactional counting + threshold check only.
 
-## Suggested tables
+## Collections
 
-### `loyalty_rules`
+### `loyaltyrules`
 
-| Column | Type | Notes |
+| Field | Type | Notes |
 |--------|------|--------|
-| `id` | uuid / text PK | |
-| `trader_id` | FK → users | Unique per trader (one active rule) |
-| `token_threshold` | int | e.g. 10 |
-| `discount_percent` | numeric | e.g. 5.00 |
-| `is_active` | boolean | |
-| `updated_at` | timestamptz | |
+| `traderId` | ObjectId | Unique per trader |
+| `tokenThreshold` | int | e.g. 10 (min 1) |
+| `discountPercent` | number | 0–100 |
+| `isActive` | boolean | |
+| `updatedAt` | date | |
 
-### `loyalty_balances`
+### `loyaltybalances`
 
-| Column | Type | Notes |
+| Field | Type | Notes |
 |--------|------|--------|
-| `id` | uuid / text PK | |
-| `farmer_id` | FK → users | |
-| `trader_id` | FK → users | |
-| `token_count` | int | Lifetime tokens for this pair |
-| `tokens_toward_reward` | int | Progress in current cycle |
-| `reward_unlocked` | boolean | |
-| `last_earned_at` | date / timestamptz | |
-| Unique | `(farmer_id, trader_id)` | |
+| `farmerId` | ObjectId | |
+| `traderId` | ObjectId | Unique with `farmerId` |
+| `farmerName` / `traderName` | string | Denormalized for lists |
+| `tokenCount` | int | Lifetime tokens for this pair |
+| `tokensTowardReward` | int | Progress in the current cycle |
+| `rewardUnlocked` | boolean | |
+| `lastEarnedAt` | date | |
 
-### `loyalty_token_events`
+### `loyaltytokenevents`
 
-| Column | Type | Notes |
+| Field | Type | Notes |
 |--------|------|--------|
-| `id` | uuid / text PK | |
-| `sale_id` | FK → sales | **Unique** — idempotency key |
-| `farmer_id` | FK | |
-| `trader_id` | FK | |
-| `tokens_issued` | int | Always `1` for v1 |
-| `created_at` | timestamptz | |
+| `saleId` | ObjectId | **Unique** — idempotency key |
+| `farmerId` / `traderId` | ObjectId | |
+| `tokensIssued` | int | Always `1` for v1 |
 
-## Issuance flow
+## Flows
+
+### Token issuance (`Sale` → `Completed`)
 
 ```
 Sale status → Completed
-  → if loyalty_token_events already has sale_id: stop (idempotent)
-  → load loyalty_rules for trader_id (skip if missing or inactive)
-  → insert loyalty_token_events (sale_id, tokens_issued = 1)
-  → upsert loyalty_balances:
-       token_count += 1
-       tokens_toward_reward = min(token_count, threshold)  // or reset after redeem
-       reward_unlocked = token_count >= token_threshold
-       last_earned_at = now
+  → if loyaltytokenevents already has saleId: stop (idempotent)
+  → load loyalty rule for traderId (skip if missing or inactive)
+  → insert loyaltytokenevents (saleId, tokensIssued = 1)
+  → upsert loyaltybalances:
+       tokenCount += 1
+       tokensTowardReward = min(tokensTowardReward + 1, threshold)
+       rewardUnlocked = tokensTowardReward >= tokenThreshold
+       lastEarnedAt = now
 ```
 
-Trigger this from the same transaction/service that marks a sale `Completed` (or via an outbox/event listener on sale completion).
+Triggered from `completeSale` in `lib/actions/marketplace.actions.ts`.
 
-## API sketch
+### Discount on accept
 
-Auth: trader endpoints require trader role; farmer endpoints require farmer role. Scope data to the authenticated user.
+```
+Farmer accepts a pending offer
+  → if rule is active AND rewardUnlocked for that pair:
+       unitPrice = round(offer.price * (1 - discountPercent / 100))
+       persist originalUnitPrice, loyaltyDiscountPercent, loyaltyApplied on the sale
+       reset tokensTowardReward = 0, rewardUnlocked = false
+  → else: sale uses the offer list price
+```
+
+## API
+
+Auth: trader endpoints require trader role; farmer endpoints require farmer role. Data is scoped to the authenticated user.
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| `GET` | `/api/trader/loyalty/rule` | Current trader’s rule (or defaults) |
-| `PUT` | `/api/trader/loyalty/rule` | Upsert threshold, discount %, active |
-| `GET` | `/api/trader/loyalty/balances` | Farmers enrolled with this trader |
-| `GET` | `/api/farmer/loyalty/balances` | Farmer’s balances per trader (include rule snapshot: threshold, discount %) |
+| `GET` | `/api/loyalty/rule` | Current trader’s rule, or defaults (`threshold` 10, `discountPercent` 5, `isActive` true) without inserting |
+| `PUT` | `/api/loyalty/rule` | Upsert threshold, discount %, active; recomputes `rewardUnlocked` for that trader’s balances |
+| `GET` | `/api/loyalty/balances` | Farmer: balances per trader + rule snapshot. Trader: enrolled farmers + `stats` |
 
-### Example `PUT /api/trader/loyalty/rule` body
+### Example `PUT /api/loyalty/rule` body
 
 ```json
 {
@@ -87,7 +91,7 @@ Auth: trader endpoints require trader role; farmer endpoints require farmer role
 
 ```json
 {
-  "traderId": "trader-1",
+  "traderId": "...",
   "traderName": "Trader ABC",
   "tokenCount": 8,
   "tokensTowardReward": 8,
@@ -99,28 +103,17 @@ Auth: trader endpoints require trader role; farmer endpoints require farmer role
 }
 ```
 
-## Applying the discount (product decision)
-
-The current frontend only **shows** unlock state; it does not auto-adjust sale totals.
-
-When implementing checkout/offers, pick one and document it in the API:
-
-1. **Next deal** — when `rewardUnlocked`, apply `discountPercent` once on the next accepted offer or completed sale, then clear/reset unlock for the next cycle; or  
-2. **At offer acceptance** — trader/farmer sees discounted unit price before confirming.
-
-Until then, keep `rewardUnlocked` as a flag the UI can surface.
+Sales include `originalUnitPrice`, `loyaltyDiscountPercent`, and `loyaltyApplied` when a reward was redeemed on accept.
 
 ## Idempotency & edge cases
 
-- Enforce **unique `sale_id`** on `loyalty_token_events` so retries do not double-issue tokens.
+- Unique `saleId` on token events so retries do not double-issue tokens.
 - Only `Completed` sales issue tokens — not `Accepted` / `Pending`.
-- If the trader deactivates the rule, stop issuing new tokens; existing balances remain readable.
-- Changing `tokenThreshold` downward may unlock farmers immediately on next read — recompute `reward_unlocked` when the rule is updated, or on next issuance.
+- If the trader deactivates the rule, stop issuing new tokens and stop applying discounts; existing balances remain readable.
+- Changing `tokenThreshold` recomputes `rewardUnlocked` immediately (`tokensTowardReward >= threshold` and rule active).
 
-## Frontend mapping
+## Frontend
 
-Mock types and helpers live in:
-
-- `types/index.ts` — `LoyaltyRule`, `LoyaltyBalance`, `LoyaltyTokenEvent`, `LoyaltyProgress`
-- `lib/mock/index.ts` — seed data + `getLoyaltyProgress` / `getLoyaltyRuleForTrader`
 - UI: `/trader/loyalty`, `/farmer/loyalty`
+- Progress helper: `lib/loyalty.ts` (`getLoyaltyProgress`)
+- Types: `LoyaltyRule`, `LoyaltyBalance`, `LoyaltyTokenEvent`, `LoyaltyProgress` in `types/index.ts`

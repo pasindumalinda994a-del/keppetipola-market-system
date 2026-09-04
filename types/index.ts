@@ -36,6 +36,8 @@ export interface MarketPrice {
   lastUpdated: string;
 }
 
+export type PriceHistoryRange = "week" | "month" | "year";
+
 export interface PriceHistoryPoint {
   date: string;
   average: number;
@@ -115,6 +117,9 @@ export interface Sale {
   harvestId?: string;
   requestId?: string;
   status: Status;
+  originalUnitPrice?: number;
+  loyaltyDiscountPercent?: number;
+  loyaltyApplied?: boolean;
 }
 
 export interface Application {
@@ -142,6 +147,8 @@ export interface PurchaseOrder {
   date: string;
 }
 
+export type StallStatus = "Pending" | "Active" | "Inactive";
+
 export interface Stall {
   id: string;
   traderId: string;
@@ -150,7 +157,7 @@ export interface Stall {
   location: string;
   license: string;
   contact: string;
-  status: Status;
+  status: StallStatus;
 }
 
 export interface User {
@@ -169,6 +176,16 @@ export interface User {
   rejectionReason?: string;
   reviewedAt?: string;
   joinedAt: string;
+  notificationPrefs?: NotificationPrefs;
+  bookmarkedVegetableIds?: string[];
+}
+
+export interface NotificationPrefs {
+  offerAlerts: boolean;
+  priceBookmarks: boolean;
+  announcements: boolean;
+  newApplications: boolean;
+  acceptedOffers: boolean;
 }
 
 export interface Announcement {
@@ -207,11 +224,62 @@ export interface SystemLog {
   user?: string;
 }
 
+export interface MarketSettings {
+  id: string;
+  vegetableCategories: string;
+  opensAt: string;
+  closesAt: string;
+  marketName: string;
+  offerTemplate?: string;
+}
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface ReportBucket {
+  name: string;
+  amount?: number;
+  kg?: number;
+  purchases?: number;
+  weekday?: number;
+}
+
+export interface ReportExportRow {
+  date: string;
+  farmerName: string;
+  traderName: string;
+  vegetableName: string;
+  quantityKg: number;
+  unitPrice: number;
+  total: number;
+  status: string;
+}
+
+export interface SalesReport {
+  daily: ReportBucket[];
+  weekly: ReportBucket[];
+  monthly: ReportBucket[];
+  topVegetables: ReportBucket[];
+  exportRows: ReportExportRow[];
+}
+
+export interface MarketStatCard {
+  value: number;
+  change: number;
+  chartData: number[];
+}
+
 export interface MarketStats {
-  todayTransactions: number;
-  activeFarmers: number;
-  activeTraders: number;
-  vegetablesSoldTons: number;
+  todayTransactions: MarketStatCard;
+  activeFarmers: MarketStatCard;
+  activeTraders: MarketStatCard;
+  vegetablesSoldTons: MarketStatCard;
 }
 
 /** Trader-defined loyalty program: N completed sales unlock a % offer. */
@@ -236,6 +304,10 @@ export interface LoyaltyBalance {
   tokensTowardReward: number;
   rewardUnlocked: boolean;
   lastEarnedAt?: string;
+  /** Rule snapshot attached by the balances API. */
+  tokenThreshold?: number;
+  discountPercent?: number;
+  isActive?: boolean;
 }
 
 /** Audit trail: one event per completed sale that issued a token. */

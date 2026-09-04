@@ -17,6 +17,7 @@ import {
   type RegisterPayload,
   type RegisterResponse,
   updateProfile as updateProfileApi,
+  saveBookmarks as saveBookmarksApi,
   type UpdateProfilePayload,
 } from "@/lib/api";
 import {
@@ -34,6 +35,7 @@ type AuthContextValue = {
   login: (email: string, password: string) => Promise<User>;
   register: (payload: RegisterPayload) => Promise<RegisterResponse>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<User>;
+  updateBookmarks: (vegetableIds: string[]) => Promise<User>;
   changePassword: (
     currentPassword: string,
     newPassword: string
@@ -121,6 +123,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [token, persist]
   );
 
+  const updateBookmarks = useCallback(
+    async (vegetableIds: string[]) => {
+      if (!token) throw new Error("Not authenticated");
+      const data = await saveBookmarksApi(token, vegetableIds);
+      return persist(token, data.user);
+    },
+    [token, persist]
+  );
+
   const changePassword = useCallback(
     async (currentPassword: string, newPassword: string) => {
       if (!token) throw new Error("Not authenticated");
@@ -137,6 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       register,
       updateProfile,
+      updateBookmarks,
       changePassword,
       logout,
     }),
@@ -147,6 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       register,
       updateProfile,
+      updateBookmarks,
       changePassword,
       logout,
     ]

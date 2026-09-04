@@ -56,6 +56,7 @@ const en = {
   "nav.users": "Users",
   "nav.txns": "Txns",
   "nav.news": "News",
+  "nav.contactInbox": "Contact inbox",
 
   // Common actions / table
   "common.view": "View",
@@ -113,6 +114,9 @@ const en = {
   "common.publish": "Publish",
   "common.exportPdf": "Export PDF",
   "common.exportExcel": "Export Excel",
+  "common.exportCsv": "Export CSV",
+  "common.markRead": "Mark read",
+  "common.unread": "Unread",
   "common.submitting": "Submitting…",
   "common.publishing": "Publishing…",
   "common.loading": "Loading…",
@@ -231,6 +235,8 @@ const en = {
   "chart.noMatch": "No vegetables match your search.",
   "chart.bookmarkLimit": "You can bookmark up to {max} vegetables",
   "chart.noSelected": "No vegetables selected",
+  "chart.noHistory": "No price history yet",
+  "chart.noHistoryDesc": "History appears after an admin updates wholesale prices.",
   "chart.bookmarkAbove": "Bookmark vegetables above to compare their prices on this chart.",
   "chart.series.average": "Average",
   "chart.series.highest": "Highest",
@@ -305,6 +311,9 @@ const en = {
   "farmer.offers.rejected": "Offer rejected",
   "farmer.offers.counterTitle": "Counter offer",
   "farmer.offers.empty": "No trader offers yet",
+  "farmer.offers.loyaltyHint": "{percent}% loyalty will apply on accept",
+  "farmer.offers.acceptedWithLoyalty":
+    "Offer accepted — {percent}% loyalty offer applied",
 
   // Farmer sales
   "farmer.sales.title": "My Sales",
@@ -315,6 +324,10 @@ const en = {
   "farmer.sales.loyaltyNote":
     "This completed sale earned 1 loyalty token with {trader}.",
   "farmer.sales.viewLoyalty": "View loyalty progress",
+  "farmer.sales.originalUnitPrice": "Original unit price",
+  "farmer.sales.loyaltyDiscount": "Loyalty offer",
+  "farmer.sales.loyaltyAppliedNote":
+    "{percent}% loyalty offer applied on this sale",
   "farmer.sales.empty": "No sales yet",
   "farmer.sales.completed": "Sale marked completed",
   "farmer.sales.notFound": "Sale not found",
@@ -477,6 +490,7 @@ const en = {
   "trader.reports.monthlySpending": "Monthly spending",
   "trader.reports.topVegetables": "Top vegetables",
   "trader.reports.purchasesOverview": "Purchases overview",
+  "trader.reports.empty": "No completed purchases yet",
 
   // Trader stall
   "trader.stall.title": "Stall Profile",
@@ -484,6 +498,14 @@ const en = {
   "trader.stall.name": "Stall name",
   "trader.stall.save": "Save stall",
   "trader.stall.saved": "Stall profile saved",
+  "trader.stall.emptyHint":
+    "Save your stall details. An admin must approve it before farmers see the stall name.",
+  "trader.stall.pendingNote":
+    "Waiting for admin approval. Farmers will see your name on buying requests until it is approved.",
+  "trader.stall.activeNote":
+    "Farmers will see this stall name on your new buying requests.",
+  "trader.stall.inactiveNote":
+    "This stall is inactive. Farmers will see your name on new buying requests until an admin reactivates it.",
 
   // Trader settings / notifications
   "trader.settings.title": "Settings",
@@ -492,6 +514,8 @@ const en = {
   "trader.settings.newApplicationsDesc": "Alert when farmers apply to your requests",
   "trader.settings.acceptedOffers": "Accepted offers",
   "trader.settings.acceptedOffersDesc": "When a farmer accepts your offer",
+  "trader.settings.announcements": "Announcements",
+  "trader.settings.announcementsDesc": "Market news and hours",
   "trader.settings.save": "Save settings",
   "trader.notifications.title": "Notifications",
   "trader.notifications.description":
@@ -541,11 +565,23 @@ const en = {
   "admin.stalls.description": "Approve and manage trader stalls.",
   "admin.stalls.add": "Add stall",
   "admin.stalls.approved": "Stall approved",
-  "admin.stalls.added": "Stall added (demo)",
+  "admin.stalls.added": "Stall added",
+  "admin.stalls.updated": "Stall updated",
   "admin.stalls.name": "Stall name",
   "admin.stalls.traderName": "Trader name",
   "admin.stalls.create": "Create",
   "admin.stalls.stall": "Stall",
+  "admin.stalls.empty": "No stalls yet",
+  "admin.stalls.emptyDescription":
+    "Traders can submit a stall profile, or you can add one for a registered trader.",
+  "admin.stalls.selectTrader": "Select trader",
+  "admin.stalls.selectTraderToast": "Select a trader",
+  "admin.stalls.noEligibleTraders": "Every active trader already has a stall.",
+  "admin.stalls.editTitle": "Edit stall",
+  "admin.stalls.deactivate": "Deactivate",
+  "admin.stalls.deactivated": "Stall deactivated",
+  "admin.stalls.reactivate": "Reactivate",
+  "admin.stalls.reactivated": "Stall reactivated",
 
   // Admin vegetables
   "admin.vegetables.title": "Vegetable Management",
@@ -573,8 +609,9 @@ const en = {
   // Admin reports
   "admin.reports.title": "Reports",
   "admin.reports.description": "Daily, weekly, and monthly market summaries.",
-  "admin.reports.exportPdfStub": "Export PDF (stub)",
-  "admin.reports.exportExcelStub": "Export Excel (stub)",
+  "admin.reports.exported": "CSV downloaded",
+  "admin.reports.empty": "No completed sales yet",
+  "admin.reports.emptyDescription": "Charts and export fill in after sales are completed.",
   "admin.reports.daily": "Daily",
   "admin.reports.weekly": "Weekly",
   "admin.reports.monthly": "Monthly",
@@ -604,10 +641,14 @@ const en = {
   "admin.announcements.draftCreated": "Draft created",
   "admin.announcements.edit": "Edit announcement",
   "admin.announcements.create": "Create announcement",
+  "admin.announcements.empty": "No announcements yet",
+  "admin.announcements.emptyDescription": "Create a draft, then publish it for the home page and in-app alerts.",
 
   // Admin logs
   "admin.logs.title": "System Logs",
   "admin.logs.description": "Login, price updates, transactions, and errors.",
+  "admin.logs.empty": "No log events yet",
+  "admin.dash.noActivity": "No recent activity",
 
   // Admin settings
   "admin.settings.title": "Settings",
@@ -622,6 +663,33 @@ const en = {
   "admin.settings.notifTemplates": "Notification templates",
   "admin.settings.offerTemplate": "New offer template",
   "admin.settings.save": "Save settings",
+
+  // Admin contact inbox
+  "admin.contact.title": "Contact inbox",
+  "admin.contact.description": "Messages from the public contact form.",
+  "admin.contact.empty": "No messages yet",
+  "admin.contact.emptyDescription": "New submissions from the website contact page appear here.",
+  "admin.contact.deleted": "Message deleted",
+  "admin.contact.markedRead": "Marked as read",
+
+  // Home / contact
+  "home.announcements": "Latest Announcements",
+  "home.announcementsEmpty": "No announcements right now.",
+  "contact.title": "Contact",
+  "contact.description": "Reach the market management office.",
+  "contact.name": "Name",
+  "contact.email": "Email",
+  "contact.message": "Message",
+  "contact.send": "Send message",
+  "contact.sending": "Sending…",
+  "contact.sent": "Message sent. We’ll get back to you soon.",
+  "contact.phone": "Phone",
+  "contact.location": "Location",
+  "contact.hours": "Market hours",
+  "contact.hoursValue": "Daily {open} – {close}",
+  "contact.address": "Keppetipola Wholesale Vegetable Market",
+  "contact.addressLine": "Badulla District, Sri Lanka",
+  "contact.phoneValue": "+94 55 222 3344",
 
   // Vegetable names
   "veg.carrot": "Carrot",
@@ -698,6 +766,7 @@ const si: Record<MessageKey, string> = {
   "nav.users": "පරිශීලකයින්",
   "nav.txns": "ගනුදෙනු",
   "nav.news": "පුවත්",
+  "nav.contactInbox": "සම්බන්ධතා එන ලිපි",
 
   "common.view": "බලන්න",
   "common.viewAll": "සියල්ල බලන්න",
@@ -754,6 +823,9 @@ const si: Record<MessageKey, string> = {
   "common.publish": "ප්‍රකාශයට පත් කරන්න",
   "common.exportPdf": "PDF අපනයනය",
   "common.exportExcel": "Excel අපනයනය",
+  "common.exportCsv": "CSV අපනයනය",
+  "common.markRead": "කියවූ ලෙස සලකුණු කරන්න",
+  "common.unread": "නොකියවූ",
   "common.submitting": "ඉදිරිපත් කරමින්…",
   "common.publishing": "ප්‍රකාශයට පත් කරමින්…",
   "common.loading": "පූරණය වෙමින්…",
@@ -867,6 +939,8 @@ const si: Record<MessageKey, string> = {
   "chart.noMatch": "ඔබේ සෙවුමට ගැලපෙන එළවළු නැත.",
   "chart.bookmarkLimit": "එළවළු {max}ක් දක්වා පමණක් පොත්සල් කළ හැක",
   "chart.noSelected": "එළවළු තෝරා නැත",
+  "chart.noHistory": "මිල ඉතිහාසය තවම නැත",
+  "chart.noHistoryDesc": "පරිපාලකයෙකු තොග මිල යාවත්කාලීන කළ පසු ඉතිහාසය පෙනේ.",
   "chart.bookmarkAbove": "මෙම ප්‍රස්ථාරයේ මිල සසඳන්නට ඉහත එළවළු පොත්සල් කරන්න.",
   "chart.series.average": "සාමාන්‍ය",
   "chart.series.highest": "උපරිම",
@@ -937,6 +1011,9 @@ const si: Record<MessageKey, string> = {
   "farmer.offers.rejected": "යෝජනාව ප්‍රතික්ෂේප කරන ලදී",
   "farmer.offers.counterTitle": "ප්‍රති යෝජනාව",
   "farmer.offers.empty": "වෙළෙන්දා යෝජනා නැත",
+  "farmer.offers.loyaltyHint": "පිළිගැනීමේදී {percent}% පක්ෂපාති පිරිනැමීම අදාළ වේ",
+  "farmer.offers.acceptedWithLoyalty":
+    "යෝජනාව පිළිගන්නා ලදී — {percent}% පක්ෂපාති පිරිනැමීම යෙදිණි",
 
   "farmer.sales.title": "මගේ විකුණුම්",
   "farmer.sales.description": "සම්පූර්ණ සහ සිදුවෙමින් පවතින විකුණුම්.",
@@ -946,6 +1023,10 @@ const si: Record<MessageKey, string> = {
   "farmer.sales.loyaltyNote":
     "මෙම සම්පූර්ණ විකුණුමෙන් {trader} සමඟ පක්ෂපාති ටෝකන් 1 ක් ලැබුණි.",
   "farmer.sales.viewLoyalty": "පක්ෂපාති ප්‍රගතිය බලන්න",
+  "farmer.sales.originalUnitPrice": "මුල් ඒකක මිල",
+  "farmer.sales.loyaltyDiscount": "පක්ෂපාති පිරිනැමීම",
+  "farmer.sales.loyaltyAppliedNote":
+    "මෙම විකුණුමට {percent}% පක්ෂපාති පිරිනැමීම යෙදිණි",
   "farmer.sales.empty": "විකුණුම් නැත",
   "farmer.sales.completed": "විකුණුම සම්පූර්ණ ලෙස සලකුණු කරන ලදී",
   "farmer.sales.notFound": "විකුණුම හමු නොවීය",
@@ -1094,12 +1175,21 @@ const si: Record<MessageKey, string> = {
   "trader.reports.monthlySpending": "මාසික වියදම",
   "trader.reports.topVegetables": "ඉහළම එළවළු",
   "trader.reports.purchasesOverview": "මිලදී ගැනීම් දළ විශ්ලේෂණය",
+  "trader.reports.empty": "සම්පූර්ණ කළ මිලදී ගැනීම් තවම නැත",
 
   "trader.stall.title": "කුටි පැතිකඩ",
   "trader.stall.description": "ඔබේ ඉල්ලීම්වල ගොවීන් දකින පොදු කුටි විස්තර.",
   "trader.stall.name": "කුටියේ නම",
   "trader.stall.save": "කුටිය සුරකින්න",
   "trader.stall.saved": "කුටි පැතිකඩ සුරකින ලදී",
+  "trader.stall.emptyHint":
+    "ඔබේ කුටි විස්තර සුරකින්න. ගොවීන්ට කුටියේ නම පෙනීමට පෙර පරිපාලක අනුමැතිය අවශ්‍යයි.",
+  "trader.stall.pendingNote":
+    "පරිපාලක අනුමැතිය බලාපොරොත්තුවෙන්. අනුමත වන තෙක් ගොවීන්ට මිලදී ගැනීමේ ඉල්ලීම්වල ඔබේ නම පෙනේ.",
+  "trader.stall.activeNote":
+    "ඔබේ නව මිලදී ගැනීමේ ඉල්ලීම්වල ගොවීන්ට මෙම කුටියේ නම පෙනේ.",
+  "trader.stall.inactiveNote":
+    "මෙම කුටිය අක්‍රියයි. පරිපාලකයෙකු නැවත සක්‍රිය කරන තෙක් ගොවීන්ට නව ඉල්ලීම්වල ඔබේ නම පෙනේ.",
 
   "trader.settings.title": "සැකසුම්",
   "trader.settings.description": "වෙළෙන්දා දැනුම්දීම් මනාප.",
@@ -1107,6 +1197,8 @@ const si: Record<MessageKey, string> = {
   "trader.settings.newApplicationsDesc": "ගොවීන් ඔබේ ඉල්ලීම්වලට අයදුම් කරන විට ඇඟවීම",
   "trader.settings.acceptedOffers": "පිළිගත් යෝජනා",
   "trader.settings.acceptedOffersDesc": "ගොවියෙකු ඔබේ යෝජනාව පිළිගන්නා විට",
+  "trader.settings.announcements": "නිවේදන",
+  "trader.settings.announcementsDesc": "වෙළඳපල පුවත් සහ වේලාවන්",
   "trader.settings.save": "සැකසුම් සුරකින්න",
   "trader.notifications.title": "දැනුම්දීම්",
   "trader.notifications.description": "අයදුම්, පිළිගත් යෝජනා සහ නිවේදන.",
@@ -1152,11 +1244,23 @@ const si: Record<MessageKey, string> = {
   "admin.stalls.description": "වෙළෙන්දා කුටි අනුමත කර කළමනාකරණය කරන්න.",
   "admin.stalls.add": "කුටිය එකතු කරන්න",
   "admin.stalls.approved": "කුටිය අනුමත කරන ලදී",
-  "admin.stalls.added": "කුටිය එකතු කරන ලදී (ආදර්ශ)",
+  "admin.stalls.added": "කුටිය එකතු කරන ලදී",
+  "admin.stalls.updated": "කුටිය යාවත්කාලීන කරන ලදී",
   "admin.stalls.name": "කුටියේ නම",
   "admin.stalls.traderName": "වෙළෙන්දාගේ නම",
   "admin.stalls.create": "සාදන්න",
   "admin.stalls.stall": "කුටිය",
+  "admin.stalls.empty": "කුටි තවම නැත",
+  "admin.stalls.emptyDescription":
+    "වෙළෙන්දන්ට කුටි පැතිකඩක් ඉදිරිපත් කළ හැක, නැතහොත් ලියාපදිංචි වෙළෙන්දෙකුට ඔබට එකක් එකතු කළ හැක.",
+  "admin.stalls.selectTrader": "වෙළෙන්දා තෝරන්න",
+  "admin.stalls.selectTraderToast": "වෙළෙන්දෙකු තෝරන්න",
+  "admin.stalls.noEligibleTraders": "සෑම සක්‍රිය වෙළෙන්දෙකුටම දැනටමත් කුටියක් ඇත.",
+  "admin.stalls.editTitle": "කුටිය සංස්කරණය කරන්න",
+  "admin.stalls.deactivate": "අක්‍රිය කරන්න",
+  "admin.stalls.deactivated": "කුටිය අක්‍රිය කරන ලදී",
+  "admin.stalls.reactivate": "නැවත සක්‍රිය කරන්න",
+  "admin.stalls.reactivated": "කුටිය නැවත සක්‍රිය කරන ලදී",
 
   "admin.vegetables.title": "එළවළු කළමනාකරණය",
   "admin.vegetables.description": "වෙළඳපල එළවළු නාමාවලිය.",
@@ -1180,8 +1284,9 @@ const si: Record<MessageKey, string> = {
 
   "admin.reports.title": "වාර්තා",
   "admin.reports.description": "දෛනික, සතිපතා සහ මාසික වෙළඳපල සාරාංශ.",
-  "admin.reports.exportPdfStub": "PDF අපනයනය (stub)",
-  "admin.reports.exportExcelStub": "Excel අපනයනය (stub)",
+  "admin.reports.exported": "CSV බාගත කරන ලදී",
+  "admin.reports.empty": "සම්පූර්ණ කළ විකුණුම් තවම නැත",
+  "admin.reports.emptyDescription": "විකුණුම් සම්පූර්ණ වූ පසු ප්‍රස්ථාර සහ අපනයනය පිරේ.",
   "admin.reports.daily": "දෛනික",
   "admin.reports.weekly": "සතිපතා",
   "admin.reports.monthly": "මාසික",
@@ -1210,9 +1315,13 @@ const si: Record<MessageKey, string> = {
   "admin.announcements.draftCreated": "කෙටුම්පත සාදන ලදී",
   "admin.announcements.edit": "නිවේදනය සංස්කරණය",
   "admin.announcements.create": "නිවේදනය සාදන්න",
+  "admin.announcements.empty": "නිවේදන තවම නැත",
+  "admin.announcements.emptyDescription": "කෙටුම්පතක් සාදා මුල් පිටුවට සහ දැනුම්දීම්වලට ප්‍රකාශයට පත් කරන්න.",
 
   "admin.logs.title": "පද්ධති ලොග්",
   "admin.logs.description": "පිවිසුම්, මිල යාවත්කාලීන, ගනුදෙනු සහ දෝෂ.",
+  "admin.logs.empty": "ලොග් සිදුවීම් තවම නැත",
+  "admin.dash.noActivity": "මෑත ක්‍රියාකාරකම් නැත",
 
   "admin.settings.title": "සැකසුම්",
   "admin.settings.description": "කාණ්ඩ, වෙළඳපල වේලාවන් සහ දැනුම්දීම් අච්චු.",
@@ -1226,6 +1335,31 @@ const si: Record<MessageKey, string> = {
   "admin.settings.notifTemplates": "දැනුම්දීම් අච්චු",
   "admin.settings.offerTemplate": "නව යෝජනා අච්චුව",
   "admin.settings.save": "සැකසුම් සුරකින්න",
+
+  "admin.contact.title": "සම්බන්ධතා එන ලිපි",
+  "admin.contact.description": "පොදු සම්බන්ධතා පෝරමයේ පණිවිඩ.",
+  "admin.contact.empty": "පණිවිඩ තවම නැත",
+  "admin.contact.emptyDescription": "වෙබ් අඩවියේ සම්බන්ධතා පිටුවෙන් එන නව ඉදිරිපත් කිරීම් මෙහි පෙනේ.",
+  "admin.contact.deleted": "පණිවිඩය මකන ලදී",
+  "admin.contact.markedRead": "කියවූ ලෙස සලකුණු කරන ලදී",
+
+  "home.announcements": "නවතම නිවේදන",
+  "home.announcementsEmpty": "දැන් නිවේදන නැත.",
+  "contact.title": "සම්බන්ධ වන්න",
+  "contact.description": "වෙළඳපල කළමනාකරණ කාර්යාලයට ලඟා වන්න.",
+  "contact.name": "නම",
+  "contact.email": "ඊමේල්",
+  "contact.message": "පණිවිඩය",
+  "contact.send": "පණිවිඩය යවන්න",
+  "contact.sending": "යවමින්…",
+  "contact.sent": "පණිවිඩය යවන ලදී. අපි ඉක්මනින් පිළිතුරු දෙන්නෙමු.",
+  "contact.phone": "දුරකථනය",
+  "contact.location": "ස්ථානය",
+  "contact.hours": "වෙළඳපල වේලාවන්",
+  "contact.hoursValue": "දිනපතා {open} – {close}",
+  "contact.address": "කෙප්පෙටිපොල තොග එළවළු වෙළඳපොළ",
+  "contact.addressLine": "බදුල්ල දිස්ත්‍රික්කය, ශ්‍රී ලංකාව",
+  "contact.phoneValue": "+94 55 222 3344",
 
   "veg.carrot": "කැරට්",
   "veg.cabbage": "ගෝවා",

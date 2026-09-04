@@ -4,10 +4,17 @@ import { HomePriceHighlights } from "@/components/marketing/home-price-highlight
 import { MarketDemandHighlights } from "@/components/market/market-demand-highlights";
 import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
-import { announcements, marketStats } from "@/lib/mock";
+import { listPublishedAnnouncements } from "@/lib/actions/announcement.actions";
+import { getMarketStats } from "@/lib/actions/stats.actions";
 import { formatDate } from "@/lib/format";
+import connectDB from "@/lib/mongodb";
 
-export default function HomePage() {
+export default async function HomePage() {
+  await connectDB();
+  const [announcements, marketStats] = await Promise.all([
+    listPublishedAnnouncements(3),
+    getMarketStats(),
+  ]);
   return (
     <div>
       <section className="relative isolate min-h-dvh overflow-hidden border-b">
@@ -51,27 +58,31 @@ export default function HomePage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Today's Transactions"
-            value={String(marketStats.todayTransactions)}
-            change={5.4}
-            chartData={[4, 6, 5, 7, 8]}
+            value={String(marketStats.todayTransactions.value)}
+            change={marketStats.todayTransactions.change}
+            changeLabel="vs yesterday"
+            chartData={marketStats.todayTransactions.chartData}
           />
           <StatCard
             title="Active Farmers"
-            value={String(marketStats.activeFarmers)}
-            change={3.2}
-            chartData={[5, 5, 6, 7, 8]}
+            value={String(marketStats.activeFarmers.value)}
+            change={marketStats.activeFarmers.change}
+            changeLabel="vs yesterday"
+            chartData={marketStats.activeFarmers.chartData}
           />
           <StatCard
             title="Active Traders"
-            value={String(marketStats.activeTraders)}
-            change={-1.5}
-            chartData={[7, 6, 5, 4, 4]}
+            value={String(marketStats.activeTraders.value)}
+            change={marketStats.activeTraders.change}
+            changeLabel="vs yesterday"
+            chartData={marketStats.activeTraders.chartData}
           />
           <StatCard
             title="Vegetables Sold"
-            value={`${marketStats.vegetablesSoldTons} Tons`}
-            change={8.1}
-            chartData={[3, 5, 4, 7, 9]}
+            value={`${marketStats.vegetablesSoldTons.value} Tons`}
+            change={marketStats.vegetablesSoldTons.change}
+            changeLabel="vs yesterday"
+            chartData={marketStats.vegetablesSoldTons.chartData}
           />
         </div>
       </section>
@@ -81,6 +92,11 @@ export default function HomePage() {
           <h2 className="font-satoshi mb-6 text-2xl font-semibold tracking-tight">
             Latest Announcements
           </h2>
+          {announcements.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No announcements right now.
+            </p>
+          ) : (
           <div className="grid gap-4 md:grid-cols-3">
             {announcements.map((a) => (
               <article key={a.id} className="rounded-xl bg-card p-5">
@@ -92,6 +108,7 @@ export default function HomePage() {
               </article>
             ))}
           </div>
+          )}
         </div>
       </section>
     </div>

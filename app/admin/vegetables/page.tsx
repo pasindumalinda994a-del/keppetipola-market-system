@@ -29,6 +29,7 @@ import {
   ApiError,
   createVegetable,
   fetchAllVegetables,
+  fetchSettings,
   updateVegetable,
 } from "@/lib/api";
 import { translateVegetableName } from "@/lib/i18n/messages";
@@ -38,6 +39,7 @@ export default function AdminVegetablesPage() {
   const { t } = useLocale();
   const { token } = useAuth();
   const [items, setItems] = useState<Vegetable[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -46,8 +48,19 @@ export default function AdminVegetablesPage() {
     if (!token) return;
     setLoading(true);
     try {
-      const data = await fetchAllVegetables(token);
+      const [data, settingsData] = await Promise.all([
+        fetchAllVegetables(token),
+        fetchSettings(token).catch(() => ({
+          settings: { vegetableCategories: "" },
+        })),
+      ]);
       setItems(data.vegetables);
+      setCategories(
+        String(settingsData.settings.vegetableCategories || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      );
     } catch (err) {
       toast.error(
         err instanceof ApiError ? err.message : t("common.requestFailed")
@@ -171,7 +184,19 @@ export default function AdminVegetablesPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="category">{t("common.category")}</Label>
-              <Input id="category" name="category" required />
+              <Input
+                id="category"
+                name="category"
+                required
+                list="veg-categories"
+              />
+              {categories.length > 0 ? (
+                <datalist id="veg-categories">
+                  {categories.map((c) => (
+                    <option key={c} value={c} />
+                  ))}
+                </datalist>
+              ) : null}
             </div>
             <DialogFooter>
               <Button type="submit" disabled={saving}>

@@ -4,7 +4,6 @@ import type {
   BuyingRequest,
   Harvest,
   LoyaltyBalance,
-  LoyaltyProgress,
   LoyaltyRule,
   LoyaltyTokenEvent,
   MarketPrice,
@@ -12,6 +11,7 @@ import type {
   NotificationItem,
   Offer,
   PriceHistoryPoint,
+  PriceHistoryRange,
   PurchaseOrder,
   Sale,
   Stall,
@@ -55,8 +55,6 @@ function monthsAgo(n: number): string {
   d.setMonth(d.getMonth() - n);
   return d.toISOString().slice(0, 10);
 }
-
-export type PriceHistoryRange = "week" | "month" | "year";
 
 export function getPriceHistory(
   vegetableId: string,
@@ -199,10 +197,10 @@ export const systemLogs: SystemLog[] = [
 ];
 
 export const marketStats: MarketStats = {
-  todayTransactions: 234,
-  activeFarmers: 142,
-  activeTraders: 39,
-  vegetablesSoldTons: 12.4,
+  todayTransactions: { value: 234, change: 5.4, chartData: [4, 6, 5, 7, 8] },
+  activeFarmers: { value: 142, change: 3.2, chartData: [5, 5, 6, 7, 8] },
+  activeTraders: { value: 39, change: -1.5, chartData: [7, 6, 5, 4, 4] },
+  vegetablesSoldTons: { value: 12.4, change: 8.1, chartData: [3, 5, 4, 7, 9] },
 };
 
 export const farmerDashboardStats = {
@@ -360,29 +358,4 @@ export function getLoyaltyRuleForTrader(
   rules: LoyaltyRule[] = loyaltyRules
 ): LoyaltyRule | undefined {
   return rules.find((r) => r.traderId === traderId);
-}
-
-export function getLoyaltyProgress(
-  balance: LoyaltyBalance,
-  rule?: LoyaltyRule | null
-): LoyaltyProgress {
-  const threshold = rule?.tokenThreshold ?? 10;
-  const discountPercent = rule?.discountPercent ?? 0;
-  const ruleActive = rule?.isActive ?? false;
-  const unlocked =
-    ruleActive && (balance.rewardUnlocked || balance.tokenCount >= threshold);
-  const current = unlocked
-    ? threshold
-    : Math.min(balance.tokensTowardReward, threshold);
-  const percent =
-    threshold <= 0 ? 0 : Math.min(100, Math.round((current / threshold) * 100));
-
-  return {
-    current,
-    threshold,
-    percent,
-    unlocked,
-    discountPercent,
-    ruleActive,
-  };
 }

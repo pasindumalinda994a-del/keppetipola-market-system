@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions/auth.actions";
 import connectDB from "@/lib/mongodb";
 import { parseDate, parsePositiveNumber } from "@/lib/serialize";
+import { getPublicTraderName } from "@/lib/actions/stall.actions";
 import type { QualityGrade } from "@/types";
 
 const GRADES = new Set<QualityGrade>(["A", "B", "C"]);
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
 
     const buyingRequest = await BuyingRequest.create({
       traderId: auth.user._id,
-      traderName: auth.user.name,
+      traderName: await getPublicTraderName(auth.user),
       vegetableId: vegetable._id,
       vegetableName: vegetable.name,
       quantityKg,

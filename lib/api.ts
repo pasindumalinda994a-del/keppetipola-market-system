@@ -1,12 +1,23 @@
 import type {
   AccountStatus,
+  Announcement,
   Application,
   BuyingRequest,
+  ContactMessage,
   Harvest,
+  LoyaltyBalance,
+  LoyaltyRule,
   MarketPrice,
+  MarketSettings,
+  PriceHistoryPoint,
+  PriceHistoryRange,
   NotificationItem,
+  NotificationPrefs,
   Offer,
   Sale,
+  SalesReport,
+  Stall,
+  SystemLog,
   User,
   UserRole,
   Vegetable,
@@ -154,9 +165,10 @@ export async function registerAccount(
 }
 
 export type UpdateProfilePayload = {
-  name: string;
-  phone: string;
-  address: string;
+  name?: string;
+  phone?: string;
+  address?: string;
+  notificationPrefs?: Partial<NotificationPrefs>;
 };
 
 export type UsersResponse = {
@@ -187,6 +199,14 @@ export function updateProfile(token: string, payload: UpdateProfilePayload) {
   return apiFetch<UserResponse>("/auth/me", {
     method: "PATCH",
     body: payload,
+    token,
+  });
+}
+
+export function saveBookmarks(token: string, vegetableIds: string[]) {
+  return apiFetch<UserResponse>("/bookmarks", {
+    method: "PUT",
+    body: { vegetableIds },
     token,
   });
 }
@@ -301,6 +321,20 @@ export function updatePrice(
     body,
     token,
   });
+}
+
+export type PriceHistoryResponse = {
+  histories: Record<string, PriceHistoryPoint[]>;
+};
+
+export function fetchPriceHistory(
+  ids: string[],
+  range: PriceHistoryRange = "week"
+) {
+  const params = new URLSearchParams();
+  if (ids.length) params.set("ids", ids.join(","));
+  params.set("range", range);
+  return apiFetch<PriceHistoryResponse>(`/prices/history?${params}`);
 }
 
 export type HarvestsResponse = { harvests: Harvest[] };
@@ -562,6 +596,210 @@ export function markNotificationsRead(token: string, ids?: string[]) {
   return apiFetch<{ message: string }>("/notifications", {
     method: "PATCH",
     body: ids ? { ids } : {},
+    token,
+  });
+}
+
+export type LoyaltyRuleResponse = {
+  rule: LoyaltyRule;
+  isDefault?: boolean;
+};
+
+export type LoyaltyBalancesResponse = {
+  balances: LoyaltyBalance[];
+  stats: {
+    enrolled: number;
+    rewardsReady: number;
+    avgTokens: number;
+  };
+};
+
+export function fetchLoyaltyRule(token: string) {
+  return apiFetch<LoyaltyRuleResponse>("/loyalty/rule", { token });
+}
+
+export function saveLoyaltyRule(
+  token: string,
+  body: {
+    tokenThreshold: number;
+    discountPercent: number;
+    isActive: boolean;
+  }
+) {
+  return apiFetch<{ rule: LoyaltyRule }>("/loyalty/rule", {
+    method: "PUT",
+    body,
+    token,
+  });
+}
+
+export function fetchLoyaltyBalances(token: string) {
+  return apiFetch<LoyaltyBalancesResponse>("/loyalty/balances", { token });
+}
+
+export type StallResponse = { stall: Stall | null };
+export type StallsResponse = { stalls: Stall[] };
+
+export function fetchMyStall(token: string) {
+  return apiFetch<StallResponse>("/stalls/me", { token });
+}
+
+export function saveMyStall(
+  token: string,
+  body: {
+    name: string;
+    location: string;
+    license?: string;
+    contact?: string;
+  }
+) {
+  return apiFetch<{ stall: Stall }>("/stalls/me", {
+    method: "PUT",
+    body,
+    token,
+  });
+}
+
+export function fetchStalls(token: string) {
+  return apiFetch<StallsResponse>("/stalls", { token });
+}
+
+export function createStall(
+  token: string,
+  body: {
+    traderId: string;
+    name: string;
+    location: string;
+    license?: string;
+    contact?: string;
+  }
+) {
+  return apiFetch<{ stall: Stall }>("/stalls", {
+    method: "POST",
+    body,
+    token,
+  });
+}
+
+export function updateStall(
+  token: string,
+  id: string,
+  body: Partial<{
+    name: string;
+    location: string;
+    license: string;
+    contact: string;
+    status: Stall["status"];
+  }>
+) {
+  return apiFetch<{ stall: Stall }>(`/stalls/${id}`, {
+    method: "PATCH",
+    body,
+    token,
+  });
+}
+
+export function fetchPublishedAnnouncements() {
+  return apiFetch<{ announcements: Announcement[] }>("/announcements");
+}
+
+export function fetchAnnouncements(token: string) {
+  return apiFetch<{ announcements: Announcement[] }>("/admin/announcements", {
+    token,
+  });
+}
+
+export function createAnnouncement(
+  token: string,
+  body: { title: string; body: string }
+) {
+  return apiFetch<{ announcement: Announcement }>("/admin/announcements", {
+    method: "POST",
+    body,
+    token,
+  });
+}
+
+export function updateAnnouncement(
+  token: string,
+  id: string,
+  body: Partial<{ title: string; body: string; status: "Published" }>
+) {
+  return apiFetch<{ announcement: Announcement }>(`/admin/announcements/${id}`, {
+    method: "PATCH",
+    body,
+    token,
+  });
+}
+
+export function deleteAnnouncement(token: string, id: string) {
+  return apiFetch<{ ok: boolean }>(`/admin/announcements/${id}`, {
+    method: "DELETE",
+    token,
+  });
+}
+
+export function fetchReports(token: string) {
+  return apiFetch<SalesReport>("/reports", { token });
+}
+
+export function fetchLogs(token: string, query?: { type?: string; user?: string }) {
+  const params = new URLSearchParams();
+  if (query?.type) params.set("type", query.type);
+  if (query?.user) params.set("user", query.user);
+  const qs = params.toString();
+  return apiFetch<{ logs: SystemLog[] }>(`/logs${qs ? `?${qs}` : ""}`, { token });
+}
+
+export function fetchSettings(token?: string | null) {
+  return apiFetch<{ settings: MarketSettings }>("/settings", {
+    token: token ?? undefined,
+  });
+}
+
+export function saveSettings(
+  token: string,
+  body: {
+    vegetableCategories: string;
+    opensAt: string;
+    closesAt: string;
+    marketName: string;
+    offerTemplate: string;
+  }
+) {
+  return apiFetch<{ settings: MarketSettings }>("/settings", {
+    method: "PUT",
+    body,
+    token,
+  });
+}
+
+export function sendContactMessage(body: {
+  name: string;
+  email: string;
+  message: string;
+}) {
+  return apiFetch<{ message: ContactMessage }>("/contact", {
+    method: "POST",
+    body,
+  });
+}
+
+export function fetchContactMessages(token: string) {
+  return apiFetch<{ messages: ContactMessage[] }>("/contact", { token });
+}
+
+export function markContactRead(token: string, id: string) {
+  return apiFetch<{ message: ContactMessage }>(`/contact/${id}`, {
+    method: "PATCH",
+    body: { read: true },
+    token,
+  });
+}
+
+export function deleteContactMessage(token: string, id: string) {
+  return apiFetch<{ ok: boolean }>(`/contact/${id}`, {
+    method: "DELETE",
     token,
   });
 }
