@@ -1,8 +1,16 @@
-import mongoose, { Schema, type HydratedDocument, type Model } from "mongoose";
+import mongoose, { Schema, type HydratedDocument, type Model, type Types } from "mongoose";
 
 export type UserRole = "farmer" | "trader" | "admin";
 
 export type AccountStatus = "Pending" | "Active" | "Inactive" | "Rejected";
+
+export type INotificationPrefs = {
+  offerAlerts: boolean;
+  priceBookmarks: boolean;
+  announcements: boolean;
+  newApplications: boolean;
+  acceptedOffers: boolean;
+};
 
 export type IUser = {
   name: string;
@@ -20,6 +28,9 @@ export type IUser = {
   rejectionReason: string;
   reviewedAt?: Date;
   joinedAt: Date;
+  notificationPrefs: INotificationPrefs;
+  bookmarkedVegetableIds: Types.ObjectId[];
+  lastPriceDigestAt?: Date;
 };
 
 const userSchema = new Schema<IUser>(
@@ -99,6 +110,20 @@ const userSchema = new Schema<IUser>(
       type: Date,
       default: Date.now,
     },
+    notificationPrefs: {
+      offerAlerts: { type: Boolean, default: true },
+      priceBookmarks: { type: Boolean, default: true },
+      announcements: { type: Boolean, default: true },
+      newApplications: { type: Boolean, default: true },
+      acceptedOffers: { type: Boolean, default: true },
+    },
+    bookmarkedVegetableIds: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Vegetable" }],
+      default: [],
+    },
+    lastPriceDigestAt: {
+      type: Date,
+    },
   },
   {
     toJSON: {
@@ -108,6 +133,18 @@ const userSchema = new Schema<IUser>(
         delete value._id;
         delete value.__v;
         delete value.password;
+        delete value.lastPriceDigestAt;
+        value.bookmarkedVegetableIds = Array.isArray(value.bookmarkedVegetableIds)
+          ? value.bookmarkedVegetableIds.map(String)
+          : [];
+        const prefs = (value.notificationPrefs ?? {}) as Record<string, unknown>;
+        value.notificationPrefs = {
+          offerAlerts: prefs.offerAlerts !== false,
+          priceBookmarks: prefs.priceBookmarks !== false,
+          announcements: prefs.announcements !== false,
+          newApplications: prefs.newApplications !== false,
+          acceptedOffers: prefs.acceptedOffers !== false,
+        };
         return value;
       },
     },

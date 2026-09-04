@@ -17,20 +17,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fetchSales, fetchUsers } from "@/lib/api";
+import { fetchLogs, fetchSales, fetchStalls, fetchUsers } from "@/lib/api";
 import { formatKg, formatLKR, formatRelativeTime } from "@/lib/format";
 import { statusMessageKeys, translateVegetableName } from "@/lib/i18n/messages";
-import {
-  stalls,
-  systemLogs,
-} from "@/lib/mock";
-import type { Sale, User } from "@/types";
+import type { Sale, Stall, SystemLog, User } from "@/types";
 
 export default function AdminDashboardPage() {
   const { t, locale } = useLocale();
   const { token } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
+  const [stalls, setStalls] = useState<Stall[]>([]);
+  const [logs, setLogs] = useState<SystemLog[]>([]);
 
   useEffect(() => {
     if (!token) return;
@@ -38,10 +36,14 @@ export default function AdminDashboardPage() {
     Promise.all([
       fetchUsers(token).catch(() => ({ users: [] as User[] })),
       fetchSales(token).catch(() => ({ sales: [] as Sale[] })),
-    ]).then(([userData, saleData]) => {
+      fetchStalls(token).catch(() => ({ stalls: [] as Stall[] })),
+      fetchLogs(token).catch(() => ({ logs: [] as SystemLog[] })),
+    ]).then(([userData, saleData, stallData, logData]) => {
       if (cancelled) return;
       setUsers(userData.users);
       setSales(saleData.sales);
+      setStalls(stallData.stalls);
+      setLogs(logData.logs);
     });
     return () => {
       cancelled = true;
@@ -173,7 +175,12 @@ export default function AdminDashboardPage() {
           </Button>
         </div>
         <ul className="space-y-2">
-          {systemLogs.slice(0, 5).map((log) => (
+          {logs.slice(0, 5).length === 0 ? (
+            <li className="rounded-lg bg-card px-4 py-3 text-sm text-muted-foreground">
+              {t("admin.dash.noActivity")}
+            </li>
+          ) : (
+            logs.slice(0, 5).map((log) => (
             <li
               key={log.id}
               className="flex items-start justify-between gap-3 rounded-lg bg-card px-4 py-3 text-sm"
@@ -190,7 +197,8 @@ export default function AdminDashboardPage() {
                 {formatRelativeTime(log.createdAt, locale)}
               </span>
             </li>
-          ))}
+            ))
+          )}
         </ul>
       </section>
     </div>

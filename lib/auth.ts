@@ -53,5 +53,15 @@ export function normalizeUser(user: User): User {
     rejectionReason: user.rejectionReason ?? "",
     joinedAt: toIso(user.joinedAt) ?? new Date().toISOString(),
     reviewedAt: toIso(user.reviewedAt),
+    notificationPrefs: {
+      offerAlerts: user.notificationPrefs?.offerAlerts !== false,
+      priceBookmarks: user.notificationPrefs?.priceBookmarks !== false,
+      announcements: user.notificationPrefs?.announcements !== false,
+      newApplications: user.notificationPrefs?.newApplications !== false,
+      acceptedOffers: user.notificationPrefs?.acceptedOffers !== false,
+    },
+    bookmarkedVegetableIds: Array.isArray(user.bookmarkedVegetableIds)
+      ? user.bookmarkedVegetableIds.map(String)
+      : [],
   };
 }

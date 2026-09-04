@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { LoyaltyProgressBar } from "@/components/loyalty/loyalty-progress";
 import {
   LoyaltyStatusBadge,
@@ -9,24 +8,19 @@ import {
 import { useLocale } from "@/components/providers/locale-provider";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
-import {
-  getLoyaltyProgress,
-  getLoyaltyRuleForTrader,
-  loyaltyBalances,
-} from "@/lib/mock";
 import { useAuth } from "@/components/providers/auth-provider";
+import { fetchLoyaltyBalances } from "@/lib/api";
+import { useTokenQuery } from "@/lib/hooks/use-token-query";
+import { getLoyaltyProgress } from "@/lib/loyalty";
+import type { LoyaltyBalance } from "@/types";
 
 export default function FarmerLoyaltyPage() {
   const { t } = useLocale();
-  const { user: farmer } = useAuth();
-  const farmerId = farmer?.id;
-
-  const balances = useMemo(
-    () =>
-      farmerId
-        ? loyaltyBalances.filter((b) => b.farmerId === farmerId)
-        : [],
-    [farmerId]
+  const { user: farmer, token } = useAuth();
+  const { data: balances, loading } = useTokenQuery(
+    token,
+    async (authToken) => (await fetchLoyaltyBalances(authToken)).balances,
+    [] as LoyaltyBalance[]
   );
 
   if (!farmer) return null;
@@ -38,7 +32,9 @@ export default function FarmerLoyaltyPage() {
         description={t("farmer.loyalty.description")}
       />
 
-      {balances.length === 0 ? (
+      {loading ? (
+        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+      ) : balances.length === 0 ? (
         <EmptyState
           title={t("farmer.loyalty.emptyTitle")}
           description={t("farmer.loyalty.emptyDescription")}
@@ -46,8 +42,7 @@ export default function FarmerLoyaltyPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {balances.map((balance) => {
-            const rule = getLoyaltyRuleForTrader(balance.traderId);
-            const progress = getLoyaltyProgress(balance, rule);
+            const progress = getLoyaltyProgress(balance);
             const status = loyaltyStatusFromProgress(progress);
             const remaining = Math.max(
               0,
@@ -78,8 +73,10 @@ export default function FarmerLoyaltyPage() {
 
                 {progress.unlocked ? (
                   <p className="text-sm font-medium text-primary">
-                    {t("farmer.loyalty.rewardUnlocked")
-                      .replace("{percent}", String(progress.discountPercent))}
+                    {t("farmer.loyalty.rewardUnlocked").replace(
+                      "{percent}",
+                      String(progress.discountPercent)
+                    )}
                   </p>
                 ) : progress.ruleActive ? (
                   <p className="text-sm text-muted-foreground">

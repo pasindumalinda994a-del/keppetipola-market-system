@@ -19,12 +19,12 @@ import {
 } from "@/components/ui/table";
 import { formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName } from "@/lib/i18n/messages";
-import { loyaltyBalances } from "@/lib/mock";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useMarketPrices } from "@/lib/hooks/use-market-prices";
 import { useTokenQuery } from "@/lib/hooks/use-token-query";
 import {
   fetchHarvests,
+  fetchLoyaltyBalances,
   fetchOffers,
   fetchRequests,
   fetchSales,
@@ -38,17 +38,26 @@ export default function FarmerDashboardPage() {
   const { data } = useTokenQuery(
     token,
     async (authToken) => {
-      const [harvestData, offerData, saleData, requestData] = await Promise.all([
-        fetchHarvests(authToken, { mine: true }),
-        fetchOffers(authToken),
-        fetchSales(authToken),
-        fetchRequests(authToken),
-      ]);
+      const [harvestData, offerData, saleData, requestData, loyaltyData] =
+        await Promise.all([
+          fetchHarvests(authToken, { mine: true }),
+          fetchOffers(authToken),
+          fetchSales(authToken),
+          fetchRequests(authToken),
+          fetchLoyaltyBalances(authToken).catch(() => ({
+            balances: [],
+            stats: { enrolled: 0, rewardsReady: 0, avgTokens: 0 },
+          })),
+        ]);
       return {
         harvests: harvestData.harvests,
         offers: offerData.offers,
         sales: saleData.sales,
         requests: requestData.requests,
+        loyaltyTokens: loyaltyData.balances.reduce(
+          (sum, b) => sum + b.tokenCount,
+          0
+        ),
       };
     },
     {
@@ -56,18 +65,16 @@ export default function FarmerDashboardPage() {
       offers: [] as Offer[],
       sales: [] as Sale[],
       requests: [] as BuyingRequest[],
+      loyaltyTokens: 0,
     }
   );
   const harvests = data.harvests;
   const offers = data.offers;
   const sales = data.sales;
   const requests = data.requests;
+  const farmerLoyaltyTokens = data.loyaltyTokens;
 
   if (!farmer) return null;
-
-  const farmerLoyaltyTokens = loyaltyBalances
-    .filter((b) => b.farmerId === farmer.id)
-    .reduce((sum, b) => sum + b.tokenCount, 0);
   const topPrices = [...prices].sort((a, b) => b.highest - a.highest).slice(0, 4);
   const recommended = [...requests]
     .filter((r) => r.status === "Active")

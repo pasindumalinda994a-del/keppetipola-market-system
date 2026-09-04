@@ -1,6 +1,7 @@
 import { HashScroll } from "@/components/layout/hash-scroll";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { LocaleProvider } from "@/components/providers/locale-provider";
 
 export default function MarketingLayout({
   children,
@@ -8,13 +9,13 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <LocaleProvider>
       <HashScroll />
       <SiteHeader />
       <main className="flex-1 [&_:is(h1,h2,h3,h4,h5,h6)]:font-satoshi [&_:is(h1,h2,h3,h4,h5,h6)]:!font-normal [&_:is(h1,h2,h3,h4,h5,h6)]:uppercase">
         {children}
       </main>
       <SiteFooter />
-    </>
+    </LocaleProvider>
   );
 }

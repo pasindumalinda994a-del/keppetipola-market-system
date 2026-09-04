@@ -15,19 +15,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ApiError, fetchOffers, respondToOffer } from "@/lib/api";
+import { ApiError, fetchLoyaltyBalances, fetchOffers, respondToOffer } from "@/lib/api";
 import { formatDate, formatKg, formatLKR } from "@/lib/format";
 import { useTokenQuery } from "@/lib/hooks/use-token-query";
+import { fillTemplate } from "@/lib/i18n/messages";
+import { getLoyaltyProgress } from "@/lib/loyalty";
 import { cn } from "@/lib/utils";
-import type { Offer } from "@/types";
+import type { LoyaltyBalance, Offer } from "@/types";
 
 export default function FarmerOffersPage() {
   const { t, locale } = useLocale();
   const { token } = useAuth();
-  const { data: offers, loading, refetch } = useTokenQuery(
+  const { data, loading, refetch } = useTokenQuery(
     token,
-    async (authToken) => (await fetchOffers(authToken)).offers,
-    [] as Offer[]
+    async (authToken) => {
+      const [offerData, loyaltyData] = await Promise.all([
+        fetchOffers(authToken),
+        fetchLoyaltyBalances(authToken).catch(() => ({
+          balances: [] as LoyaltyBalance[],
+        })),
+      ]);
+      return {
+        offers: offerData.offers,
+        balances: loyaltyData.balances,
+      };
+    },
+    { offers: [] as Offer[], balances: [] as LoyaltyBalance[] }
+  );
+  const offers = data.offers;
+  const loyaltyByTrader = new Map(
+    data.balances.map((balance) => [balance.traderId, getLoyaltyProgress(balance)])
   );
   const pendingOffers = offers.filter(
     (o) => o.status === "Pending" || o.status === "Offered"
@@ -39,8 +56,16 @@ export default function FarmerOffersPage() {
   async function accept(id: string) {
     if (!token) return;
     try {
-      await respondToOffer(token, id, "accept");
-      toast.success(t("farmer.offers.accepted"));
+      const result = await respondToOffer(token, id, "accept");
+      if ("sale" in result && result.sale.loyaltyApplied) {
+        toast.success(
+          fillTemplate(t("farmer.offers.acceptedWithLoyalty"), {
+            percent: result.sale.loyaltyDiscountPercent ?? 0,
+          })
+        );
+      } else {
+        toast.success(t("farmer.offers.accepted"));
+      }
       await refetch();
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : t("common.retry"));
@@ -84,7 +109,13 @@ export default function FarmerOffersPage() {
             <TableBody>
               {[...offers]
                 .sort((a, b) => b.price - a.price)
-                .map((o) => (
+                .map((o) => {
+                  const loyalty = loyaltyByTrader.get(o.traderId);
+                  const showLoyaltyHint =
+                    Boolean(loyalty?.unlocked) &&
+                    o.status !== "Cancelled" &&
+                    o.status !== "Accepted";
+                  return (
                   <TableRow
                     key={o.id}
                     className={cn(
@@ -94,7 +125,16 @@ export default function FarmerOffersPage() {
                         "bg-price/10"
                     )}
                   >
-                    <TableCell className="font-medium">{o.traderName}</TableCell>
+                    <TableCell className="font-medium">
+                      {o.traderName}
+                      {showLoyaltyHint && loyalty ? (
+                          <p className="mt-1 text-xs font-medium text-primary">
+                            {fillTemplate(t("farmer.offers.loyaltyHint"), {
+                              percent: loyalty.discountPercent,
+                            })}
+                          </p>
+                      ) : null}
+                    </TableCell>
                     <TableCell className="font-semibold text-price-foreground">
                       {formatLKR(o.price, locale)}
                       {o.price === highest &&
@@ -140,7 +180,8 @@ export default function FarmerOffersPage() {
                       )}
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
             </TableBody>
           </Table>
         </div>

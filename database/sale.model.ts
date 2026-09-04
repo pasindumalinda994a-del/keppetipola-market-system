@@ -19,6 +19,9 @@ export type ISale = {
   requestId?: Types.ObjectId;
   status: SaleStatus;
   date: Date;
+  originalUnitPrice?: number;
+  loyaltyDiscountPercent?: number;
+  loyaltyApplied?: boolean;
 };
 
 const saleSchema = new Schema<ISale>(
@@ -43,6 +46,9 @@ const saleSchema = new Schema<ISale>(
       index: true,
     },
     date: { type: Date, default: Date.now },
+    originalUnitPrice: { type: Number, min: 0 },
+    loyaltyDiscountPercent: { type: Number, default: 0, min: 0, max: 100 },
+    loyaltyApplied: { type: Boolean, default: false },
   },
   {
     timestamps: true,

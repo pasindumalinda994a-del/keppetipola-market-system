@@ -17,11 +17,11 @@ import {
 } from "@/components/ui/table";
 import { formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName } from "@/lib/i18n/messages";
-import { loyaltyBalances } from "@/lib/mock";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useTokenQuery } from "@/lib/hooks/use-token-query";
 import {
   fetchApplications,
+  fetchLoyaltyBalances,
   fetchRequests,
   fetchSales,
 } from "@/lib/api";
@@ -33,32 +33,35 @@ export default function TraderDashboardPage() {
   const { data } = useTokenQuery(
     token,
     async (authToken) => {
-      const [requestData, appData, saleData] = await Promise.all([
+      const [requestData, appData, saleData, loyaltyData] = await Promise.all([
         fetchRequests(authToken, { mine: true }),
         fetchApplications(authToken),
         fetchSales(authToken),
+        fetchLoyaltyBalances(authToken).catch(() => ({
+          balances: [],
+          stats: { enrolled: 0, rewardsReady: 0, avgTokens: 0 },
+        })),
       ]);
       return {
         requests: requestData.requests,
         applications: appData.applications,
         sales: saleData.sales,
+        loyaltyFarmers: loyaltyData.stats.enrolled,
       };
     },
     {
       requests: [] as BuyingRequest[],
       applications: [] as Application[],
       sales: [] as Sale[],
+      loyaltyFarmers: 0,
     }
   );
   const requests = data.requests;
   const applications = data.applications;
   const sales = data.sales;
+  const loyaltyFarmers = data.loyaltyFarmers;
 
   if (!trader) return null;
-
-  const loyaltyFarmers = loyaltyBalances.filter(
-    (b) => b.traderId === trader.id
-  ).length;
   const today = new Date().toISOString().slice(0, 10);
   const todaySales = sales.filter((s) => s.date.slice(0, 10) === today);
   const todaySpending = todaySales.reduce((sum, s) => sum + s.total, 0);

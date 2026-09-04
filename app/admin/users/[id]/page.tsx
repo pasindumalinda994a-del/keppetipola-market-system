@@ -21,11 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ApiError, fetchUser, updateUserStatus } from "@/lib/api";
+import { ApiError, fetchLogs, fetchSales, fetchUser, updateUserStatus } from "@/lib/api";
 import { formatDate, formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName, type MessageKey } from "@/lib/i18n/messages";
-import { sales, systemLogs, transactions } from "@/lib/mock";
-import type { AccountStatus, User, UserRole } from "@/types";
+import type { AccountStatus, Sale, SystemLog, User, UserRole } from "@/types";
 
 function roleLabel(role: UserRole, t: (key: MessageKey) => string) {
   if (role === "farmer") return t("common.farmer");
@@ -39,6 +38,8 @@ export default function AdminUserDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const [user, setUser] = useState<User | null>(null);
+  const [userSales, setUserSales] = useState<Sale[]>([]);
+  const [activity, setActivity] = useState<SystemLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [notFoundUser, setNotFoundUser] = useState(false);
@@ -53,9 +54,21 @@ export default function AdminUserDetailPage() {
       setLoading(true);
       try {
         const data = await fetchUser(token!, id);
+        const [saleData, logData] = await Promise.all([
+          fetchSales(token!).catch(() => ({ sales: [] as Sale[] })),
+          fetchLogs(token!, { user: data.user.email }).catch(() => ({
+            logs: [] as SystemLog[],
+          })),
+        ]);
         if (!cancelled) {
           setUser(data.user);
           setRejectionReason(data.user.rejectionReason || "");
+          setUserSales(
+            saleData.sales.filter(
+              (s) => s.farmerId === id || s.traderId === id
+            )
+          );
+          setActivity(logData.logs);
         }
       } catch (err) {
         if (!cancelled) {
@@ -89,15 +102,6 @@ export default function AdminUserDetailPage() {
   }
   if (!user) return null;
 
-  const userSales = sales.filter(
-    (s) => s.farmerId === id || s.traderId === id
-  );
-  const userTxns = transactions.filter(
-    (txn) =>
-      txn.farmerName === user.name ||
-      txn.traderName.includes(user.name.split(" ")[0])
-  );
-  const activity = systemLogs.filter((l) => l.user === user.email);
   const isApplicant = user.role === "farmer" || user.role === "trader";
   const isPending = user.status === "Pending";
   const hasDocuments = Boolean(
@@ -319,8 +323,7 @@ export default function AdminUserDetailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(userSales.length ? userSales : userTxns.slice(0, 3)).length ===
-              0 ? (
+              {userSales.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={5}
@@ -330,42 +333,19 @@ export default function AdminUserDetailPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                (userSales.length ? userSales : userTxns.slice(0, 3)).map(
-                  (row) => {
-                    if ("unitPrice" in row) {
-                      return (
-                        <TableRow key={row.id}>
-                          <TableCell>{formatDate(row.date, locale)}</TableCell>
-                          <TableCell>
-                            {translateVegetableName(row.vegetableName, t)}
-                          </TableCell>
-                          <TableCell>
-                            {formatKg(row.quantityKg, locale)}
-                          </TableCell>
-                          <TableCell>{formatLKR(row.total, locale)}</TableCell>
-                          <TableCell>
-                            <StatusBadge status={row.status} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-                    return (
-                      <TableRow key={row.id}>
-                        <TableCell>{formatDate(row.date, locale)}</TableCell>
-                        <TableCell>
-                          {translateVegetableName(row.vegetableName, t)}
-                        </TableCell>
-                        <TableCell>
-                          {formatKg(row.quantityKg, locale)}
-                        </TableCell>
-                        <TableCell>{formatLKR(row.amount, locale)}</TableCell>
-                        <TableCell>
-                          <StatusBadge status={row.status} />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
-                )
+                userSales.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>{formatDate(row.date, locale)}</TableCell>
+                    <TableCell>
+                      {translateVegetableName(row.vegetableName, t)}
+                    </TableCell>
+                    <TableCell>{formatKg(row.quantityKg, locale)}</TableCell>
+                    <TableCell>{formatLKR(row.total, locale)}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={row.status} />
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>

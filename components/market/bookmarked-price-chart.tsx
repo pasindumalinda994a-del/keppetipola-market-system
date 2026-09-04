@@ -15,24 +15,28 @@ import {
 } from "@/components/market/multi-vegetable-price-chart";
 import { ChartSegmentedControl } from "@/components/market/chart-ui";
 import { cn } from "@/lib/utils";
-import { vegetables as vegSeed, type PriceHistoryRange } from "@/lib/mock";
-import type { Vegetable } from "@/types";
+import { MAX_BOOKMARKS } from "@/lib/bookmarks";
+import type { PriceHistoryRange, Vegetable } from "@/types";
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
-import { fillTemplate, type MessageKey, translateVegetableName, vegetableMatchesQuery } from "@/lib/i18n/messages";
+import { useVegetables } from "@/lib/hooks/use-vegetables";
+import {
+  fillTemplate,
+  type MessageKey,
+  translateVegetableName,
+  vegetableMatchesQuery,
+} from "@/lib/i18n/messages";
+import { ApiError } from "@/lib/api";
 
-const MAX_BOOKMARKS = 5;
-
-function buildInitialVegetables(source: Vegetable[]): Vegetable[] {
-  let selected = 0;
-  return source.map((v) => {
-    const bookmarked = Boolean(v.bookmarked) && selected < MAX_BOOKMARKS;
-    if (bookmarked) selected += 1;
-    return { ...v, bookmarked };
-  });
-}
-
-function initialVegetables(): Vegetable[] {
-  return buildInitialVegetables(vegSeed);
+function applyBookmarks(
+  source: Vegetable[],
+  bookmarkedIds: string[] | undefined
+): Vegetable[] {
+  const selected = new Set((bookmarkedIds ?? []).slice(0, MAX_BOOKMARKS));
+  return source.map((v) => ({
+    ...v,
+    bookmarked: selected.has(v.id),
+  }));
 }
 
 export function BookmarkedPriceChart({
@@ -49,31 +53,23 @@ export function BookmarkedPriceChart({
   vegetables?: Vegetable[];
 }) {
   const { t } = useLocale();
+  const { user, updateBookmarks } = useAuth();
+  const { vegetables: fetched } = useVegetables();
+  const source = vegetablesProp?.length ? vegetablesProp : fetched;
+  const bookmarkKey = (user?.bookmarkedVegetableIds ?? []).join(",");
+  const sourceKey = source.map((v) => v.id).join(",");
+
   const [vegs, setVegs] = useState<Vegetable[]>(() =>
-    vegetablesProp?.length
-      ? buildInitialVegetables(
-          vegetablesProp.map((v, i) => ({
-            ...v,
-            bookmarked: i < 2,
-          }))
-        )
-      : initialVegetables()
+    applyBookmarks(source, user?.bookmarkedVegetableIds)
   );
+  const [saving, setSaving] = useState(false);
   const [range, setRange] = useState<PriceHistoryRange>("week");
   const [chartType, setChartType] = useState<PriceChartType>("line");
   const [metric, setMetric] = useState<PriceChartMetric>("average");
 
   useEffect(() => {
-    if (!vegetablesProp?.length) return;
-    setVegs(
-      buildInitialVegetables(
-        vegetablesProp.map((v, i) => ({
-          ...v,
-          bookmarked: i < 2,
-        }))
-      )
-    );
-  }, [vegetablesProp]);
+    setVegs(applyBookmarks(source, user?.bookmarkedVegetableIds));
+  }, [sourceKey, bookmarkKey, source, user?.bookmarkedVegetableIds]);
 
   const query = searchQuery.trim().toLowerCase();
 
@@ -165,25 +161,33 @@ export function BookmarkedPriceChart({
       })
     : null;
 
-  function toggleBookmark(id: string) {
+  async function toggleBookmark(id: string) {
+    if (saving) return;
     const current = vegs.find((v) => v.id === id);
     if (!current) return;
 
-    if (!current.bookmarked) {
-      const count = vegs.filter((v) => v.bookmarked).length;
-      if (count >= MAX_BOOKMARKS) {
-        toast.error(
-          fillTemplate(t("chart.bookmarkLimit"), { max: MAX_BOOKMARKS })
-        );
-        return;
-      }
+    const nextIds = current.bookmarked
+      ? vegs.filter((v) => v.bookmarked && v.id !== id).map((v) => v.id)
+      : [...vegs.filter((v) => v.bookmarked).map((v) => v.id), id];
+
+    if (!current.bookmarked && nextIds.length > MAX_BOOKMARKS) {
+      toast.error(
+        fillTemplate(t("chart.bookmarkLimit"), { max: MAX_BOOKMARKS })
+      );
+      return;
     }
 
-    setVegs((prev) =>
-      prev.map((v) =>
-        v.id === id ? { ...v, bookmarked: !v.bookmarked } : v
-      )
-    );
+    const previous = vegs;
+    setVegs(applyBookmarks(vegs, nextIds));
+    setSaving(true);
+    try {
+      await updateBookmarks(nextIds);
+    } catch (err) {
+      setVegs(previous);
+      toast.error(err instanceof ApiError ? err.message : "Request failed");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const heading = title ?? t("chart.priceTrend");
@@ -242,12 +246,14 @@ export function BookmarkedPriceChart({
               <button
                 key={v.id}
                 type="button"
+                disabled={saving}
                 onClick={() => toggleBookmark(v.id)}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
                   active
                     ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    : "bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground",
+                  saving && "opacity-70"
                 )}
               >
                 <Bookmark

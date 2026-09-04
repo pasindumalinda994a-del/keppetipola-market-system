@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAuthError, requireAdmin } from "@/lib/actions/auth.actions";
+import { writeSystemLog } from "@/lib/actions/log.actions";
+import { upsertPriceSnapshot } from "@/lib/actions/price-history.actions";
 import { MarketPrice } from "@/database/market-price.model";
 
 type Params = { params: Promise<{ vegetableId: string }> };
@@ -63,6 +65,17 @@ export async function PATCH(request: Request, { params }: Params) {
     price.lastUpdated = new Date();
 
     await price.save();
+    await upsertPriceSnapshot({
+      vegetableId: price.vegetableId,
+      lowest: price.lowest,
+      highest: price.highest,
+      average: price.average,
+    });
+    await writeSystemLog(
+      "Price Update",
+      `${price.vegetableName} average updated to Rs.${newAverage}`,
+      auth.user.email
+    );
     return NextResponse.json({ price: price.toJSON() });
   } catch (err) {
     console.error("updatePrice error:", err);
