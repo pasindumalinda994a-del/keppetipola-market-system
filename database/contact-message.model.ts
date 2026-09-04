@@ -10,6 +10,8 @@ export type IContactMessage = {
   email: string;
   message: string;
   read: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 const contactMessageSchema = new Schema<IContactMessage>(
