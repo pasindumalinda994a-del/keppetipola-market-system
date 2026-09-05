@@ -23,7 +23,7 @@ export function VegetablePriceCard({
   const vegName = translateVegetableName(price.vegetableName, t);
   const content = (
     <>
-      <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-muted">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
         {price.imageUrl ? (
           <Image
             src={price.imageUrl}

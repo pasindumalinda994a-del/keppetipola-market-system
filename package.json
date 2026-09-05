@@ -9,7 +9,8 @@
     "lint": "eslint",
     "seed": "tsx scripts/seed-sample-marketplace.ts --confirm",
     "seed:sample": "tsx scripts/seed-sample-marketplace.ts --confirm",
-    "seed:produce": "tsx scripts/seed-produce-catalog.ts"
+    "seed:produce": "tsx scripts/seed-produce-catalog.ts",
+    "convert:produce-images": "tsx scripts/convert-produce-images.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -47,6 +48,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
     "typescript": "^5"

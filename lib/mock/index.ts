@@ -33,14 +33,14 @@ export const vegetables: Vegetable[] = [
 ];
 
 export const marketPrices: MarketPrice[] = [
-  { vegetableId: "veg-1", vegetableName: "Carrot", category: "Vegetables", imageUrl: "/Vegitable-Images/Carrots_with_green_tops_isolated_2K_202609051952.jpeg", lowest: 190, highest: 200, average: 196, change: 5, lastUpdated: new Date(Date.now() - 3 * 60000).toISOString() },
-  { vegetableId: "veg-2", vegetableName: "Cabbage", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_green_cabbage_isolated_2K_202609051953.jpeg", lowest: 80, highest: 95, average: 88, change: -2, lastUpdated: new Date(Date.now() - 8 * 60000).toISOString() },
-  { vegetableId: "veg-3", vegetableName: "Leeks", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_leeks_arranged_horizontally_2K_202609051953.jpeg", lowest: 220, highest: 245, average: 232, change: 8, lastUpdated: new Date(Date.now() - 5 * 60000).toISOString() },
-  { vegetableId: "veg-4", vegetableName: "Beans", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_green_beans_arranged_2K_202609051954.jpeg", lowest: 280, highest: 310, average: 295, change: 12, lastUpdated: new Date(Date.now() - 12 * 60000).toISOString() },
-  { vegetableId: "veg-5", vegetableName: "Tomato", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_red_tomatoes_arranged_together_2K_202609051954.jpeg", lowest: 150, highest: 175, average: 162, change: -4, lastUpdated: new Date(Date.now() - 6 * 60000).toISOString() },
-  { vegetableId: "veg-6", vegetableName: "Potato", category: "Tubers", imageUrl: "/Tuber-Images/Potatoes_on_white_background_2K_202609052052.jpeg", lowest: 120, highest: 135, average: 128, change: 1, lastUpdated: new Date(Date.now() - 15 * 60000).toISOString() },
-  { vegetableId: "veg-7", vegetableName: "Beetroot", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_beetroot_on_white_background_2K_202609051955.jpeg", lowest: 160, highest: 180, average: 170, change: 3, lastUpdated: new Date(Date.now() - 9 * 60000).toISOString() },
-  { vegetableId: "veg-8", vegetableName: "Capsicum", category: "Vegetables", imageUrl: "/Vegitable-Images/Three_green_bell_peppers_arranged_2K_202609051955.jpeg", lowest: 350, highest: 390, average: 370, change: -6, lastUpdated: new Date(Date.now() - 4 * 60000).toISOString() },
+  { vegetableId: "veg-1", vegetableName: "Carrot", category: "Vegetables", imageUrl: "/Vegitable-Images/Carrots_with_green_tops_isolated_2K_202609051952.webp", lowest: 190, highest: 200, average: 196, change: 5, lastUpdated: new Date(Date.now() - 3 * 60000).toISOString() },
+  { vegetableId: "veg-2", vegetableName: "Cabbage", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_green_cabbage_isolated_2K_202609051953.webp", lowest: 80, highest: 95, average: 88, change: -2, lastUpdated: new Date(Date.now() - 8 * 60000).toISOString() },
+  { vegetableId: "veg-3", vegetableName: "Leeks", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_leeks_arranged_horizontally_2K_202609051953.webp", lowest: 220, highest: 245, average: 232, change: 8, lastUpdated: new Date(Date.now() - 5 * 60000).toISOString() },
+  { vegetableId: "veg-4", vegetableName: "Beans", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_green_beans_arranged_2K_202609051954.webp", lowest: 280, highest: 310, average: 295, change: 12, lastUpdated: new Date(Date.now() - 12 * 60000).toISOString() },
+  { vegetableId: "veg-5", vegetableName: "Tomato", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_red_tomatoes_arranged_together_2K_202609051954.webp", lowest: 150, highest: 175, average: 162, change: -4, lastUpdated: new Date(Date.now() - 6 * 60000).toISOString() },
+  { vegetableId: "veg-6", vegetableName: "Potato", category: "Tubers", imageUrl: "/Tuber-Images/Potatoes_on_white_background_2K_202609052052.webp", lowest: 120, highest: 135, average: 128, change: 1, lastUpdated: new Date(Date.now() - 15 * 60000).toISOString() },
+  { vegetableId: "veg-7", vegetableName: "Beetroot", category: "Vegetables", imageUrl: "/Vegitable-Images/Fresh_beetroot_on_white_background_2K_202609051955.webp", lowest: 160, highest: 180, average: 170, change: 3, lastUpdated: new Date(Date.now() - 9 * 60000).toISOString() },
+  { vegetableId: "veg-8", vegetableName: "Capsicum", category: "Vegetables", imageUrl: "/Vegitable-Images/Three_green_bell_peppers_arranged_2K_202609051955.webp", lowest: 350, highest: 390, average: 370, change: -6, lastUpdated: new Date(Date.now() - 4 * 60000).toISOString() },
 ];
 
 function daysAgo(n: number): string {

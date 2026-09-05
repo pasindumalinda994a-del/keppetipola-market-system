@@ -22,6 +22,52 @@ config({ path: resolve(process.cwd(), ".env.local") });
 
 const REMOVED_PRODUCE_NAMES = ["Small Onions"] as const;
 
+const PRODUCE_IMAGE_FOLDERS = [
+  "/Fruit-Images/",
+  "/Grain-DryGood-Images/",
+  "/Vegitable-Images/",
+  "/Leaf-Green-Images/",
+  "/Tuber-Images/",
+] as const;
+
+const LEGACY_IMAGE_EXT = /\.(jpe?g|png)$/i;
+
+function isProduceImageUrl(url: string): boolean {
+  return PRODUCE_IMAGE_FOLDERS.some((folder) => url.includes(folder));
+}
+
+function toWebpUrl(url: string): string {
+  return url.replace(LEGACY_IMAGE_EXT, ".webp");
+}
+
+async function rewriteLegacyProduceImageUrls(): Promise<void> {
+  const vegetables = await Vegetable.find({
+    imageUrl: { $regex: LEGACY_IMAGE_EXT },
+  }).select("name imageUrl");
+  let vegetableRewrites = 0;
+  for (const vegetable of vegetables) {
+    if (!isProduceImageUrl(vegetable.imageUrl)) continue;
+    vegetable.imageUrl = toWebpUrl(vegetable.imageUrl);
+    await vegetable.save();
+    vegetableRewrites += 1;
+  }
+
+  const prices = await MarketPrice.find({
+    imageUrl: { $regex: LEGACY_IMAGE_EXT },
+  }).select("vegetableName imageUrl");
+  let priceRewrites = 0;
+  for (const price of prices) {
+    if (!isProduceImageUrl(price.imageUrl)) continue;
+    price.imageUrl = toWebpUrl(price.imageUrl);
+    await price.save();
+    priceRewrites += 1;
+  }
+
+  console.log(
+    `Rewrote leftover image URLs: ${vegetableRewrites} vegetable(s), ${priceRewrites} market price(s).`
+  );
+}
+
 function logDeleted(label: string, deletedCount: number | undefined): void {
   console.log(`Purged ${label}: ${deletedCount ?? 0}`);
 }
@@ -169,6 +215,8 @@ async function seedProduceCatalog(): Promise<void> {
     created += 1;
     console.log(`Created ${vegetable.name} (${spec.category})`);
   }
+
+  await rewriteLegacyProduceImageUrls();
 
   console.log(
     `Done. Updated ${updated} existing, created ${created} new. Catalog size ${PRODUCE_CATALOG.length}.`
