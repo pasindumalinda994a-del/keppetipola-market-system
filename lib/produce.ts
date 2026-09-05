@@ -1,20 +1,34 @@
-export const PRODUCE_CATEGORIES = ["Vegetable", "Fruit", "Other"] as const;
+export const PRODUCE_CATEGORIES = [
+  "Vegetables",
+  "Tubers",
+  "Leafy greens",
+  "Grains & dry goods",
+  "Fruits",
+] as const;
 
 export type ProduceCategory = (typeof PRODUCE_CATEGORIES)[number];
 
-export const DEFAULT_PRODUCE_CATEGORIES = "Vegetable, Fruit, Other";
+export const DEFAULT_PRODUCE_CATEGORIES = PRODUCE_CATEGORIES.join(", ");
 
 export const LEGACY_BOTANICAL_CATEGORIES = ["Root", "Leafy", "Pod"] as const;
 
 export const LEGACY_SETTINGS_CATEGORIES = "Root, Leafy, Pod, Fruit";
 
+export const LEGACY_THREE_CATEGORIES = "Vegetable, Fruit, Other";
+
+const LEGACY_CATEGORY_MAP: Record<string, ProduceCategory> = {
+  Vegetable: "Vegetables",
+  Fruit: "Fruits",
+  Other: "Vegetables",
+  Root: "Vegetables",
+  Leafy: "Vegetables",
+  Pod: "Vegetables",
+};
+
 export function normalizeProduceCategory(category: string | undefined): string {
   const trimmed = String(category ?? "").trim();
-  if (!trimmed) return "Other";
-  if ((LEGACY_BOTANICAL_CATEGORIES as readonly string[]).includes(trimmed)) {
-    return "Vegetable";
-  }
-  return trimmed;
+  if (!trimmed) return "Vegetables";
+  return LEGACY_CATEGORY_MAP[trimmed] ?? trimmed;
 }
 
 export function parseProduceCategories(raw: string | undefined): string[] {
@@ -34,7 +48,11 @@ export function normalizeProduceCategoriesSetting(
   raw: string | undefined
 ): string {
   const trimmed = String(raw ?? "").trim();
-  if (!trimmed || trimmed === LEGACY_SETTINGS_CATEGORIES) {
+  if (
+    !trimmed ||
+    trimmed === LEGACY_SETTINGS_CATEGORIES ||
+    trimmed === LEGACY_THREE_CATEGORIES
+  ) {
     return DEFAULT_PRODUCE_CATEGORIES;
   }
   return parseProduceCategories(trimmed).join(", ");

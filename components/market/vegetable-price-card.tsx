@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Leaf } from "lucide-react";
 import { formatLKR, formatRelativeTime } from "@/lib/format";
 import type { MarketPrice } from "@/types";
 import { PriceChange } from "@/components/shared/price-change";
@@ -23,13 +24,19 @@ export function VegetablePriceCard({
   const content = (
     <>
       <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-muted">
-        <Image
-          src={price.imageUrl}
-          alt={vegName}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-        />
+        {price.imageUrl ? (
+          <Image
+            src={price.imageUrl}
+            alt={vegName}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-muted-foreground">
+            <Leaf className="size-10 opacity-40" aria-hidden />
+          </div>
+        )}
       </div>
       <div className="mt-3 px-0.5">
         <div className="flex items-start justify-between gap-2">

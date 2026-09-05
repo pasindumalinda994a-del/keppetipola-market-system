@@ -62,7 +62,7 @@ export default function AdminVegetablesPage() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [newCategory, setNewCategory] = useState(categories[0] ?? "Vegetable");
+  const [newCategory, setNewCategory] = useState(categories[0] ?? "Vegetables");
 
   const visibleItems = useMemo(
     () => filterProduceByCategory(items, categoryFilter),
@@ -197,7 +197,7 @@ export default function AdminVegetablesPage() {
               if (!token) return;
               const fd = new FormData(e.currentTarget);
               const name = String(fd.get("name") || "");
-              const category = newCategory || "Other";
+              const category = newCategory || "Vegetables";
               setSaving(true);
               try {
                 await createVegetable(token, { name, category });
@@ -224,7 +224,7 @@ export default function AdminVegetablesPage() {
               <Select
                 value={newCategory}
                 onValueChange={(value) =>
-                  setNewCategory(value ?? categories[0] ?? "Vegetable")
+                  setNewCategory(value ?? categories[0] ?? "Vegetables")
                 }
               >
                 <SelectTrigger className="w-full">

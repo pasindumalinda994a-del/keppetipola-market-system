@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/seed-sample-marketplace.ts --confirm",
-    "seed:sample": "tsx scripts/seed-sample-marketplace.ts --confirm"
+    "seed:sample": "tsx scripts/seed-sample-marketplace.ts --confirm",
+    "seed:produce": "tsx scripts/seed-produce-catalog.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
