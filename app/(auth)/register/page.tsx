@@ -10,7 +10,9 @@ import {
   CompressError,
   prepareRegistrationFiles,
 } from "@/lib/compress-image";
+import { fillTemplate, translateAuthError } from "@/lib/i18n/messages";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,6 +57,7 @@ function FileField({
   file: File | null;
   onChange: (file: File | null) => void;
 }) {
+  const { t } = useLocale();
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
@@ -67,7 +70,7 @@ function FileField({
         className="h-11 rounded-xl bg-background/70 px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1 file:text-sm file:font-medium"
       />
       <p className="text-xs text-muted-foreground">
-        {file ? file.name : "JPG, PNG, or PDF · images compressed automatically · PDFs max 1 MB"}
+        {file ? file.name : t("auth.doc.fileHint")}
       </p>
     </div>
   );
@@ -75,6 +78,7 @@ function FileField({
 
 function RegisterForm() {
   const { register } = useAuth();
+  const { t } = useLocale();
   const params = useSearchParams();
   const roleParam = params.get("role");
   const roleLocked = roleParam === "farmer" || roleParam === "trader";
@@ -93,7 +97,6 @@ function RegisterForm() {
   const [taxBill, setTaxBill] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<{
-    message: string;
     memberId?: string;
   } | null>(null);
   const [showMismatch, setShowMismatch] = useState(false);
@@ -101,16 +104,18 @@ function RegisterForm() {
   const passwordsMatch = password === confirmPassword;
   const mismatchVisible =
     showMismatch && confirmPassword.length > 0 && !passwordsMatch;
+  const roleLabel =
+    role === "farmer" ? t("common.farmer") : t("common.trader");
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!passwordsMatch) {
       setShowMismatch(true);
-      toast.error("Passwords do not match");
+      toast.error(t("auth.passwordMismatch"));
       return;
     }
     if (!identityFront || !identityBack || !taxBill) {
-      toast.error("Please upload identity photos and the tax bill");
+      toast.error(t("auth.error.missingDocuments"));
       return;
     }
     setSubmitting(true);
@@ -134,38 +139,37 @@ function RegisterForm() {
         taxBill: documents.taxBill,
       });
       setSubmitted({
-        message: data.message,
         memberId: data.user.memberId,
       });
     } catch (err) {
       const message =
         err instanceof ApiError || err instanceof CompressError
-          ? err.message
-          : "Could not create account";
+          ? translateAuthError(err.message, t)
+          : t("auth.error.createAccount");
       toast.error(message);
     } finally {
       setSubmitting(false);
     }
   }
 
-  const roleLabel = role === "farmer" ? "Farmer" : "Trader";
-
   if (submitted) {
     return (
       <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/90 p-6 text-center shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
         <CheckCircle2 className="mx-auto size-10 text-primary" />
         <h1 className="mt-4 font-heading text-2xl font-semibold tracking-tight text-foreground">
-          Application submitted
+          {t("auth.applicationSubmitted")}
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">{submitted.message}</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {t("auth.register.successMessage")}
+        </p>
         {submitted.memberId ? (
           <p className="mt-4 rounded-xl bg-muted/70 px-4 py-3 font-mono text-lg font-semibold tracking-wide text-foreground">
-            {role === "farmer" ? "Your farmer ID" : "Your trader ID"}:{" "}
+            {fillTemplate(t("auth.yourMemberId"), { role: roleLabel })}:{" "}
             {submitted.memberId}
           </p>
         ) : null}
         <Button asChild size="lg" className="mt-6 h-11 w-full rounded-xl">
-          <Link href="/login">Go to login</Link>
+          <Link href="/login">{t("auth.goToLogin")}</Link>
         </Button>
       </div>
     );
@@ -175,11 +179,12 @@ function RegisterForm() {
     <div className="rounded-2xl border border-border/80 bg-card/90 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-          {roleLocked ? `Join as ${roleLabel}` : "Create account"}
+          {roleLocked
+            ? fillTemplate(t("auth.joinAs"), { role: roleLabel })
+            : t("auth.createAccount")}
         </h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
-          Submit your details and documents. An admin must approve your
-          application before you can log in.
+          {t("auth.registerSubtitle")}
         </p>
       </div>
 
@@ -187,8 +192,8 @@ function RegisterForm() {
         <div className="mb-6 grid grid-cols-2 gap-2.5">
           {(
             [
-              { id: "farmer" as const, label: "Farmer", icon: Wheat },
-              { id: "trader" as const, label: "Trader", icon: Store },
+              { id: "farmer" as const, labelKey: "common.farmer" as const, icon: Wheat },
+              { id: "trader" as const, labelKey: "common.trader" as const, icon: Store },
             ] as const
           ).map((r) => {
             const Icon = r.icon;
@@ -206,7 +211,7 @@ function RegisterForm() {
                 )}
               >
                 <Icon className="size-4" />
-                {r.label}
+                {t(r.labelKey)}
               </button>
             );
           })}
@@ -214,41 +219,41 @@ function RegisterForm() {
       ) : null}
 
       <form onSubmit={onSubmit} className="space-y-8">
-        <Section title="Personal details">
+        <Section title={t("auth.personalDetails")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="name">Full name</Label>
+              <Label htmlFor="name">{t("farmer.profile.fullName")}</Label>
               <Input
                 id="name"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder={t("auth.placeholder.name")}
                 className={fieldClass}
                 autoComplete="name"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("common.email")}</Label>
               <Input
                 id="email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("auth.placeholder.email")}
                 className={fieldClass}
                 autoComplete="email"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{t("common.phone")}</Label>
               <Input
                 id="phone"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+94 …"
+                placeholder={t("auth.placeholder.phone")}
                 className={fieldClass}
                 autoComplete="tel"
               />
@@ -256,26 +261,26 @@ function RegisterForm() {
             {role === "farmer" ? (
               <div className="space-y-2">
                 <Label htmlFor="ruralServicesDivision">
-                  Rural Services Division
+                  {t("common.ruralServicesDivision")}
                 </Label>
                 <Input
                   id="ruralServicesDivision"
                   required
                   value={ruralServicesDivision}
                   onChange={(e) => setRuralServicesDivision(e.target.value)}
-                  placeholder="Your division"
+                  placeholder={t("auth.placeholder.division")}
                   className={fieldClass}
                 />
               </div>
             ) : null}
             <div className={cn("space-y-2", role === "trader" && "sm:col-span-2")}>
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">{t("common.address")}</Label>
               <Input
                 id="address"
                 required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Street, town"
+                placeholder={t("auth.placeholder.address")}
                 className={fieldClass}
                 autoComplete="street-address"
               />
@@ -283,23 +288,25 @@ function RegisterForm() {
           </div>
         </Section>
 
-        <Section title="Account password">
+        <Section title={t("auth.accountPassword")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <PasswordInput
                 id="password"
                 required
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 6 characters"
+                placeholder={t("auth.placeholder.passwordMin")}
                 className={fieldClass}
                 autoComplete="new-password"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Label htmlFor="confirmPassword">
+                {t("auth.confirmPassword")}
+              </Label>
               <PasswordInput
                 id="confirmPassword"
                 required
@@ -309,16 +316,18 @@ function RegisterForm() {
                   setConfirmPassword(e.target.value);
                   setShowMismatch(true);
                 }}
-                placeholder="Re-enter password"
+                placeholder={t("auth.placeholder.confirmPassword")}
                 className={fieldClass}
                 autoComplete="new-password"
                 aria-invalid={mismatchVisible}
               />
               {mismatchVisible ? (
-                <p className="text-xs text-destructive">Passwords do not match</p>
+                <p className="text-xs text-destructive">
+                  {t("auth.passwordMismatch")}
+                </p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  Must match the password
+                  {t("auth.passwordMustMatch")}
                 </p>
               )}
             </div>
@@ -326,26 +335,26 @@ function RegisterForm() {
         </Section>
 
         <Section
-          title="Documents"
-          description="Upload both sides of your identity card and a tax bill."
+          title={t("common.documents")}
+          description={t("auth.documentsHint")}
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <FileField
               id="identityFront"
-              label="Identity photo (front)"
+              label={t("auth.doc.identityFront")}
               file={identityFront}
               onChange={setIdentityFront}
             />
             <FileField
               id="identityBack"
-              label="Identity photo (back)"
+              label={t("auth.doc.identityBack")}
               file={identityBack}
               onChange={setIdentityBack}
             />
             <div className="sm:col-span-2">
               <FileField
                 id="taxBill"
-                label="Tax bill photo"
+                label={t("auth.doc.taxBill")}
                 file={taxBill}
                 onChange={setTaxBill}
               />
@@ -359,17 +368,19 @@ function RegisterForm() {
           disabled={submitting}
           className="h-11 w-full rounded-xl"
         >
-          {submitting ? "Submitting…" : `Submit ${role} application`}
+          {submitting
+            ? t("common.submitting")
+            : fillTemplate(t("auth.submitApplication"), { role: roleLabel })}
         </Button>
       </form>
 
       <p className="mt-7 text-center text-sm text-muted-foreground">
-        Already registered?{" "}
+        {t("auth.alreadyRegistered")}{" "}
         <Link
           href="/login"
           className="font-medium text-primary underline-offset-4 hover:underline"
         >
-          Login
+          {t("status.login")}
         </Link>
       </p>
     </div>

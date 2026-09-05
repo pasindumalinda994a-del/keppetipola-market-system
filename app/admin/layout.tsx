@@ -56,7 +56,7 @@ export default function AdminLayout({
           mobileNav={mobileNav}
           notificationHref="/admin/announcements"
           notificationGroups={["Announcements", "System"]}
-          profileHref="/admin/settings"
+          profileHref="/admin/profile"
         >
           {children}
         </PortalShell>

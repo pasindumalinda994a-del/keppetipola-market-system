@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
+import { ProducePicker } from "@/components/market/produce-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +24,6 @@ import {
   prepareHarvestPhotos,
 } from "@/lib/compress-image";
 import { useVegetables } from "@/lib/hooks/use-vegetables";
-import { translateVegetableName } from "@/lib/i18n/messages";
 
 export default function CreateHarvestPage() {
   const { t } = useLocale();
@@ -33,10 +33,6 @@ export default function CreateHarvestPage() {
   const [vegetable, setVegetable] = useState("");
   const [grade, setGrade] = useState("A");
   const [pending, setPending] = useState(false);
-
-  const vegetableItems = Object.fromEntries(
-    vegetables.map((v) => [v.id, translateVegetableName(v.name, t)])
-  );
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -97,26 +93,13 @@ export default function CreateHarvestPage() {
         description={t("farmer.harvest.newDescription")}
       />
       <form onSubmit={onSubmit} className="space-y-4 rounded-lg bg-card p-6">
-        <div className="space-y-2">
-          <Label>{t("common.vegetable")}</Label>
-          <Select
-            value={vegetable || undefined}
-            onValueChange={(v) => setVegetable(v ?? "")}
-            items={vegetableItems}
-            disabled={loading}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={t("common.selectVegetable")} />
-            </SelectTrigger>
-            <SelectContent>
-              {vegetables.map((v) => (
-                <SelectItem key={v.id} value={v.id}>
-                  {translateVegetableName(v.name, t)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <ProducePicker
+          vegetables={vegetables}
+          value={vegetable}
+          onChange={setVegetable}
+          loading={loading}
+          disabled={pending}
+        />
         <div className="space-y-2">
           <Label htmlFor="qty">{t("farmer.harvest.quantityKg")}</Label>
           <Input

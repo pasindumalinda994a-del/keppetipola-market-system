@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
@@ -18,6 +19,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -32,17 +40,34 @@ import {
   fetchSettings,
   updateVegetable,
 } from "@/lib/api";
-import { translateVegetableName } from "@/lib/i18n/messages";
+import {
+  translateProduceCategory,
+  translateVegetableName,
+} from "@/lib/i18n/messages";
+import {
+  DEFAULT_PRODUCE_CATEGORIES,
+  filterProduceByCategory,
+  parseProduceCategories,
+} from "@/lib/produce";
 import type { Vegetable } from "@/types";
 
 export default function AdminVegetablesPage() {
   const { t } = useLocale();
   const { token } = useAuth();
   const [items, setItems] = useState<Vegetable[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>(
+    parseProduceCategories(DEFAULT_PRODUCE_CATEGORIES)
+  );
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [newCategory, setNewCategory] = useState(categories[0] ?? "Vegetable");
+
+  const visibleItems = useMemo(
+    () => filterProduceByCategory(items, categoryFilter),
+    [items, categoryFilter]
+  );
 
   async function load() {
     if (!token) return;
@@ -55,11 +80,12 @@ export default function AdminVegetablesPage() {
         })),
       ]);
       setItems(data.vegetables);
-      setCategories(
-        String(settingsData.settings.vegetableCategories || "")
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean)
+      const nextCategories = parseProduceCategories(
+        settingsData.settings.vegetableCategories
+      );
+      setCategories(nextCategories);
+      setNewCategory((current) =>
+        nextCategories.includes(current) ? current : nextCategories[0]
       );
     } catch (err) {
       toast.error(
@@ -109,6 +135,14 @@ export default function AdminVegetablesPage() {
           <Skeleton className="h-10 w-full" />
         </div>
       ) : (
+        <>
+          <div className="mb-4">
+            <ProduceCategoryFilter
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+              categories={categories}
+            />
+          </div>
         <div className="overflow-hidden rounded-lg bg-card">
           <Table>
             <TableHeader>
@@ -120,12 +154,14 @@ export default function AdminVegetablesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {items.map((v) => (
+              {visibleItems.map((v) => (
                 <TableRow key={v.id}>
                   <TableCell className="font-medium">
                     {translateVegetableName(v.name, t)}
                   </TableCell>
-                  <TableCell>{v.category}</TableCell>
+                  <TableCell>
+                    {translateProduceCategory(v.category, t)}
+                  </TableCell>
                   <TableCell>
                     <StatusBadge status={v.status} />
                   </TableCell>
@@ -146,6 +182,7 @@ export default function AdminVegetablesPage() {
             </TableBody>
           </Table>
         </div>
+        </>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -160,7 +197,7 @@ export default function AdminVegetablesPage() {
               if (!token) return;
               const fd = new FormData(e.currentTarget);
               const name = String(fd.get("name") || "");
-              const category = String(fd.get("category") || t("common.other"));
+              const category = newCategory || "Other";
               setSaving(true);
               try {
                 await createVegetable(token, { name, category });
@@ -183,20 +220,24 @@ export default function AdminVegetablesPage() {
               <Input id="name" name="name" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category">{t("common.category")}</Label>
-              <Input
-                id="category"
-                name="category"
-                required
-                list="veg-categories"
-              />
-              {categories.length > 0 ? (
-                <datalist id="veg-categories">
+              <Label>{t("common.category")}</Label>
+              <Select
+                value={newCategory}
+                onValueChange={(value) =>
+                  setNewCategory(value ?? categories[0] ?? "Vegetable")
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
                   {categories.map((c) => (
-                    <option key={c} value={c} />
+                    <SelectItem key={c} value={c}>
+                      {translateProduceCategory(c, t)}
+                    </SelectItem>
                   ))}
-                </datalist>
-              ) : null}
+                </SelectContent>
+              </Select>
             </div>
             <DialogFooter>
               <Button type="submit" disabled={saving}>

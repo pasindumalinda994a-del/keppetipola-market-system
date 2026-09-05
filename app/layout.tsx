@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     template: "%s · Keppetipola Market",
   },
   description:
-    "Find who will pay the best price for your harvest today at Keppetipola wholesale vegetable market.",
+    "Find who will pay the best price for your harvest today at Keppetipola wholesale vegetable and fruit market.",
 };
 
 export default function RootLayout({

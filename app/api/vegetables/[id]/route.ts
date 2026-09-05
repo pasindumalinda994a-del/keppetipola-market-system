@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isAuthError, requireAdmin } from "@/lib/actions/auth.actions";
 import { MarketPrice } from "@/database/market-price.model";
 import { Vegetable } from "@/database/vegetable.model";
+import { normalizeProduceCategory } from "@/lib/produce";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -34,7 +35,7 @@ export async function PATCH(request: Request, { params }: Params) {
       vegetable.name = String(name).trim();
     }
     if (category !== undefined) {
-      vegetable.category = String(category).trim();
+      vegetable.category = normalizeProduceCategory(String(category));
     }
     if (unit !== undefined) {
       vegetable.unit = String(unit).trim();

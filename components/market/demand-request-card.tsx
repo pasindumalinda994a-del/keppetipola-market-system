@@ -3,20 +3,11 @@
 import Link from "next/link";
 import { formatDateTime, formatKg, formatLKR } from "@/lib/format";
 import type { BuyingRequest } from "@/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/providers/locale-provider";
 import { fillTemplate, translateVegetableName } from "@/lib/i18n/messages";
-
-function traderInitials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
 
 export function DemandRequestCard({
   request,
@@ -37,15 +28,12 @@ export function DemandRequestCard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-3">
-          <Avatar size="lg" className="size-11">
-            {request.traderPhotoUrl ? (
-              <AvatarImage
-                src={request.traderPhotoUrl}
-                alt={request.traderName}
-              />
-            ) : null}
-            <AvatarFallback>{traderInitials(request.traderName)}</AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            name={request.traderName}
+            src={request.traderPhotoUrl}
+            size="lg"
+            className="size-11"
+          />
           <div className="min-w-0">
             <p className="text-sm text-muted-foreground">{t("common.trader")}</p>
             <h3 className="truncate font-semibold text-foreground">

@@ -10,8 +10,9 @@ import { NotificationDrawer } from "@/components/layout/notification-drawer";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import type { MessageKey } from "@/lib/i18n/messages";
+import { profilePhotoSrc } from "@/lib/profile";
 import type { UserRole } from "@/types";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 
 export type NavItem = {
@@ -106,15 +107,12 @@ export function PortalShell({
               href={profile}
               className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-sidebar-accent/50"
             >
-              <Avatar className="size-10 ring-2 ring-sidebar-foreground/10">
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
-                  {user.name
-                    .split(" ")
-                    .map((p) => p[0])
-                    .join("")
-                    .slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                name={user.name}
+                src={profilePhotoSrc(user.id, user.photoUrl)}
+                className="size-10 ring-2 ring-sidebar-foreground/10"
+                fallbackClassName="bg-primary text-primary-foreground text-xs font-semibold"
+              />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-sidebar-foreground">
                   {user.name}

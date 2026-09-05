@@ -7,7 +7,7 @@ import type { MarketPrice } from "@/types";
 import { PriceChange } from "@/components/shared/price-change";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/providers/locale-provider";
-import { fillTemplate, translateVegetableName } from "@/lib/i18n/messages";
+import { fillTemplate, translateProduceCategory, translateVegetableName } from "@/lib/i18n/messages";
 
 export function VegetablePriceCard({
   price,
@@ -36,6 +36,11 @@ export function VegetablePriceCard({
           <h3 className="font-semibold text-foreground">{vegName}</h3>
           <PriceChange value={price.change} />
         </div>
+        {price.category ? (
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {translateProduceCategory(price.category, t)}
+          </p>
+        ) : null}
         <p className="mt-1.5 text-lg font-semibold text-price-foreground">
           {formatLKR(price.lowest, locale)}–{formatLKR(price.highest, locale)}
         </p>

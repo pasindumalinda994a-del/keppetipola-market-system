@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "@/components/layout/brand-logo";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import { getHashFromHref, scrollToId } from "@/lib/smooth-scroll";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ const links = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
 
   function onNavClick(
@@ -60,10 +62,10 @@ export function SiteHeader() {
         </nav>
         <div className="hidden items-center gap-2 md:flex">
           <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
+            <Link href="/login">{t("status.login")}</Link>
           </Button>
           <Button asChild>
-            <Link href="/register">Register</Link>
+            <Link href="/register">{t("auth.register")}</Link>
           </Button>
         </div>
         <Button
@@ -91,10 +93,10 @@ export function SiteHeader() {
             ))}
             <div className="mt-2 flex gap-2">
               <Button variant="outline" asChild className="flex-1">
-                <Link href="/login">Login</Link>
+                <Link href="/login">{t("status.login")}</Link>
               </Button>
               <Button asChild className="flex-1">
-                <Link href="/register">Register</Link>
+                <Link href="/register">{t("auth.register")}</Link>
               </Button>
             </div>
           </nav>

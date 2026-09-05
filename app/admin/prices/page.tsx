@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
@@ -25,14 +26,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ApiError, fetchPrices, updatePrice } from "@/lib/api";
-import { fillTemplate, translateVegetableName } from "@/lib/i18n/messages";
+import { fillTemplate, translateProduceCategory, translateVegetableName } from "@/lib/i18n/messages";
 import { formatLKR, formatRelativeTime } from "@/lib/format";
+import { matchesProduceCategory } from "@/lib/produce";
 import type { MarketPrice } from "@/types";
 
 export default function AdminPricesPage() {
   const { t, locale } = useLocale();
   const { token } = useAuth();
   const [prices, setPrices] = useState<MarketPrice[]>([]);
+  const [category, setCategory] = useState("all");
   const [selected, setSelected] = useState<MarketPrice | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -51,6 +54,11 @@ export default function AdminPricesPage() {
       setLoading(false);
     }
   }
+
+  const visible = useMemo(
+    () => prices.filter((p) => matchesProduceCategory(p.category, category)),
+    [prices, category]
+  );
 
   useEffect(() => {
     void load();
@@ -89,6 +97,9 @@ export default function AdminPricesPage() {
         title={t("admin.prices.title")}
         description={t("admin.prices.description")}
       />
+      <div className="mb-4">
+        <ProduceCategoryFilter value={category} onChange={setCategory} />
+      </div>
       {loading ? (
         <div className="space-y-3">
           <Skeleton className="h-10 w-full" />
@@ -100,6 +111,7 @@ export default function AdminPricesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t("common.vegetable")}</TableHead>
+                <TableHead>{t("common.category")}</TableHead>
                 <TableHead>{t("common.lowest")}</TableHead>
                 <TableHead>{t("common.highest")}</TableHead>
                 <TableHead>{t("common.average")}</TableHead>
@@ -108,20 +120,23 @@ export default function AdminPricesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {prices.length === 0 ? (
+              {visible.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="text-center text-muted-foreground"
                   >
                     {t("admin.prices.empty")}
                   </TableCell>
                 </TableRow>
               ) : (
-                prices.map((p) => (
+                visible.map((p) => (
                   <TableRow key={p.vegetableId}>
                     <TableCell className="font-medium">
                       {translateVegetableName(p.vegetableName, t)}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {translateProduceCategory(p.category ?? "Other", t)}
                     </TableCell>
                     <TableCell>{formatLKR(p.lowest, locale)}</TableCell>
                     <TableCell>{formatLKR(p.highest, locale)}</TableCell>
