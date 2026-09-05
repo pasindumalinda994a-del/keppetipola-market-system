@@ -39,113 +39,13 @@ import {
 } from "@/lib/actions/loyalty.actions";
 import { nextMemberId } from "@/lib/member-id";
 import connectDB from "@/lib/mongodb";
+import { PRODUCE_CATALOG } from "@/lib/produce-catalog";
+import { DEFAULT_PRODUCE_CATEGORIES } from "@/lib/produce";
 import type { QualityGrade } from "@/types";
 
 config({ path: resolve(process.cwd(), ".env.local") });
 
 const DEMO_PASSWORD = "Password123";
-
-const CATALOG: {
-  name: string;
-  category: string;
-  imageUrl: string;
-  lowest: number;
-  highest: number;
-  average: number;
-  change: number;
-  status: "Active" | "Inactive";
-}[] = [
-  {
-    name: "Carrot",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Carrot.png",
-    lowest: 190,
-    highest: 200,
-    average: 196,
-    change: 5,
-    status: "Active",
-  },
-  {
-    name: "Cabbage",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Cabbage.png",
-    lowest: 80,
-    highest: 95,
-    average: 88,
-    change: -2,
-    status: "Active",
-  },
-  {
-    name: "Leeks",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Leeks.png",
-    lowest: 220,
-    highest: 245,
-    average: 232,
-    change: 8,
-    status: "Active",
-  },
-  {
-    name: "Beans",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Beans.png",
-    lowest: 280,
-    highest: 310,
-    average: 295,
-    change: 12,
-    status: "Active",
-  },
-  {
-    name: "Tomato",
-    category: "Fruit",
-    imageUrl: "/Vegitable-Images/Tomato.png",
-    lowest: 150,
-    highest: 175,
-    average: 162,
-    change: -4,
-    status: "Active",
-  },
-  {
-    name: "Potato",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Potato.png",
-    lowest: 120,
-    highest: 135,
-    average: 128,
-    change: 1,
-    status: "Active",
-  },
-  {
-    name: "Beetroot",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Beetroot.png",
-    lowest: 160,
-    highest: 180,
-    average: 170,
-    change: 3,
-    status: "Active",
-  },
-  {
-    name: "Capsicum",
-    category: "Fruit",
-    imageUrl: "/Vegitable-Images/Capsicum.png",
-    lowest: 350,
-    highest: 390,
-    average: 370,
-    change: -6,
-    status: "Active",
-  },
-  {
-    name: "Radish",
-    category: "Vegetable",
-    imageUrl: "/Vegitable-Images/Radish.png",
-    lowest: 70,
-    highest: 90,
-    average: 80,
-    change: 0,
-    status: "Inactive",
-  },
-];
 
 type VegName =
   | "Carrot"
@@ -261,7 +161,7 @@ async function wipeKeepAdmins(): Promise<UserDocument[]> {
     { $set: { bookmarkedVegetableIds: [] } }
   );
   await MarketSettings.create({
-    vegetableCategories: "Vegetable, Fruit, Other",
+    vegetableCategories: DEFAULT_PRODUCE_CATEGORIES,
     opensAt: "04:00",
     closesAt: "14:00",
     marketName: "Keppetipola Market",
@@ -330,7 +230,17 @@ async function createAccount(input: {
 
 async function seedCatalog(): Promise<VegMap> {
   const map = {} as VegMap;
-  for (const spec of CATALOG) {
+  const harvestNames = new Set<VegName>([
+    "Carrot",
+    "Cabbage",
+    "Leeks",
+    "Beans",
+    "Tomato",
+    "Potato",
+    "Beetroot",
+    "Capsicum",
+  ]);
+  for (const spec of PRODUCE_CATALOG) {
     const vegetable = await Vegetable.create({
       name: spec.name,
       category: spec.category,
@@ -348,11 +258,11 @@ async function seedCatalog(): Promise<VegMap> {
       change: spec.change,
       lastUpdated: new Date(),
     });
-    if (spec.status === "Active" && spec.name !== "Radish") {
+    if (harvestNames.has(spec.name as VegName)) {
       map[spec.name as VegName] = vegetable;
     }
   }
-  console.log(`Catalog: ${CATALOG.length} vegetables (1 inactive).`);
+  console.log(`Catalog: ${PRODUCE_CATALOG.length} produce items.`);
   return map;
 }
 

@@ -32,6 +32,7 @@ export type IUser = {
   notificationPrefs: INotificationPrefs;
   bookmarkedVegetableIds: Types.ObjectId[];
   lastPriceDigestAt?: Date;
+  passwordChangedAt?: Date;
 };
 
 const userSchema = new Schema<IUser>(
@@ -130,6 +131,9 @@ const userSchema = new Schema<IUser>(
     lastPriceDigestAt: {
       type: Date,
     },
+    passwordChangedAt: {
+      type: Date,
+    },
   },
   {
     toJSON: {
@@ -140,6 +144,7 @@ const userSchema = new Schema<IUser>(
         delete value.__v;
         delete value.password;
         delete value.lastPriceDigestAt;
+        delete value.passwordChangedAt;
         value.bookmarkedVegetableIds = Array.isArray(value.bookmarkedVegetableIds)
           ? value.bookmarkedVegetableIds.map(String)
           : [];

@@ -222,6 +222,24 @@ export function changePassword(
   });
 }
 
+export function requestPasswordReset(email: string) {
+  return apiFetch<{ message: string }>("/auth/forgot-password", {
+    method: "POST",
+    body: { email },
+  });
+}
+
+export function resetPasswordWithCode(payload: {
+  email: string;
+  code: string;
+  newPassword: string;
+}) {
+  return apiFetch<{ message: string }>("/auth/reset-password", {
+    method: "POST",
+    body: payload,
+  });
+}
+
 export async function uploadProfilePhoto(token: string, file: File) {
   const form = new FormData();
   form.set("photo", file);

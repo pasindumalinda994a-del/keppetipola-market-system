@@ -40,13 +40,25 @@ export async function requireAuth(
     }
 
     const token = header.slice(7);
-    const decoded = jwt.verify(token, secret) as { id: string };
+    const decoded = jwt.verify(token, secret) as { id: string; iat?: number };
     const user = await User.findById(decoded.id);
 
     if (!user) {
       return {
         error: NextResponse.json({ message: "Not authorized" }, { status: 401 }),
       };
+    }
+
+    if (user.passwordChangedAt && typeof decoded.iat === "number") {
+      const changedAt = Math.floor(user.passwordChangedAt.getTime() / 1000);
+      if (decoded.iat < changedAt) {
+        return {
+          error: NextResponse.json(
+            { message: "Not authorized" },
+            { status: 401 }
+          ),
+        };
+      }
     }
 
     return { user };

@@ -18,6 +18,7 @@ export { default as ContactMessage } from "./contact-message.model";
 export { default as PriceSnapshot } from "./price-snapshot.model";
 export { default as Notification } from "./notification.model";
 export { default as Upload } from "./upload.model";
+export { default as PasswordReset } from "./password-reset.model";
 
 export type {
   AccountStatus,
@@ -85,3 +86,7 @@ export type {
   UploadKind,
   UploadOwnerType,
 } from "./upload.model";
+export type {
+  IPasswordReset,
+  PasswordResetDocument,
+} from "./password-reset.model";

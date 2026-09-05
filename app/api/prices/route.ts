@@ -21,7 +21,7 @@ export async function GET() {
       prices: prices.map((price) => ({
         ...price.toJSON(),
         category:
-          categoryById.get(String(price.vegetableId)) ?? "Other",
+          categoryById.get(String(price.vegetableId)) ?? "Vegetables",
       })),
     });
   } catch (err) {

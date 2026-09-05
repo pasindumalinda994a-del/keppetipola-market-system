@@ -37,7 +37,7 @@ export function PriceTable({ prices }: { prices: MarketPrice[] }) {
                 {translateVegetableName(p.vegetableName, t)}
               </TableCell>
               <TableCell className="text-muted-foreground">
-                {translateProduceCategory(p.category ?? "Other", t)}
+                {translateProduceCategory(p.category ?? "Vegetables", t)}
               </TableCell>
               <TableCell>{formatLKR(p.lowest, locale)}</TableCell>
               <TableCell>{formatLKR(p.highest, locale)}</TableCell>
