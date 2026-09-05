@@ -202,6 +202,26 @@ const en = {
     "Application submitted. You can log in after an admin approves your account.",
   "auth.yourMemberId": "Your {role} ID",
   "auth.goToLogin": "Go to login",
+  "auth.forgotPassword": "Forgot password?",
+  "auth.forgotPasswordTitle": "Forgot password",
+  "auth.forgotPasswordSubtitle":
+    "Enter your email and we will send a 6-digit reset code.",
+  "auth.sendResetCode": "Send reset code",
+  "auth.sendingResetCode": "Sending code…",
+  "auth.resetCodeSent":
+    "If that email is registered, a reset code was sent.",
+  "auth.resetPasswordTitle": "Reset password",
+  "auth.resetPasswordSubtitle":
+    "Enter the 6-digit code from your email and choose a new password.",
+  "auth.resetCode": "Reset code",
+  "auth.placeholder.resetCode": "000000",
+  "auth.newPassword": "New password",
+  "auth.resetPassword": "Reset password",
+  "auth.resettingPassword": "Resetting…",
+  "auth.passwordResetSuccess": "Password updated. You can sign in now.",
+  "auth.resendCode": "Resend code",
+  "auth.resendCodeIn": "Resend code in {seconds}s",
+  "auth.backToLogin": "Back to sign in",
   "auth.error.signInFailed": "Could not sign in",
   "auth.error.missingDocuments":
     "Please upload identity photos and the tax bill",
@@ -225,6 +245,13 @@ const en = {
   "auth.error.fieldTypePdf": "{field} must be a JPG, PNG, or PDF",
   "auth.error.fieldTypeImage": "{field} must be a JPG or PNG",
   "auth.error.fieldPdfTooLarge": "{field} PDF must be 1 MB or smaller",
+  "auth.error.emailRequired": "Email is required",
+  "auth.error.validEmail": "Enter a valid email",
+  "auth.error.invalidResetCode": "Invalid or expired reset code",
+  "auth.error.resetCodeRequired":
+    "Email, code, and new password are required",
+  "auth.error.tooManyResetAttempts": "Too many attempts. Request a new code",
+  "auth.error.resetFailed": "Could not reset password",
 
   // Status
   "status.pending": "Pending",
@@ -991,6 +1018,26 @@ const si: Record<MessageKey, string> = {
     "අයදුම්පත ඉදිරිපත් කෙරිණි. පරිපාලකයෙකු ගිණුම අනුමත කළ පසු ඔබට පිවිසිය හැක.",
   "auth.yourMemberId": "ඔබේ {role} අංකය",
   "auth.goToLogin": "පිවිසුමට යන්න",
+  "auth.forgotPassword": "මුරපදය අමතක වුණාද?",
+  "auth.forgotPasswordTitle": "මුරපදය අමතක විය",
+  "auth.forgotPasswordSubtitle":
+    "ඔබේ විද්‍යුත් තැපෑල ඇතුළත් කරන්න. අපි ඉලක්කම් 6ක යළි සැකසුම් කේතයක් යවන්නෙමු.",
+  "auth.sendResetCode": "යළි සැකසුම් කේතය යවන්න",
+  "auth.sendingResetCode": "කේතය යවමින්…",
+  "auth.resetCodeSent":
+    "එම විද්‍යුත් තැපෑල ලියාපදිංචි නම්, යළි සැකසුම් කේතයක් යවන ලදී.",
+  "auth.resetPasswordTitle": "මුරපදය යළි සකසන්න",
+  "auth.resetPasswordSubtitle":
+    "ඔබේ විද්‍යුත් තැපෑලෙන් ලැබුණු ඉලක්කම් 6ක කේතය ඇතුළත් කර නව මුරපදයක් තෝරන්න.",
+  "auth.resetCode": "යළි සැකසුම් කේතය",
+  "auth.placeholder.resetCode": "000000",
+  "auth.newPassword": "නව මුරපදය",
+  "auth.resetPassword": "මුරපදය යළි සකසන්න",
+  "auth.resettingPassword": "යළි සකසමින්…",
+  "auth.passwordResetSuccess": "මුරපදය යාවත්කාලීන කෙරිණි. දැන් ඔබට පිවිසිය හැක.",
+  "auth.resendCode": "කේතය නැවත යවන්න",
+  "auth.resendCodeIn": "කේතය නැවත යවන්න {seconds} තත්පරින්",
+  "auth.backToLogin": "පිවිසුමට ආපසු",
   "auth.error.signInFailed": "පිවිසීමට නොහැකි විය",
   "auth.error.missingDocuments":
     "කරුණාකර හැඳුනුම්පත් ඡායාරූප සහ බදු බිල්පත උඩුගත කරන්න",
@@ -1013,6 +1060,13 @@ const si: Record<MessageKey, string> = {
   "auth.error.fieldTypePdf": "{field} JPG, PNG, හෝ PDF විය යුතුය",
   "auth.error.fieldTypeImage": "{field} JPG හෝ PNG විය යුතුය",
   "auth.error.fieldPdfTooLarge": "{field} PDF 1 MB හෝ ඊට අඩු විය යුතුය",
+  "auth.error.emailRequired": "විද්‍යුත් තැපෑල අවශ්‍යයි",
+  "auth.error.validEmail": "වලංගු විද්‍යුත් තැපෑලක් ඇතුළත් කරන්න",
+  "auth.error.invalidResetCode": "යළි සැකසුම් කේතය වලංගු නැත හෝ කල් ඉකුත් වී ඇත",
+  "auth.error.resetCodeRequired":
+    "විද්‍යුත් තැපෑල, කේතය සහ නව මුරපදය අවශ්‍යයි",
+  "auth.error.tooManyResetAttempts": "උත්සාහ ගණන ඉක්මවා ඇත. නව කේතයක් ඉල්ලන්න",
+  "auth.error.resetFailed": "මුරපදය යළි සැකසිය නොහැකි විය",
 
   "status.pending": "පොරොත්තු",
   "status.offered": "යෝජිත",
@@ -1602,6 +1656,12 @@ export const authErrorMessageKeys: Record<string, MessageKey> = {
   "Please upload identity photos and the tax bill": "auth.error.missingDocuments",
   "Could not create account": "auth.error.createAccount",
   "Request failed": "common.requestFailed",
+  "Email is required": "auth.error.emailRequired",
+  "Enter a valid email": "auth.error.validEmail",
+  "Invalid or expired reset code": "auth.error.invalidResetCode",
+  "Email, code, and new password are required": "auth.error.resetCodeRequired",
+  "Too many attempts. Request a new code": "auth.error.tooManyResetAttempts",
+  "Could not reset password": "auth.error.resetFailed",
 };
 
 const AUTH_REJECTED_PREFIX = "Your application was rejected: ";

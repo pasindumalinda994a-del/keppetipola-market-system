@@ -4,36 +4,33 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ApiError } from "@/lib/api";
-import { portalPathForRole } from "@/lib/auth";
-import { fillTemplate, translateAuthError } from "@/lib/i18n/messages";
-import { useAuth } from "@/components/providers/auth-provider";
+import { ApiError, requestPasswordReset } from "@/lib/api";
+import { translateAuthError } from "@/lib/i18n/messages";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PasswordInput } from "@/components/ui/password-input";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
-  const { login } = useAuth();
   const { t } = useLocale();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const user = await login(email.trim(), password);
-      toast.success(fillTemplate(t("auth.welcomeBackName"), { name: user.name }));
-      router.push(portalPathForRole(user.role));
+      await requestPasswordReset(email.trim());
+      toast.success(t("auth.resetCodeSent"));
+      router.push(
+        `/reset-password?email=${encodeURIComponent(email.trim())}`
+      );
     } catch (err) {
       const message =
         err instanceof ApiError
           ? translateAuthError(err.message, t)
-          : t("auth.error.signInFailed");
+          : t("auth.error.server");
       toast.error(message);
     } finally {
       setSubmitting(false);
@@ -44,10 +41,10 @@ export default function LoginPage() {
     <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/90 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-          {t("auth.welcomeBack")}
+          {t("auth.forgotPasswordTitle")}
         </h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
-          {t("auth.loginSubtitle")}
+          {t("auth.forgotPasswordSubtitle")}
         </p>
       </div>
 
@@ -65,43 +62,22 @@ export default function LoginPage() {
             autoComplete="email"
           />
         </div>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between gap-3">
-            <Label htmlFor="password">{t("auth.password")}</Label>
-            <Link
-              href="/forgot-password"
-              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-            >
-              {t("auth.forgotPassword")}
-            </Link>
-          </div>
-          <PasswordInput
-            id="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="h-11 rounded-xl bg-background/70 px-3.5"
-            autoComplete="current-password"
-          />
-        </div>
         <Button
           type="submit"
           size="lg"
           disabled={submitting}
           className="mt-1 h-11 w-full rounded-xl"
         >
-          {submitting ? t("auth.signingIn") : t("auth.signIn")}
+          {submitting ? t("auth.sendingResetCode") : t("auth.sendResetCode")}
         </Button>
       </form>
 
       <p className="mt-7 text-center text-sm text-muted-foreground">
-        {t("auth.noAccount")}{" "}
         <Link
-          href="/register"
+          href="/login"
           className="font-medium text-primary underline-offset-4 hover:underline"
         >
-          {t("auth.register")}
+          {t("auth.backToLogin")}
         </Link>
       </p>
     </div>
