@@ -28,6 +28,7 @@ export interface Vegetable {
 export interface MarketPrice {
   vegetableId: string;
   vegetableName: string;
+  category?: string;
   imageUrl: string;
   lowest: number;
   highest: number;
@@ -171,6 +172,7 @@ export interface User {
   identityFrontUrl?: string;
   identityBackUrl?: string;
   taxBillUrl?: string;
+  photoUrl?: string;
   memberId?: string;
   status: AccountStatus;
   rejectionReason?: string;

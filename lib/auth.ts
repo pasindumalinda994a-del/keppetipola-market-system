@@ -49,6 +49,7 @@ export function normalizeUser(user: User): User {
     identityFrontUrl: user.identityFrontUrl ?? "",
     identityBackUrl: user.identityBackUrl ?? "",
     taxBillUrl: user.taxBillUrl ?? "",
+    photoUrl: user.photoUrl ?? "",
     memberId: user.memberId ?? "",
     rejectionReason: user.rejectionReason ?? "",
     joinedAt: toIso(user.joinedAt) ?? new Date().toISOString(),

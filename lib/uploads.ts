@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Upload, type UploadKind } from "@/database/upload.model";
+import { Upload, type UploadKind, type UploadOwnerType } from "@/database/upload.model";
 
 export const MAX_FILE_SIZE = Math.round(1.5 * 1024 * 1024);
 
@@ -113,7 +113,7 @@ export function assertValidImage(
 }
 
 async function saveUpload(options: {
-  ownerType: "registration" | "harvest";
+  ownerType: UploadOwnerType;
   ownerId: string;
   kind: UploadKind;
   file: BinaryFile;
@@ -166,6 +166,47 @@ export async function saveRegistrationFile(
     ownerId: userId,
     kind,
     file,
+  });
+}
+
+export async function saveProfilePhoto(
+  userId: string,
+  file: BinaryFile
+): Promise<string> {
+  const mime = normalizeMime(file.type);
+  if (mime !== "image/jpeg" && mime !== "image/png") {
+    throw new UploadError("Photo must be a JPG or PNG");
+  }
+  return saveUpload({
+    ownerType: "profile",
+    ownerId: userId,
+    kind: "avatar",
+    file: {
+      ...file,
+      name: file.name || `avatar.${extForMime(mime)}`,
+    },
+  });
+}
+
+export async function removeProfilePhoto(
+  userId: string,
+  uploadId?: string
+): Promise<void> {
+  if (!userId || !mongoose.isValidObjectId(userId)) return;
+  if (uploadId) {
+    if (!mongoose.isValidObjectId(uploadId)) return;
+    await Upload.deleteOne({
+      _id: uploadId,
+      ownerType: "profile",
+      ownerId: userId,
+      kind: "avatar",
+    });
+    return;
+  }
+  await Upload.deleteMany({
+    ownerType: "profile",
+    ownerId: userId,
+    kind: "avatar",
   });
 }
 

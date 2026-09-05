@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
 import { PriceTrendChart } from "@/components/market/price-trend-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
@@ -9,6 +10,7 @@ import { formatLKR } from "@/lib/format";
 import { useMarketPrices } from "@/lib/hooks/use-market-prices";
 import { useVegetables } from "@/lib/hooks/use-vegetables";
 import { fetchPriceHistory } from "@/lib/api";
+import { filterProduceByCategory } from "@/lib/produce";
 import type { PriceHistoryPoint } from "@/types";
 import {
   Table,
@@ -21,19 +23,25 @@ import {
 
 export default function PriceTrendsPage() {
   const [q, setQ] = useState("");
+  const [category, setCategory] = useState("all");
   const { vegetables, loading: vegLoading } = useVegetables();
   const { prices, loading: pricesLoading } = useMarketPrices();
   const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
 
+  const visibleVegetables = useMemo(
+    () => filterProduceByCategory(vegetables, category),
+    [vegetables, category]
+  );
+
   const selected = useMemo(() => {
-    if (!vegetables.length) return "";
-    if (!q.trim()) return vegetables[0]?.id ?? "";
-    const match = vegetables.find((v) =>
+    if (!visibleVegetables.length) return "";
+    if (!q.trim()) return visibleVegetables[0]?.id ?? "";
+    const match = visibleVegetables.find((v) =>
       v.name.toLowerCase().includes(q.toLowerCase())
     );
-    return match?.id ?? vegetables[0]?.id ?? "";
-  }, [q, vegetables]);
+    return match?.id ?? visibleVegetables[0]?.id ?? "";
+  }, [q, visibleVegetables]);
 
   useEffect(() => {
     if (!selected) {
@@ -64,15 +72,16 @@ export default function PriceTrendsPage() {
     <div className="mx-auto max-w-6xl px-4 py-10">
       <PageHeader
         title="Price Trends"
-        description="Seven-day wholesale price history by vegetable."
+        description="Seven-day wholesale price history by produce."
       />
-      <div className="mb-6">
+      <div className="mb-6 space-y-4">
         <SearchBar
-          placeholder="Search vegetable…"
+          placeholder="Search produce…"
           value={q}
           onChange={setQ}
           className="sm:max-w-xs"
         />
+        <ProduceCategoryFilter value={category} onChange={setCategory} />
       </div>
       {loading ? (
         <Skeleton className="mb-4 h-5 w-64" />
@@ -92,7 +101,7 @@ export default function PriceTrendsPage() {
       <div className="mt-8 overflow-hidden rounded-xl bg-card">
         {history.length === 0 && !loading && !historyLoading ? (
           <p className="p-5 text-sm text-muted-foreground">
-            No price history yet for this vegetable.
+            No price history yet for this item.
           </p>
         ) : (
           <Table>

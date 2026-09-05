@@ -1,0 +1,18 @@
+export function profilePhotoSrc(
+  userId: string | undefined,
+  photoUrl?: string
+): string | undefined {
+  if (!userId || !photoUrl) return undefined;
+  const base = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
+  return `${base}/api/users/${userId}/photo?v=${encodeURIComponent(photoUrl)}`;
+}
+
+export function withTraderPhoto<T extends object>(
+  request: T,
+  photoUrl?: string
+): T & { traderPhotoUrl?: string } {
+  const traderId = "traderId" in request ? String(request.traderId ?? "") : "";
+  const traderPhotoUrl = profilePhotoSrc(traderId, photoUrl);
+  if (!traderPhotoUrl) return request;
+  return { ...request, traderPhotoUrl };
+}

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ensureProduceCatalog } from "@/lib/actions/produce.actions";
 
 type MongooseCache = {
   conn: typeof mongoose | null;
@@ -34,6 +35,11 @@ async function connectDB(): Promise<typeof mongoose> {
   }
 
   cached.conn = await cached.promise;
+  try {
+    await ensureProduceCatalog();
+  } catch (err) {
+    console.error("ensureProduceCatalog error:", err);
+  }
   return cached.conn;
 }
 

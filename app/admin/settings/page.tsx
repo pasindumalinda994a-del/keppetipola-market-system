@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { ApiError, fetchSettings, saveSettings } from "@/lib/api";
+import { DEFAULT_PRODUCE_CATEGORIES } from "@/lib/produce";
 
 const DEFAULT_OFFER_TEMPLATE =
   "{{trader}} offered Rs.{{price}}/kg for your {{vegetable}} listing.";
@@ -18,7 +19,7 @@ const DEFAULT_OFFER_TEMPLATE =
 export default function AdminSettingsPage() {
   const { t } = useLocale();
   const { token } = useAuth();
-  const [categories, setCategories] = useState("Root, Leafy, Pod, Fruit");
+  const [categories, setCategories] = useState(DEFAULT_PRODUCE_CATEGORIES);
   const [opensAt, setOpensAt] = useState("04:00");
   const [closesAt, setClosesAt] = useState("14:00");
   const [marketName, setMarketName] = useState("Keppetipola Market");
@@ -97,6 +98,9 @@ export default function AdminSettingsPage() {
                 value={categories}
                 onChange={(e) => setCategories(e.target.value)}
               />
+              <p className="text-xs text-muted-foreground">
+                {t("admin.settings.vegetableCategoriesHint")}
+              </p>
             </div>
           </section>
           <Separator />

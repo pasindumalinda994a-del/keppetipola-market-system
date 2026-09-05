@@ -23,6 +23,7 @@ export type IUser = {
   identityFrontUrl: string;
   identityBackUrl: string;
   taxBillUrl: string;
+  photoUrl: string;
   memberId?: string;
   status: AccountStatus;
   rejectionReason: string;
@@ -83,6 +84,11 @@ const userSchema = new Schema<IUser>(
       trim: true,
     },
     taxBillUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    photoUrl: {
       type: String,
       default: "",
       trim: true,

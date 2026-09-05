@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { BuyingRequest } from "@/database/buying-request.model";
+import { User } from "@/database/user.model";
 import { Vegetable } from "@/database/vegetable.model";
 import {
   isAuthError,
@@ -7,6 +8,7 @@ import {
   requireAuth,
 } from "@/lib/actions/auth.actions";
 import connectDB from "@/lib/mongodb";
+import { withTraderPhoto } from "@/lib/profile";
 import { parseDate, parsePositiveNumber } from "@/lib/serialize";
 import { getPublicTraderName } from "@/lib/actions/stall.actions";
 import type { QualityGrade } from "@/types";
@@ -46,8 +48,18 @@ export async function GET(request: Request) {
     const requests = await BuyingRequest.find(filter).sort(
       mine ? { createdAt: -1 } : { maxPrice: -1 }
     );
+    const traderIds = [...new Set(requests.map((r) => String(r.traderId)))];
+    const traders = traderIds.length
+      ? await User.find({ _id: { $in: traderIds } }).select("photoUrl")
+      : [];
+    const photoByTrader = new Map(
+      traders.map((trader) => [String(trader._id), trader.photoUrl])
+    );
+
     return NextResponse.json({
-      requests: requests.map((r) => r.toJSON()),
+      requests: requests.map((r) =>
+        withTraderPhoto(r.toJSON(), photoByTrader.get(String(r.traderId)))
+      ),
     });
   } catch (err) {
     console.error("listRequests error:", err);
@@ -126,7 +138,12 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      { request: buyingRequest.toJSON() },
+      {
+        request: withTraderPhoto(
+          buyingRequest.toJSON(),
+          auth.user.photoUrl
+        ),
+      },
       { status: 201 }
     );
   } catch (err) {

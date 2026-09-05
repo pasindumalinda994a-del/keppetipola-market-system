@@ -222,6 +222,50 @@ export function changePassword(
   });
 }
 
+export async function uploadProfilePhoto(token: string, file: File) {
+  const form = new FormData();
+  form.set("photo", file);
+
+  const res = await fetch(`${API_BASE}/api/auth/me/photo`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: form,
+  });
+
+  let data: unknown = null;
+  const text = await res.text();
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: text };
+    }
+  }
+
+  if (!res.ok) {
+    const message =
+      data &&
+      typeof data === "object" &&
+      "message" in data &&
+      typeof (data as { message: unknown }).message === "string"
+        ? (data as { message: string }).message
+        : "Request failed";
+    throw new ApiError(message, res.status);
+  }
+
+  return data as UserResponse;
+}
+
+export function removeProfilePhoto(token: string) {
+  return apiFetch<UserResponse>("/auth/me/photo", {
+    method: "DELETE",
+    token,
+  });
+}
+
 export function fetchUsers(token: string) {
   return apiFetch<UsersResponse>("/users", { token });
 }

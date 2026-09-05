@@ -25,7 +25,7 @@ export function SiteFooter() {
         <div>
           <BrandLogo href="/" size="md" variant="onDark" />
           <p className="mt-3 text-sm text-sidebar-foreground/65">
-            Wholesale vegetable marketplace helping farmers find the best price
+            Wholesale produce marketplace helping farmers find the best price
             for today&apos;s harvest.
           </p>
         </div>

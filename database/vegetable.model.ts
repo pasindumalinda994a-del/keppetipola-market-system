@@ -1,4 +1,5 @@
 import mongoose, { Schema, type HydratedDocument, type Model } from "mongoose";
+import { normalizeProduceCategory } from "@/lib/produce";
 
 export type IVegetable = {
   name: string;
@@ -19,6 +20,7 @@ const vegetableSchema = new Schema<IVegetable>(
       type: String,
       required: true,
       trim: true,
+      set: (value: string) => normalizeProduceCategory(value),
     },
     unit: {
       type: String,
@@ -41,6 +43,7 @@ const vegetableSchema = new Schema<IVegetable>(
       transform(_doc, ret) {
         const value = ret as unknown as Record<string, unknown>;
         value.id = String(value._id);
+        value.category = normalizeProduceCategory(String(value.category ?? ""));
         delete value._id;
         delete value.__v;
         return value;

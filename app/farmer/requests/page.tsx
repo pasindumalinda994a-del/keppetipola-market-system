@@ -13,7 +13,7 @@ import {
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchBar } from "@/components/shared/search-bar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,15 +34,6 @@ import {
 import { ApiError, applyToRequest, fetchApplications, fetchRequests } from "@/lib/api";
 import { useTokenQuery } from "@/lib/hooks/use-token-query";
 import type { BuyingRequest } from "@/types";
-
-function traderInitials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
 
 export default function FarmerRequestsPage() {
   const { t, locale } = useLocale();
@@ -139,12 +130,12 @@ export default function FarmerRequestsPage() {
               <article key={r.id} className="flex flex-col rounded-lg bg-card p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-3">
-                    <Avatar size="lg" className="size-11">
-                      {r.traderPhotoUrl ? (
-                        <AvatarImage src={r.traderPhotoUrl} alt={r.traderName} />
-                      ) : null}
-                      <AvatarFallback>{traderInitials(r.traderName)}</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                      name={r.traderName}
+                      src={r.traderPhotoUrl}
+                      size="lg"
+                      className="size-11"
+                    />
                     <div className="min-w-0">
                       <p className="text-sm text-muted-foreground">
                         {t("common.trader")}

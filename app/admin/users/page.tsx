@@ -20,7 +20,9 @@ import {
 } from "@/components/ui/table";
 import { ApiError, fetchUsers } from "@/lib/api";
 import { fillTemplate, type MessageKey } from "@/lib/i18n/messages";
+import { profilePhotoSrc } from "@/lib/profile";
 import type { User, UserRole } from "@/types";
+import { UserAvatar } from "@/components/shared/user-avatar";
 
 function roleLabel(role: UserRole, t: (key: MessageKey) => string) {
   if (role === "farmer") return t("common.farmer");
@@ -57,7 +59,16 @@ function UserTable({ users }: { users: User[] }) {
               <TableCell className="font-mono text-sm">
                 {u.memberId || "—"}
               </TableCell>
-              <TableCell className="font-medium">{u.name}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2.5">
+                  <UserAvatar
+                    name={u.name}
+                    src={profilePhotoSrc(u.id, u.photoUrl)}
+                    size="sm"
+                  />
+                  <span className="font-medium">{u.name}</span>
+                </div>
+              </TableCell>
               <TableCell>{roleLabel(u.role, t)}</TableCell>
               <TableCell>
                 <StatusBadge status={u.status} />

@@ -1,16 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
 import { VegetablePriceCard } from "@/components/market/vegetable-price-card";
 import { Button } from "@/components/ui/button";
 import type { MarketPrice } from "@/types";
+import { matchesProduceCategory } from "@/lib/produce";
 
 const FIRST_ROW = 4;
 
 export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
   const [expanded, setExpanded] = useState(false);
-  const visible = expanded ? prices : prices.slice(0, FIRST_ROW);
-  const canExpand = prices.length > FIRST_ROW;
+  const [category, setCategory] = useState("all");
+  const filtered = useMemo(
+    () => prices.filter((p) => matchesProduceCategory(p.category, category)),
+    [prices, category]
+  );
+  const visible = expanded ? filtered : filtered.slice(0, FIRST_ROW);
+  const canExpand = filtered.length > FIRST_ROW;
 
   return (
     <section id="price-highlights" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-14">
@@ -28,6 +35,9 @@ export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
             {expanded ? "Show less" : "View all"}
           </Button>
         ) : null}
+      </div>
+      <div className="mb-5">
+        <ProduceCategoryFilter value={category} onChange={setCategory} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {visible.map((p) => (

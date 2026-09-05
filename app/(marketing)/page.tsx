@@ -78,7 +78,7 @@ export default async function HomePage() {
             chartData={marketStats.activeTraders.chartData}
           />
           <StatCard
-            title="Vegetables Sold"
+            title="Produce Sold"
             value={`${marketStats.vegetablesSoldTons.value} Tons`}
             change={marketStats.vegetablesSoldTons.change}
             changeLabel="vs yesterday"

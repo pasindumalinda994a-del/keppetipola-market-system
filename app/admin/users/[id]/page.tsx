@@ -9,6 +9,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,6 +25,7 @@ import {
 import { ApiError, fetchLogs, fetchSales, fetchUser, updateUserStatus } from "@/lib/api";
 import { formatDate, formatKg, formatLKR } from "@/lib/format";
 import { translateVegetableName, type MessageKey } from "@/lib/i18n/messages";
+import { profilePhotoSrc } from "@/lib/profile";
 import type { AccountStatus, Sale, SystemLog, User, UserRole } from "@/types";
 
 function roleLabel(role: UserRole, t: (key: MessageKey) => string) {
@@ -141,10 +143,19 @@ export default function AdminUserDetailPage() {
 
   return (
     <div>
-      <PageHeader
-        title={user.name}
-        description={`${roleLabel(user.role, t)}${user.memberId ? ` · ${user.memberId}` : ""} · ${user.email}`}
-        action={
+      <div className="mb-7 flex items-start gap-4">
+        <UserAvatar
+          name={user.name}
+          src={profilePhotoSrc(user.id, user.photoUrl)}
+          size="lg"
+          className="size-14"
+          fallbackClassName="bg-primary text-primary-foreground font-semibold"
+        />
+        <PageHeader
+          className="mb-0 min-w-0 flex-1"
+          title={user.name}
+          description={`${roleLabel(user.role, t)}${user.memberId ? ` · ${user.memberId}` : ""} · ${user.email}`}
+          action={
           <div className="flex flex-wrap gap-2">
             {isApplicant && (isPending || user.status === "Rejected") ? (
               <Button
@@ -186,6 +197,7 @@ export default function AdminUserDetailPage() {
           </div>
         }
       />
+      </div>
       <div className="grid gap-4 rounded-lg bg-card p-6 sm:grid-cols-2 lg:grid-cols-3">
         {user.memberId ? (
           <div>

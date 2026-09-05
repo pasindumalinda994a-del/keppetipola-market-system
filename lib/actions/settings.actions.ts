@@ -3,6 +3,7 @@ import {
   MarketSettings,
   type IMarketSettings,
 } from "@/database/market-settings.model";
+import { normalizeProduceCategoriesSetting } from "@/lib/produce";
 import type { MarketSettings as MarketSettingsView } from "@/types";
 
 export class SettingsError extends Error {
@@ -18,7 +19,11 @@ export class SettingsError extends Error {
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 function toView(doc: { toJSON: () => Record<string, unknown> }): MarketSettingsView {
-  return doc.toJSON() as unknown as MarketSettingsView;
+  const view = doc.toJSON() as unknown as MarketSettingsView;
+  view.vegetableCategories = normalizeProduceCategoriesSetting(
+    view.vegetableCategories
+  );
+  return view;
 }
 
 function trimRequired(value: unknown, label: string): string {
@@ -40,7 +45,9 @@ export async function getMarketSettings() {
 export async function updateMarketSettings(input: Partial<IMarketSettings>) {
   const patch: Partial<IMarketSettings> = {};
   if (input.vegetableCategories !== undefined) {
-    patch.vegetableCategories = String(input.vegetableCategories).trim();
+    patch.vegetableCategories = normalizeProduceCategoriesSetting(
+      String(input.vegetableCategories)
+    );
   }
   if (input.opensAt !== undefined) {
     const opensAt = String(input.opensAt).trim();

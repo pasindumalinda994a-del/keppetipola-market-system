@@ -1,8 +1,13 @@
 import mongoose, { Schema, type HydratedDocument, type Model, type Types } from "mongoose";
 
-export type UploadOwnerType = "registration" | "harvest";
+export type UploadOwnerType = "registration" | "harvest" | "profile";
 
-export type UploadKind = "identityFront" | "identityBack" | "taxBill" | "photo";
+export type UploadKind =
+  | "identityFront"
+  | "identityBack"
+  | "taxBill"
+  | "photo"
+  | "avatar";
 
 export type IUpload = {
   ownerType: UploadOwnerType;
@@ -17,14 +22,14 @@ const uploadSchema = new Schema<IUpload>(
   {
     ownerType: {
       type: String,
-      enum: ["registration", "harvest"],
+      enum: ["registration", "harvest", "profile"],
       required: true,
       index: true,
     },
     ownerId: { type: Schema.Types.ObjectId, required: true, index: true },
     kind: {
       type: String,
-      enum: ["identityFront", "identityBack", "taxBill", "photo"],
+      enum: ["identityFront", "identityBack", "taxBill", "photo", "avatar"],
       required: true,
     },
     mimeType: { type: String, required: true },
@@ -38,8 +43,13 @@ uploadSchema.index({ ownerType: 1, ownerId: 1 });
 
 export type UploadDocument = HydratedDocument<IUpload>;
 
-export const Upload: Model<IUpload> =
-  (mongoose.models.Upload as Model<IUpload>) ||
-  mongoose.model<IUpload>("Upload", uploadSchema);
+if (mongoose.models.Upload) {
+  mongoose.deleteModel("Upload");
+}
+
+export const Upload: Model<IUpload> = mongoose.model<IUpload>(
+  "Upload",
+  uploadSchema
+);
 
 export default Upload;

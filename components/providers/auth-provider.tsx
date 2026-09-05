@@ -17,6 +17,8 @@ import {
   type RegisterPayload,
   type RegisterResponse,
   updateProfile as updateProfileApi,
+  uploadProfilePhoto as uploadProfilePhotoApi,
+  removeProfilePhoto as removeProfilePhotoApi,
   saveBookmarks as saveBookmarksApi,
   type UpdateProfilePayload,
 } from "@/lib/api";
@@ -35,6 +37,8 @@ type AuthContextValue = {
   login: (email: string, password: string) => Promise<User>;
   register: (payload: RegisterPayload) => Promise<RegisterResponse>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<User>;
+  uploadProfilePhoto: (file: File) => Promise<User>;
+  removeProfilePhoto: () => Promise<User>;
   updateBookmarks: (vegetableIds: string[]) => Promise<User>;
   changePassword: (
     currentPassword: string,
@@ -123,6 +127,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [token, persist]
   );
 
+  const uploadProfilePhoto = useCallback(
+    async (file: File) => {
+      if (!token) throw new Error("Not authenticated");
+      const data = await uploadProfilePhotoApi(token, file);
+      return persist(token, data.user);
+    },
+    [token, persist]
+  );
+
+  const removeProfilePhoto = useCallback(async () => {
+    if (!token) throw new Error("Not authenticated");
+    const data = await removeProfilePhotoApi(token);
+    return persist(token, data.user);
+  }, [token, persist]);
+
   const updateBookmarks = useCallback(
     async (vegetableIds: string[]) => {
       if (!token) throw new Error("Not authenticated");
@@ -148,6 +167,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       register,
       updateProfile,
+      uploadProfilePhoto,
+      removeProfilePhoto,
       updateBookmarks,
       changePassword,
       logout,
@@ -159,6 +180,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       register,
       updateProfile,
+      uploadProfilePhoto,
+      removeProfilePhoto,
       updateBookmarks,
       changePassword,
       logout,

@@ -57,7 +57,7 @@ const CATALOG: {
 }[] = [
   {
     name: "Carrot",
-    category: "Root",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Carrot.png",
     lowest: 190,
     highest: 200,
@@ -67,7 +67,7 @@ const CATALOG: {
   },
   {
     name: "Cabbage",
-    category: "Leafy",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Cabbage.png",
     lowest: 80,
     highest: 95,
@@ -77,7 +77,7 @@ const CATALOG: {
   },
   {
     name: "Leeks",
-    category: "Leafy",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Leeks.png",
     lowest: 220,
     highest: 245,
@@ -87,7 +87,7 @@ const CATALOG: {
   },
   {
     name: "Beans",
-    category: "Pod",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Beans.png",
     lowest: 280,
     highest: 310,
@@ -107,7 +107,7 @@ const CATALOG: {
   },
   {
     name: "Potato",
-    category: "Root",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Potato.png",
     lowest: 120,
     highest: 135,
@@ -117,7 +117,7 @@ const CATALOG: {
   },
   {
     name: "Beetroot",
-    category: "Root",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Beetroot.png",
     lowest: 160,
     highest: 180,
@@ -137,7 +137,7 @@ const CATALOG: {
   },
   {
     name: "Radish",
-    category: "Root",
+    category: "Vegetable",
     imageUrl: "/Vegitable-Images/Radish.png",
     lowest: 70,
     highest: 90,
@@ -261,7 +261,7 @@ async function wipeKeepAdmins(): Promise<UserDocument[]> {
     { $set: { bookmarkedVegetableIds: [] } }
   );
   await MarketSettings.create({
-    vegetableCategories: "Root, Leafy, Pod, Fruit",
+    vegetableCategories: "Vegetable, Fruit, Other",
     opensAt: "04:00",
     closesAt: "14:00",
     marketName: "Keppetipola Market",

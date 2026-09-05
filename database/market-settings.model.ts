@@ -3,6 +3,7 @@ import mongoose, {
   type HydratedDocument,
   type Model,
 } from "mongoose";
+import { DEFAULT_PRODUCE_CATEGORIES } from "@/lib/produce";
 import { serializeId } from "@/lib/serialize";
 
 export const DEFAULT_OFFER_TEMPLATE =
@@ -20,7 +21,7 @@ const marketSettingsSchema = new Schema<IMarketSettings>(
   {
     vegetableCategories: {
       type: String,
-      default: "Root, Leafy, Pod, Fruit",
+      default: DEFAULT_PRODUCE_CATEGORIES,
       trim: true,
     },
     opensAt: { type: String, default: "04:00", trim: true },

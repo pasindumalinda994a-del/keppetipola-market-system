@@ -49,7 +49,7 @@ const en = {
   // Admin nav
   "nav.userManagement": "User Management",
   "nav.stallManagement": "Stall Management",
-  "nav.vegetableManagement": "Vegetable Management",
+  "nav.vegetableManagement": "Produce Management",
   "nav.transactions": "Transactions",
   "nav.announcements": "Announcements",
   "nav.systemLogs": "System Logs",
@@ -63,7 +63,7 @@ const en = {
   "common.viewAll": "View all",
   "common.review": "Review",
   "common.trader": "Trader",
-  "common.vegetable": "Vegetable",
+  "common.vegetable": "Produce",
   "common.quantity": "Quantity",
   "common.qty": "Qty",
   "common.status": "Status",
@@ -125,8 +125,8 @@ const en = {
   "common.markCompleted": "Mark completed",
   "common.remaining": "Remaining",
   "common.retry": "Retry",
-  "common.selectVegetable": "Select vegetable",
-  "common.selectVegetableToast": "Select a vegetable",
+  "common.selectVegetable": "Select produce",
+  "common.selectVegetableToast": "Select a produce item",
   "common.settingsSaved": "Settings saved",
   "common.harvestDate": "Harvest Date",
   "common.deadline": "Deadline",
@@ -159,7 +159,72 @@ const en = {
 
   "auth.pendingApproval": "Your application is awaiting admin approval",
   "auth.rejected": "Your application was rejected",
+  "auth.rejectedWithReason": "Your application was rejected: {reason}",
   "auth.inactive": "Account is inactive",
+  "auth.tagline": "Wholesale prices & demand for farmers and traders",
+  "auth.welcomeBack": "Welcome back",
+  "auth.loginSubtitle": "Sign in to continue to your portal.",
+  "auth.password": "Password",
+  "auth.signIn": "Sign in",
+  "auth.signingIn": "Signing in…",
+  "auth.noAccount": "No account?",
+  "auth.register": "Register",
+  "auth.welcomeBackName": "Welcome back, {name}",
+  "auth.showPassword": "Show password",
+  "auth.hidePassword": "Hide password",
+  "auth.createAccount": "Create account",
+  "auth.joinAs": "Join as {role}",
+  "auth.registerSubtitle":
+    "Submit your details and documents. An admin must approve your application before you can log in.",
+  "auth.personalDetails": "Personal details",
+  "auth.placeholder.name": "Your name",
+  "auth.placeholder.email": "you@example.com",
+  "auth.placeholder.phone": "+94 …",
+  "auth.placeholder.division": "Your division",
+  "auth.placeholder.address": "Street, town",
+  "auth.accountPassword": "Account password",
+  "auth.placeholder.passwordMin": "At least 6 characters",
+  "auth.confirmPassword": "Confirm password",
+  "auth.placeholder.confirmPassword": "Re-enter password",
+  "auth.passwordMustMatch": "Must match the password",
+  "auth.passwordMismatch": "Passwords do not match",
+  "auth.documentsHint":
+    "Upload both sides of your identity card and a tax bill.",
+  "auth.doc.identityFront": "Identity photo (front)",
+  "auth.doc.identityBack": "Identity photo (back)",
+  "auth.doc.taxBill": "Tax bill photo",
+  "auth.doc.fileHint":
+    "JPG, PNG, or PDF · images compressed automatically · PDFs max 1 MB",
+  "auth.submitApplication": "Submit {role} application",
+  "auth.alreadyRegistered": "Already registered?",
+  "auth.applicationSubmitted": "Application submitted",
+  "auth.register.successMessage":
+    "Application submitted. You can log in after an admin approves your account.",
+  "auth.yourMemberId": "Your {role} ID",
+  "auth.goToLogin": "Go to login",
+  "auth.error.signInFailed": "Could not sign in",
+  "auth.error.missingDocuments":
+    "Please upload identity photos and the tax bill",
+  "auth.error.createAccount": "Could not create account",
+  "auth.error.emailPasswordRequired": "Email and password are required",
+  "auth.error.invalidCredentials": "Invalid email or password",
+  "auth.error.server": "Server error",
+  "auth.error.allFieldsRequired": "All fields are required",
+  "auth.error.passwordLength": "Password must be at least 6 characters",
+  "auth.error.invalidRole": "Role must be farmer or trader",
+  "auth.error.divisionRequired":
+    "Rural Services Division is required for farmers",
+  "auth.error.emailRegistered": "Email already registered",
+  "auth.error.invalidUpload": "Invalid document upload",
+  "auth.error.imageProcess": "Could not process image",
+  "auth.error.imageRead": "Could not read image. Use a JPG or PNG.",
+  "auth.error.documentsTooLarge":
+    "Documents are too large. Use smaller photos or PDFs under 1 MB.",
+  "auth.error.fieldRequired": "{field} is required",
+  "auth.error.fieldTooLarge": "{field} must be 1.5 MB or smaller",
+  "auth.error.fieldTypePdf": "{field} must be a JPG, PNG, or PDF",
+  "auth.error.fieldTypeImage": "{field} must be a JPG or PNG",
+  "auth.error.fieldPdfTooLarge": "{field} PDF must be 1 MB or smaller",
 
   // Status
   "status.pending": "Pending",
@@ -180,14 +245,16 @@ const en = {
 
   // Filters / search
   "filter.title": "Filters",
-  "filter.vegetable": "Vegetable",
+  "filter.vegetable": "Produce",
+  "filter.category": "Category",
   "filter.trader": "Trader",
   "filter.status": "Status",
-  "filter.allVegetables": "All vegetables",
+  "filter.allVegetables": "All produce",
+  "filter.allCategories": "All categories",
   "filter.allTraders": "All traders",
   "filter.allStatuses": "All statuses",
   "search.default": "Search…",
-  "search.vegetable": "Search vegetable…",
+  "search.vegetable": "Search produce…",
   "search.users": "Search users…",
   "search.idOrName": "Search ID or name…",
 
@@ -230,14 +297,14 @@ const en = {
   "chart.typeAria": "Chart type",
   "chart.metricAria": "Price metric",
   "chart.rangeAria": "Time range",
-  "chart.bookmarkHint": "Bookmark up to {max} vegetables to compare on the chart.",
+  "chart.bookmarkHint": "Bookmark up to {max} items to compare on the chart.",
   "chart.watching": "Watching {n}/{max}: {names}",
-  "chart.noMatch": "No vegetables match your search.",
-  "chart.bookmarkLimit": "You can bookmark up to {max} vegetables",
-  "chart.noSelected": "No vegetables selected",
+  "chart.noMatch": "No produce matches your search.",
+  "chart.bookmarkLimit": "You can bookmark up to {max} items",
+  "chart.noSelected": "No produce selected",
   "chart.noHistory": "No price history yet",
   "chart.noHistoryDesc": "History appears after an admin updates wholesale prices.",
-  "chart.bookmarkAbove": "Bookmark vegetables above to compare their prices on this chart.",
+  "chart.bookmarkAbove": "Bookmark produce above to compare their prices on this chart.",
   "chart.series.average": "Average",
   "chart.series.highest": "Highest",
   "chart.series.lowest": "Lowest",
@@ -356,7 +423,7 @@ const en = {
 
   // Farmer prices
   "farmer.prices.title": "Market Prices",
-  "farmer.prices.description": "Live prices with bookmarks for vegetables you grow.",
+  "farmer.prices.description": "Live prices with bookmarks for produce you grow.",
 
   // Farmer profile
   "farmer.profile.title": "Profile",
@@ -372,6 +439,13 @@ const en = {
     "Enter your current password to set a new one",
   "farmer.profile.save": "Save profile",
   "farmer.profile.saved": "Profile saved",
+  "farmer.profile.photo": "Profile photo",
+  "farmer.profile.photoHint": "JPG or PNG. Images are compressed automatically.",
+  "farmer.profile.changePhoto": "Change photo",
+  "farmer.profile.removePhoto": "Remove photo",
+  "farmer.profile.photoUpdated": "Profile photo updated",
+  "farmer.profile.photoRemoved": "Profile photo removed",
+  "farmer.profile.uploadingPhoto": "Uploading…",
 
   // Farmer settings
   "farmer.settings.title": "Settings",
@@ -379,7 +453,7 @@ const en = {
   "farmer.settings.offerAlerts": "Offer alerts",
   "farmer.settings.offerAlertsDesc": "Notify when traders send offers",
   "farmer.settings.priceBookmarks": "Price bookmarks",
-  "farmer.settings.priceBookmarksDesc": "Daily digest for bookmarked vegetables",
+  "farmer.settings.priceBookmarksDesc": "Daily digest for bookmarked produce",
   "farmer.settings.announcements": "Announcements",
   "farmer.settings.announcementsDesc": "Market news and hours",
   "farmer.settings.save": "Save settings",
@@ -486,9 +560,9 @@ const en = {
   "trader.prices.title": "Market Prices",
   "trader.prices.description": "Use live averages when setting your buying range.",
   "trader.reports.title": "Reports",
-  "trader.reports.description": "Purchases, top vegetables, and monthly spending.",
+  "trader.reports.description": "Purchases, top produce, and monthly spending.",
   "trader.reports.monthlySpending": "Monthly spending",
-  "trader.reports.topVegetables": "Top vegetables",
+  "trader.reports.topVegetables": "Top produce",
   "trader.reports.purchasesOverview": "Purchases overview",
   "trader.reports.empty": "No completed purchases yet",
 
@@ -584,11 +658,11 @@ const en = {
   "admin.stalls.reactivated": "Stall reactivated",
 
   // Admin vegetables
-  "admin.vegetables.title": "Vegetable Management",
-  "admin.vegetables.description": "Catalog of market vegetables.",
-  "admin.vegetables.add": "Add vegetable",
-  "admin.vegetables.updated": "Vegetable updated",
-  "admin.vegetables.added": "Vegetable added",
+  "admin.vegetables.title": "Produce Management",
+  "admin.vegetables.description": "Catalog of vegetables, fruit, and other market produce.",
+  "admin.vegetables.add": "Add produce",
+  "admin.vegetables.updated": "Produce updated",
+  "admin.vegetables.added": "Produce added",
 
   // Admin transactions
   "admin.transactions.title": "Transactions",
@@ -604,7 +678,7 @@ const en = {
   "admin.prices.correctDesc": "Correct price — {name}",
   "admin.prices.saveCorrection": "Save correction",
   "admin.prices.corrected": "Price corrected (exceptional override)",
-  "admin.prices.empty": "No prices yet. Add vegetables to create price rows.",
+  "admin.prices.empty": "No prices yet. Add produce to create price rows.",
 
   // Admin reports
   "admin.reports.title": "Reports",
@@ -616,7 +690,7 @@ const en = {
   "admin.reports.weekly": "Weekly",
   "admin.reports.monthly": "Monthly",
   "admin.reports.monthlySales": "Monthly sales",
-  "admin.reports.topVegetables": "Top vegetables",
+  "admin.reports.topVegetables": "Top produce",
   "admin.reports.mon": "Mon",
   "admin.reports.tue": "Tue",
   "admin.reports.wed": "Wed",
@@ -654,7 +728,9 @@ const en = {
   "admin.settings.title": "Settings",
   "admin.settings.description": "Categories, market hours, and notification templates.",
   "admin.settings.categories": "Categories",
-  "admin.settings.vegetableCategories": "Vegetable categories",
+  "admin.settings.vegetableCategories": "Produce categories",
+  "admin.settings.vegetableCategoriesHint":
+    "Comma-separated list. Use Vegetable, Fruit, and Other.",
   "admin.settings.marketHours": "Market open hours",
   "admin.settings.opens": "Opens",
   "admin.settings.closes": "Closes",
@@ -687,11 +763,15 @@ const en = {
   "contact.location": "Location",
   "contact.hours": "Market hours",
   "contact.hoursValue": "Daily {open} – {close}",
-  "contact.address": "Keppetipola Wholesale Vegetable Market",
+  "contact.address": "Keppetipola Wholesale Vegetable & Fruit Market",
   "contact.addressLine": "Badulla District, Sri Lanka",
   "contact.phoneValue": "+94 55 222 3344",
 
   // Vegetable names
+  "category.vegetable": "Vegetable",
+  "category.fruit": "Fruit",
+  "category.other": "Other",
+
   "veg.carrot": "Carrot",
   "veg.cabbage": "Cabbage",
   "veg.leeks": "Leeks",
@@ -759,7 +839,7 @@ const si: Record<MessageKey, string> = {
 
   "nav.userManagement": "පරිශීලක කළමනාකරණය",
   "nav.stallManagement": "කුටි කළමනාකරණය",
-  "nav.vegetableManagement": "එළවළු කළමනාකරණය",
+  "nav.vegetableManagement": "නිෂ්පාදන කළමනාකරණය",
   "nav.transactions": "ගනුදෙනු",
   "nav.announcements": "නිවේදන",
   "nav.systemLogs": "පද්ධති ලොග්",
@@ -772,7 +852,7 @@ const si: Record<MessageKey, string> = {
   "common.viewAll": "සියල්ල බලන්න",
   "common.review": "සමාලෝචනය",
   "common.trader": "වෙළෙන්දා",
-  "common.vegetable": "එළවළු",
+  "common.vegetable": "භාණ්ඩය",
   "common.quantity": "ප්‍රමාණය",
   "common.qty": "ප්‍රමාණය",
   "common.status": "තත්ත්වය",
@@ -834,8 +914,8 @@ const si: Record<MessageKey, string> = {
   "common.markCompleted": "සම්පූර්ණ කළ ලෙස සලකුණු කරන්න",
   "common.remaining": "ඉතිරි",
   "common.retry": "නැවත උත්සාහ කරන්න",
-  "common.selectVegetable": "එළවළු තෝරන්න",
-  "common.selectVegetableToast": "එළවළුවක් තෝරන්න",
+  "common.selectVegetable": "භාණ්ඩය තෝරන්න",
+  "common.selectVegetableToast": "භාණ්ඩයක් තෝරන්න",
   "common.settingsSaved": "සැකසුම් සුරකින ලදී",
   "common.harvestDate": "අස්වනු දිනය",
   "common.deadline": "නියමිත දිනය",
@@ -868,7 +948,71 @@ const si: Record<MessageKey, string> = {
 
   "auth.pendingApproval": "ඔබේ අයදුම්පත පරිපාලක අනුමැතිය එනතුරු රැඳී සිටී",
   "auth.rejected": "ඔබේ අයදුම්පත ප්‍රතික්ෂේප කෙරිණි",
+  "auth.rejectedWithReason": "ඔබේ අයදුම්පත ප්‍රතික්ෂේප කෙරිණි: {reason}",
   "auth.inactive": "ගිණුම අක්‍රියයි",
+  "auth.tagline": "ගොවීන් සහ වෙළෙන්දන් සඳහා තොග මිල සහ ඉල්ලුම",
+  "auth.welcomeBack": "නැවත සාදරයෙන් පිළිගනිමු",
+  "auth.loginSubtitle": "ඔබේ ද්වාරයට ඉදිරියට යාමට පිවිසෙන්න.",
+  "auth.password": "මුරපදය",
+  "auth.signIn": "පිවිසෙන්න",
+  "auth.signingIn": "පිවිසෙමින්…",
+  "auth.noAccount": "ගිණුමක් නැද්ද?",
+  "auth.register": "ලියාපදිංචි වන්න",
+  "auth.welcomeBackName": "නැවත සාදරයෙන් පිළිගනිමු, {name}",
+  "auth.showPassword": "මුරපදය පෙන්වන්න",
+  "auth.hidePassword": "මුරපදය සඟවන්න",
+  "auth.createAccount": "ගිණුමක් සාදන්න",
+  "auth.joinAs": "{role} ලෙස එක්වන්න",
+  "auth.registerSubtitle":
+    "ඔබේ විස්තර සහ ලේඛන ඉදිරිපත් කරන්න. පිවිසීමට පෙර පරිපාලකයෙකු ඔබේ අයදුම්පත අනුමත කළ යුතුය.",
+  "auth.personalDetails": "පුද්ගලික විස්තර",
+  "auth.placeholder.name": "ඔබේ නම",
+  "auth.placeholder.email": "you@example.com",
+  "auth.placeholder.phone": "+94 …",
+  "auth.placeholder.division": "ඔබේ අංශය",
+  "auth.placeholder.address": "වීදිය, නගරය",
+  "auth.accountPassword": "ගිණුම් මුරපදය",
+  "auth.placeholder.passwordMin": "අවම අක්ෂර 6ක්",
+  "auth.confirmPassword": "මුරපදය තහවුරු කරන්න",
+  "auth.placeholder.confirmPassword": "මුරපදය නැවත ඇතුළත් කරන්න",
+  "auth.passwordMustMatch": "මුරපදයට ගැලපිය යුතුය",
+  "auth.passwordMismatch": "මුරපද නොගැලපේ",
+  "auth.documentsHint":
+    "ජාතික හැඳුනුම්පතේ දෙපැත්තම සහ බදු බිල්පතක් උඩුගත කරන්න.",
+  "auth.doc.identityFront": "හැඳුනුම්පතේ ඡායාරූපය (ඉදිරිපස)",
+  "auth.doc.identityBack": "හැඳුනුම්පතේ ඡායාරූපය (පසුපස)",
+  "auth.doc.taxBill": "බදු බිල්පතේ ඡායාරූපය",
+  "auth.doc.fileHint":
+    "JPG, PNG, හෝ PDF · රූප ස්වයංක්‍රීයව සම්පීඩනය වේ · PDF උපරිම 1 MB",
+  "auth.submitApplication": "{role} අයදුම්පත ඉදිරිපත් කරන්න",
+  "auth.alreadyRegistered": "දැනටමත් ලියාපදිංචිද?",
+  "auth.applicationSubmitted": "අයදුම්පත ඉදිරිපත් කෙරිණි",
+  "auth.register.successMessage":
+    "අයදුම්පත ඉදිරිපත් කෙරිණි. පරිපාලකයෙකු ගිණුම අනුමත කළ පසු ඔබට පිවිසිය හැක.",
+  "auth.yourMemberId": "ඔබේ {role} අංකය",
+  "auth.goToLogin": "පිවිසුමට යන්න",
+  "auth.error.signInFailed": "පිවිසීමට නොහැකි විය",
+  "auth.error.missingDocuments":
+    "කරුණාකර හැඳුනුම්පත් ඡායාරූප සහ බදු බිල්පත උඩුගත කරන්න",
+  "auth.error.createAccount": "ගිණුම සෑදිය නොහැකි විය",
+  "auth.error.emailPasswordRequired": "විද්‍යුත් තැපෑල සහ මුරපදය අවශ්‍යයි",
+  "auth.error.invalidCredentials": "විද්‍යුත් තැපෑල හෝ මුරපදය වැරදියි",
+  "auth.error.server": "සේවාදායක දෝෂයකි",
+  "auth.error.allFieldsRequired": "සියලු ක්ෂේත්‍ර අවශ්‍යයි",
+  "auth.error.passwordLength": "මුරපදය අවම අක්ෂර 6ක් විය යුතුය",
+  "auth.error.invalidRole": "භූමිකාව ගොවියා හෝ වෙළෙන්දා විය යුතුය",
+  "auth.error.divisionRequired": "ගොවීන් සඳහා ග්‍රාමීය සේවා අංශය අවශ්‍යයි",
+  "auth.error.emailRegistered": "විද්‍යුත් තැපෑල දැනටමත් ලියාපදිංචියි",
+  "auth.error.invalidUpload": "ලේඛන උඩුගත කිරීම වලංගු නැත",
+  "auth.error.imageProcess": "රූපය සැකසිය නොහැකි විය",
+  "auth.error.imageRead": "රූපය කියවිය නොහැකි විය. JPG හෝ PNG භාවිතා කරන්න.",
+  "auth.error.documentsTooLarge":
+    "ලේඛන ඉතා විශාලයි. කුඩා ඡායාරූප හෝ 1 MB ට අඩු PDF භාවිතා කරන්න.",
+  "auth.error.fieldRequired": "{field} අවශ්‍යයි",
+  "auth.error.fieldTooLarge": "{field} 1.5 MB හෝ ඊට අඩු විය යුතුය",
+  "auth.error.fieldTypePdf": "{field} JPG, PNG, හෝ PDF විය යුතුය",
+  "auth.error.fieldTypeImage": "{field} JPG හෝ PNG විය යුතුය",
+  "auth.error.fieldPdfTooLarge": "{field} PDF 1 MB හෝ ඊට අඩු විය යුතුය",
 
   "status.pending": "පොරොත්තු",
   "status.offered": "යෝජිත",
@@ -887,14 +1031,16 @@ const si: Record<MessageKey, string> = {
   "status.error": "දෝෂය",
 
   "filter.title": "පෙරහන්",
-  "filter.vegetable": "එළවළු",
+  "filter.vegetable": "භාණ්ඩය",
+  "filter.category": "කාණ්ඩය",
   "filter.trader": "වෙළෙන්දා",
   "filter.status": "තත්ත්වය",
-  "filter.allVegetables": "සියලු එළවළු",
+  "filter.allVegetables": "සියලු භාණ්ඩ",
+  "filter.allCategories": "සියලු කාණ්ඩ",
   "filter.allTraders": "සියලු වෙළෙන්දන්",
   "filter.allStatuses": "සියලු තත්ත්ව",
   "search.default": "සොයන්න…",
-  "search.vegetable": "එළවළු සොයන්න…",
+  "search.vegetable": "භාණ්ඩ සොයන්න…",
   "search.users": "පරිශීලකයින් සොයන්න…",
   "search.idOrName": "අංකය හෝ නම සොයන්න…",
 
@@ -934,14 +1080,14 @@ const si: Record<MessageKey, string> = {
   "chart.typeAria": "ප්‍රස්ථාර වර්ගය",
   "chart.metricAria": "මිල මිනුම",
   "chart.rangeAria": "කාල පරාසය",
-  "chart.bookmarkHint": "ප්‍රස්ථාරයේ සසඳන්නට එළවළු {max}ක් දක්වා පොත්සල් කරන්න.",
+  "chart.bookmarkHint": "ප්‍රස්ථාරයේ සසඳන්නට භාණ්ඩ {max}ක් දක්වා පොත්සල් කරන්න.",
   "chart.watching": "නරඹමින් {n}/{max}: {names}",
-  "chart.noMatch": "ඔබේ සෙවුමට ගැලපෙන එළවළු නැත.",
-  "chart.bookmarkLimit": "එළවළු {max}ක් දක්වා පමණක් පොත්සල් කළ හැක",
-  "chart.noSelected": "එළවළු තෝරා නැත",
+  "chart.noMatch": "ඔබේ සෙවුමට ගැලපෙන භාණ්ඩ නැත.",
+  "chart.bookmarkLimit": "භාණ්ඩ {max}ක් දක්වා පමණක් පොත්සල් කළ හැක",
+  "chart.noSelected": "භාණ්ඩ තෝරා නැත",
   "chart.noHistory": "මිල ඉතිහාසය තවම නැත",
   "chart.noHistoryDesc": "පරිපාලකයෙකු තොග මිල යාවත්කාලීන කළ පසු ඉතිහාසය පෙනේ.",
-  "chart.bookmarkAbove": "මෙම ප්‍රස්ථාරයේ මිල සසඳන්නට ඉහත එළවළු පොත්සල් කරන්න.",
+  "chart.bookmarkAbove": "මෙම ප්‍රස්ථාරයේ මිල සසඳන්නට ඉහත භාණ්ඩ පොත්සල් කරන්න.",
   "chart.series.average": "සාමාන්‍ය",
   "chart.series.highest": "උපරිම",
   "chart.series.lowest": "අවම",
@@ -1052,7 +1198,7 @@ const si: Record<MessageKey, string> = {
   "farmer.requests.applySubmit": "අයදුම්පත ඉදිරිපත් කරන්න",
 
   "farmer.prices.title": "වෙළඳපල මිල",
-  "farmer.prices.description": "ඔබ වගා කරන එළවළු සඳහා පොත්සල් සහිත සජීවී මිල.",
+  "farmer.prices.description": "ඔබ වගා කරන භාණ්ඩ සඳහා පොත්සල් සහිත සජීවී මිල.",
 
   "farmer.profile.title": "පැතිකඩ",
   "farmer.profile.description": "පුද්ගලික තොරතුරු සහ සම්බන්ධතා විස්තර.",
@@ -1067,13 +1213,20 @@ const si: Record<MessageKey, string> = {
     "නව මුරපදයක් සැකසීමට වත්මන් මුරපදය ඇතුළත් කරන්න",
   "farmer.profile.save": "පැතිකඩ සුරකින්න",
   "farmer.profile.saved": "පැතිකඩ සුරකින ලදී",
+  "farmer.profile.photo": "පැතිකඩ ඡායාරූපය",
+  "farmer.profile.photoHint": "JPG හෝ PNG. රූප ස්වයංක්‍රීයව සම්පීඩනය වේ.",
+  "farmer.profile.changePhoto": "ඡායාරූපය වෙනස් කරන්න",
+  "farmer.profile.removePhoto": "ඡායාරූපය ඉවත් කරන්න",
+  "farmer.profile.photoUpdated": "පැතිකඩ ඡායාරූපය යාවත්කාලීන කෙරිණි",
+  "farmer.profile.photoRemoved": "පැතිකඩ ඡායාරූපය ඉවත් කෙරිණි",
+  "farmer.profile.uploadingPhoto": "උඩුගත කරමින්…",
 
   "farmer.settings.title": "සැකසුම්",
   "farmer.settings.description": "දැනුම්දීම් සහ ගිණුම් මනාප.",
   "farmer.settings.offerAlerts": "යෝජනා ඇඟවීම්",
   "farmer.settings.offerAlertsDesc": "වෙළෙන්දන් යෝජනා යවන විට දැනුම් දෙන්න",
   "farmer.settings.priceBookmarks": "මිල පොත්සල්",
-  "farmer.settings.priceBookmarksDesc": "පොත්සල් කළ එළවළු සඳහා දෛනික සාරාංශය",
+  "farmer.settings.priceBookmarksDesc": "පොත්සල් කළ භාණ්ඩ සඳහා දෛනික සාරාංශය",
   "farmer.settings.announcements": "නිවේදන",
   "farmer.settings.announcementsDesc": "වෙළඳපල පුවත් සහ වේලාවන්",
   "farmer.settings.save": "සැකසුම් සුරකින්න",
@@ -1171,9 +1324,9 @@ const si: Record<MessageKey, string> = {
   "trader.prices.title": "වෙළඳපල මිල",
   "trader.prices.description": "ඔබේ මිලදී පරාසය සකසන විට සජීවී සාමාන්‍ය භාවිතා කරන්න.",
   "trader.reports.title": "වාර්තා",
-  "trader.reports.description": "මිලදී ගැනීම්, ඉහළම එළවළු සහ මාසික වියදම.",
+  "trader.reports.description": "මිලදී ගැනීම්, ඉහළම භාණ්ඩ සහ මාසික වියදම.",
   "trader.reports.monthlySpending": "මාසික වියදම",
-  "trader.reports.topVegetables": "ඉහළම එළවළු",
+  "trader.reports.topVegetables": "ඉහළම භාණ්ඩ",
   "trader.reports.purchasesOverview": "මිලදී ගැනීම් දළ විශ්ලේෂණය",
   "trader.reports.empty": "සම්පූර්ණ කළ මිලදී ගැනීම් තවම නැත",
 
@@ -1262,11 +1415,11 @@ const si: Record<MessageKey, string> = {
   "admin.stalls.reactivate": "නැවත සක්‍රිය කරන්න",
   "admin.stalls.reactivated": "කුටිය නැවත සක්‍රිය කරන ලදී",
 
-  "admin.vegetables.title": "එළවළු කළමනාකරණය",
-  "admin.vegetables.description": "වෙළඳපල එළවළු නාමාවලිය.",
-  "admin.vegetables.add": "එළවළු එකතු කරන්න",
-  "admin.vegetables.updated": "එළවළු යාවත්කාලීන කරන ලදී",
-  "admin.vegetables.added": "එළවළු එකතු කරන ලදී",
+  "admin.vegetables.title": "නිෂ්පාදන කළමනාකරණය",
+  "admin.vegetables.description": "එළවළු, පලතුරු සහ වෙනත් වෙළඳපල භාණ්ඩ නාමාවලිය.",
+  "admin.vegetables.add": "භාණ්ඩය එකතු කරන්න",
+  "admin.vegetables.updated": "භාණ්ඩය යාවත්කාලීන කරන ලදී",
+  "admin.vegetables.added": "භාණ්ඩය එකතු කරන ලදී",
 
   "admin.transactions.title": "ගනුදෙනු",
   "admin.transactions.description": "සියලු ගොවි–වෙළෙන්දා වෙළඳපල ගනුදෙනු.",
@@ -1280,7 +1433,7 @@ const si: Record<MessageKey, string> = {
   "admin.prices.correctDesc": "මිල නිවැරදි කරන්න — {name}",
   "admin.prices.saveCorrection": "නිවැරදි කිරීම සුරකින්න",
   "admin.prices.corrected": "මිල නිවැරදි කරන ලදී (විශේෂ අභිබවා යාම)",
-  "admin.prices.empty": "මිල තවම නැත. මිල පේළි සඳහා එළවළු එකතු කරන්න.",
+  "admin.prices.empty": "මිල තවම නැත. මිල පේළි සඳහා භාණ්ඩ එකතු කරන්න.",
 
   "admin.reports.title": "වාර්තා",
   "admin.reports.description": "දෛනික, සතිපතා සහ මාසික වෙළඳපල සාරාංශ.",
@@ -1291,7 +1444,7 @@ const si: Record<MessageKey, string> = {
   "admin.reports.weekly": "සතිපතා",
   "admin.reports.monthly": "මාසික",
   "admin.reports.monthlySales": "මාසික විකුණුම්",
-  "admin.reports.topVegetables": "ඉහළම එළවළු",
+  "admin.reports.topVegetables": "ඉහළම භාණ්ඩ",
   "admin.reports.mon": "සඳු",
   "admin.reports.tue": "අඟ",
   "admin.reports.wed": "බදා",
@@ -1326,7 +1479,9 @@ const si: Record<MessageKey, string> = {
   "admin.settings.title": "සැකසුම්",
   "admin.settings.description": "කාණ්ඩ, වෙළඳපල වේලාවන් සහ දැනුම්දීම් අච්චු.",
   "admin.settings.categories": "කාණ්ඩ",
-  "admin.settings.vegetableCategories": "එළවළු කාණ්ඩ",
+  "admin.settings.vegetableCategories": "නිෂ්පාදන කාණ්ඩ",
+  "admin.settings.vegetableCategoriesHint":
+    "කොමාවෙන් වෙන් කළ ලැයිස්තුව. එළවළු, පලතුරු සහ වෙනත් භාවිතා කරන්න.",
   "admin.settings.marketHours": "වෙළඳපල විවෘත වේලාවන්",
   "admin.settings.opens": "විවෘත වේ",
   "admin.settings.closes": "වැසෙයි",
@@ -1357,9 +1512,13 @@ const si: Record<MessageKey, string> = {
   "contact.location": "ස්ථානය",
   "contact.hours": "වෙළඳපල වේලාවන්",
   "contact.hoursValue": "දිනපතා {open} – {close}",
-  "contact.address": "කෙප්පෙටිපොල තොග එළවළු වෙළඳපොළ",
+  "contact.address": "කෙප්පෙටිපොල තොග එළවළු හා පලතුරු වෙළඳපොළ",
   "contact.addressLine": "බදුල්ල දිස්ත්‍රික්කය, ශ්‍රී ලංකාව",
   "contact.phoneValue": "+94 55 222 3344",
+
+  "category.vegetable": "එළවළු",
+  "category.fruit": "පලතුරු",
+  "category.other": "වෙනත්",
 
   "veg.carrot": "කැරට්",
   "veg.cabbage": "ගෝවා",
@@ -1421,6 +1580,72 @@ export const statusMessageKeys: Record<string, MessageKey> = {
   Error: "status.error",
 };
 
+export const authErrorMessageKeys: Record<string, MessageKey> = {
+  "Email and password are required": "auth.error.emailPasswordRequired",
+  "Invalid email or password": "auth.error.invalidCredentials",
+  "Your application is awaiting admin approval": "auth.pendingApproval",
+  "Your application was rejected": "auth.rejected",
+  "Account is inactive": "auth.inactive",
+  "Server error": "auth.error.server",
+  "Could not sign in": "auth.error.signInFailed",
+  "All fields are required": "auth.error.allFieldsRequired",
+  "Password must be at least 6 characters": "auth.error.passwordLength",
+  "Role must be farmer or trader": "auth.error.invalidRole",
+  "Rural Services Division is required for farmers": "auth.error.divisionRequired",
+  "Email already registered": "auth.error.emailRegistered",
+  "Invalid document upload": "auth.error.invalidUpload",
+  "Could not process image": "auth.error.imageProcess",
+  "Could not read image. Use a JPG or PNG.": "auth.error.imageRead",
+  "Documents are too large. Use smaller photos or PDFs under 1 MB.":
+    "auth.error.documentsTooLarge",
+  "Passwords do not match": "auth.passwordMismatch",
+  "Please upload identity photos and the tax bill": "auth.error.missingDocuments",
+  "Could not create account": "auth.error.createAccount",
+  "Request failed": "common.requestFailed",
+};
+
+const AUTH_REJECTED_PREFIX = "Your application was rejected: ";
+
+const authUploadFieldKeys: Record<string, MessageKey> = {
+  "Identity photo (front)": "auth.doc.identityFront",
+  "Identity photo (back)": "auth.doc.identityBack",
+  "Tax bill photo": "auth.doc.taxBill",
+};
+
+const authUploadSuffixKeys: [string, MessageKey][] = [
+  [" is required", "auth.error.fieldRequired"],
+  [" must be 1.5 MB or smaller", "auth.error.fieldTooLarge"],
+  [" must be a JPG, PNG, or PDF", "auth.error.fieldTypePdf"],
+  [" must be a JPG or PNG", "auth.error.fieldTypeImage"],
+  [" PDF must be 1 MB or smaller", "auth.error.fieldPdfTooLarge"],
+];
+
+export function translateAuthError(
+  message: string,
+  t: (key: MessageKey) => string
+): string {
+  const mapped = authErrorMessageKeys[message];
+  if (mapped) return t(mapped);
+
+  if (message.startsWith(AUTH_REJECTED_PREFIX)) {
+    return fillTemplate(t("auth.rejectedWithReason"), {
+      reason: message.slice(AUTH_REJECTED_PREFIX.length),
+    });
+  }
+
+  for (const [label, labelKey] of Object.entries(authUploadFieldKeys)) {
+    if (!message.startsWith(label)) continue;
+    const suffix = message.slice(label.length);
+    for (const [ending, key] of authUploadSuffixKeys) {
+      if (suffix === ending) {
+        return fillTemplate(t(key), { field: t(labelKey) });
+      }
+    }
+  }
+
+  return message;
+}
+
 export function fillTemplate(
   template: string,
   vars: Record<string, string | number>
@@ -1442,6 +1667,20 @@ export const vegetableNameKeys: Record<string, MessageKey> = {
   Beetroot: "veg.beetroot",
   Capsicum: "veg.capsicum",
 };
+
+export const produceCategoryKeys: Record<string, MessageKey> = {
+  Vegetable: "category.vegetable",
+  Fruit: "category.fruit",
+  Other: "category.other",
+};
+
+export function translateProduceCategory(
+  category: string,
+  t: (key: MessageKey) => string
+): string {
+  const key = produceCategoryKeys[category];
+  return key ? t(key) : category;
+}
 
 export function translateVegetableName(
   name: string,

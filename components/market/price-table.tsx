@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { PriceChange } from "@/components/shared/price-change";
 import { useLocale } from "@/components/providers/locale-provider";
-import { translateVegetableName } from "@/lib/i18n/messages";
+import { translateProduceCategory, translateVegetableName } from "@/lib/i18n/messages";
 
 export function PriceTable({ prices }: { prices: MarketPrice[] }) {
   const { t, locale } = useLocale();
@@ -22,6 +22,7 @@ export function PriceTable({ prices }: { prices: MarketPrice[] }) {
         <TableHeader>
           <TableRow>
             <TableHead>{t("common.vegetable")}</TableHead>
+            <TableHead>{t("common.category")}</TableHead>
             <TableHead>{t("common.lowest")}</TableHead>
             <TableHead>{t("common.highest")}</TableHead>
             <TableHead>{t("common.average")}</TableHead>
@@ -34,6 +35,9 @@ export function PriceTable({ prices }: { prices: MarketPrice[] }) {
             <TableRow key={p.vegetableId}>
               <TableCell className="font-medium">
                 {translateVegetableName(p.vegetableName, t)}
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {translateProduceCategory(p.category ?? "Other", t)}
               </TableCell>
               <TableCell>{formatLKR(p.lowest, locale)}</TableCell>
               <TableCell>{formatLKR(p.highest, locale)}</TableCell>

@@ -3,6 +3,7 @@ import connectDB from "@/lib/mongodb";
 import { isAuthError, requireAdmin } from "@/lib/actions/auth.actions";
 import { MarketPrice } from "@/database/market-price.model";
 import { Vegetable } from "@/database/vegetable.model";
+import { normalizeProduceCategory } from "@/lib/produce";
 
 export async function GET() {
   try {
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
 
     const vegetable = await Vegetable.create({
       name: String(name).trim(),
-      category: String(category).trim(),
+      category: normalizeProduceCategory(String(category)),
       unit: unit ? String(unit).trim() : "kg",
       imageUrl: imageUrl ? String(imageUrl).trim() : "",
       status: "Active",
