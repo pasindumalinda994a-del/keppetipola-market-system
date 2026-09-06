@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
 import { PriceTrendChart } from "@/components/market/price-trend-chart";
-import { PageHeader } from "@/components/shared/page-header";
+import { AnimatedPageHeader } from "@/components/marketing/animated-page-header";
 import { SearchBar } from "@/components/shared/search-bar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatLKR } from "@/lib/format";
@@ -70,7 +70,7 @@ export default function PriceTrendsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <PageHeader
+      <AnimatedPageHeader
         title="Price Trends"
         description="Seven-day wholesale price history by produce."
       />

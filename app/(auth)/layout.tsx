@@ -1,5 +1,4 @@
-import { AuthTagline } from "@/components/layout/auth-tagline";
-import { BrandLogo } from "@/components/layout/brand-logo";
+import Image from "next/image";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { LocaleProvider } from "@/components/providers/locale-provider";
 
@@ -10,40 +9,24 @@ export default function AuthLayout({
 }) {
   return (
     <LocaleProvider>
-      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "linear-gradient(160deg, #f4f4f3 0%, #f7f8f6 50%, #f2f5f0 100%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.4]"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23337418' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute -top-24 right-[-10%] -z-10 size-112 rounded-full opacity-40 blur-3xl"
-          style={{ background: "rgba(93, 214, 44, 0.12)" }}
-        />
-        <div
-          className="pointer-events-none absolute -bottom-32 left-[-8%] -z-10 size-96 rounded-full opacity-35 blur-3xl"
-          style={{ background: "rgba(15, 15, 15, 0.06)" }}
-        />
+      <div className="relative flex min-h-screen flex-col items-center justify-center px-4 py-12">
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <Image
+            src="/images/Farmers_loading_harvest_into_lorry_2K_202609060807.jpeg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="scale-105 object-cover blur-[2px]"
+          />
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
 
-        <div className="absolute right-4 top-4 z-10">
+        <div className="fixed right-4 top-4 z-10 rounded-lg bg-card/85 shadow-sm backdrop-blur-sm">
           <LanguageToggle />
         </div>
 
-        <header className="mb-8 flex w-full max-w-2xl flex-col items-center text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <BrandLogo href="/" size="xl" priority />
-          <AuthTagline />
-        </header>
-
-        <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both [animation-delay:80ms]">
+        <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both">
           {children}
         </div>
       </div>

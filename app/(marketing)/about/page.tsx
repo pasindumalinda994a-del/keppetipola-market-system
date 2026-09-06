@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/shared/page-header";
+import { AnimatedPageHeader } from "@/components/marketing/animated-page-header";
 
 
 
@@ -8,7 +8,7 @@ export default function AboutPage() {
 
     <div className="mx-auto max-w-3xl px-4 py-10">
 
-      <PageHeader
+      <AnimatedPageHeader
 
         title="About Keppetipola Market"
 

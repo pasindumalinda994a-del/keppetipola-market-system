@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DemandRequestCard } from "@/components/market/demand-request-card";
+import SplitText from "@/components/marketing/split-text";
 import { Button } from "@/components/ui/button";
 import { fetchRequests } from "@/lib/api";
 import type { BuyingRequest } from "@/types";
@@ -40,9 +41,11 @@ export function MarketDemandHighlights({
       <div className="mx-auto max-w-6xl px-4">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <h2 className="font-satoshi text-2xl font-semibold tracking-tight">
-              Today&apos;s Market Demand
-            </h2>
+            <SplitText
+              text="Today's Market Demand"
+              tag="h2"
+              className="font-satoshi text-2xl font-semibold tracking-tight"
+            />
             <p className="mt-1 text-sm text-muted-foreground">
               Active buying requests from traders right now.
             </p>

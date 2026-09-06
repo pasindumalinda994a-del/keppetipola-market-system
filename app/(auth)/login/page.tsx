@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { ApiError } from "@/lib/api";
 import { portalPathForRole } from "@/lib/auth";
 import { fillTemplate, translateAuthError } from "@/lib/i18n/messages";
+import { AuthCardBrand } from "@/components/layout/auth-tagline";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/90 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+    <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+      <AuthCardBrand priority />
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
           {t("auth.welcomeBack")}

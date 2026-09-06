@@ -56,8 +56,8 @@ export function PortalShell({
 
   return (
     <div className="min-h-dvh bg-background lg:bg-portal-frame lg:p-3 xl:p-4">
-      <div className="flex min-h-dvh lg:min-h-[calc(100dvh-1.5rem)] xl:min-h-[calc(100dvh-2rem)] lg:overflow-hidden lg:rounded-[1.75rem] xl:rounded-[2rem]">
-        <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col bg-portal-frame xl:w-64 lg:flex lg:static lg:shrink-0">
+      <div className="flex min-h-dvh lg:min-h-0 lg:h-[calc(100dvh-1.5rem)] xl:h-[calc(100dvh-2rem)] lg:overflow-hidden lg:rounded-[1.75rem] xl:rounded-[2rem]">
+        <aside className="fixed inset-y-0 left-0 z-30 hidden h-full w-60 flex-col bg-portal-frame xl:w-64 lg:flex lg:static lg:h-full lg:shrink-0">
           <div className="px-4 py-4 xl:px-5">
             <Link
               href={`/${role}`}

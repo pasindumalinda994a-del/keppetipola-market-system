@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -30,16 +32,21 @@ export default function FarmerHarvestPage() {
     async (authToken) => (await fetchHarvests(authToken, { mine: true })).harvests,
     [] as Harvest[]
   );
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  async function onDelete(id: string) {
-    if (!token) return;
-    if (!window.confirm(t("farmer.harvest.deleteConfirm"))) return;
+  async function onDelete() {
+    if (!token || !pendingDeleteId) return;
+    setDeleting(true);
     try {
-      await deleteHarvest(token, id);
+      await deleteHarvest(token, pendingDeleteId);
       toast.success(t("farmer.harvest.deleted"));
-      setHarvests((prev) => prev.filter((h) => h.id !== id));
+      setHarvests((prev) => prev.filter((h) => h.id !== pendingDeleteId));
+      setPendingDeleteId(null);
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : t("common.retry"));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -124,7 +131,7 @@ export default function FarmerHarvestPage() {
                       size="sm"
                       variant="ghost"
                       className="text-destructive"
-                      onClick={() => void onDelete(h.id)}
+                      onClick={() => setPendingDeleteId(h.id)}
                     >
                       {t("common.delete")}
                     </Button>
@@ -135,6 +142,18 @@ export default function FarmerHarvestPage() {
           </Table>
         </div>
       )}
+      <ConfirmDialog
+        open={pendingDeleteId !== null}
+        onOpenChange={(open) => {
+          if (!open && !deleting) setPendingDeleteId(null);
+        }}
+        title={t("common.deleteTitle")}
+        description={t("farmer.harvest.deleteConfirm")}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
+        confirming={deleting}
+        onConfirm={onDelete}
+      />
     </div>
   );
 }

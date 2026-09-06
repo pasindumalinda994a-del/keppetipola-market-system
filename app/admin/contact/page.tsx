@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,8 @@ export default function AdminContactPage() {
     async (authToken) => (await fetchContactMessages(authToken)).messages,
     [] as ContactMessage[]
   );
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   async function markRead(id: string) {
     if (!token) return;
@@ -36,14 +40,18 @@ export default function AdminContactPage() {
     }
   }
 
-  async function remove(id: string) {
-    if (!token) return;
+  async function remove() {
+    if (!token || !pendingDeleteId) return;
+    setDeleting(true);
     try {
-      await deleteContactMessage(token, id);
-      setData((prev) => prev.filter((m) => m.id !== id));
+      await deleteContactMessage(token, pendingDeleteId);
+      setData((prev) => prev.filter((m) => m.id !== pendingDeleteId));
       toast.message(t("admin.contact.deleted"));
+      setPendingDeleteId(null);
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : t("common.retry"));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -94,7 +102,7 @@ export default function AdminContactPage() {
                     size="sm"
                     variant="ghost"
                     className="text-destructive"
-                    onClick={() => void remove(item.id)}
+                    onClick={() => setPendingDeleteId(item.id)}
                   >
                     {t("common.delete")}
                   </Button>
@@ -104,6 +112,18 @@ export default function AdminContactPage() {
           ))}
         </ul>
       )}
+      <ConfirmDialog
+        open={pendingDeleteId !== null}
+        onOpenChange={(open) => {
+          if (!open && !deleting) setPendingDeleteId(null);
+        }}
+        title={t("common.deleteTitle")}
+        description={t("admin.contact.deleteConfirm")}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
+        confirming={deleting}
+        onConfirm={remove}
+      />
     </div>
   );
 }
