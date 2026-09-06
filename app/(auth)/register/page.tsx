@@ -21,7 +21,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { cn } from "@/lib/utils";
 
 const ACCEPT = ".jpg,.jpeg,.png,.pdf";
-const fieldClass = "h-11 rounded-xl bg-background/70 px-3.5";
+const fieldClass = "h-11 rounded-lg bg-white px-3.5";
 
 function Section({
   title,
@@ -68,7 +68,7 @@ function FileField({
         required
         accept={ACCEPT}
         onChange={(e) => onChange(e.target.files?.[0] ?? null)}
-        className="h-11 rounded-xl bg-background/70 px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1 file:text-sm file:font-medium"
+        className="h-11 rounded-lg bg-white px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1 file:text-sm file:font-medium"
       />
       <p className="text-xs text-muted-foreground">
         {file ? file.name : t("auth.doc.fileHint")}
@@ -155,7 +155,7 @@ function RegisterForm() {
 
   if (submitted) {
     return (
-      <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/95 p-6 text-center shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+      <div className="guest-card mx-auto max-w-lg p-6 text-center sm:p-8">
         <AuthCardBrand />
         <CheckCircle2 className="mx-auto size-10 text-primary" />
         <h1 className="mt-4 font-heading text-2xl font-semibold tracking-tight text-foreground">
@@ -170,7 +170,7 @@ function RegisterForm() {
             {submitted.memberId}
           </p>
         ) : null}
-        <Button asChild size="lg" className="mt-6 h-11 w-full rounded-xl">
+        <Button asChild size="lg" variant="brand" className="mt-6 h-11 w-full">
           <Link href="/login">{t("auth.goToLogin")}</Link>
         </Button>
       </div>
@@ -178,7 +178,7 @@ function RegisterForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+    <div className="guest-card p-6 sm:p-8">
       <AuthCardBrand />
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
@@ -207,10 +207,10 @@ function RegisterForm() {
                 type="button"
                 onClick={() => setRole(r.id)}
                 className={cn(
-                  "flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-medium transition-colors",
+                  "flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-sm font-medium transition-colors",
                   selected
                     ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background/50 text-foreground hover:bg-accent/60"
+                    : "border-border bg-white text-foreground hover:bg-accent/60"
                 )}
               >
                 <Icon className="size-4" />
@@ -369,7 +369,8 @@ function RegisterForm() {
           type="submit"
           size="lg"
           disabled={submitting}
-          className="h-11 w-full rounded-xl"
+          variant="brand"
+          className="h-11 w-full"
         >
           {submitting
             ? t("common.submitting")
