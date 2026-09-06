@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { HeroSlider } from "@/components/marketing/hero-slider";
+import { HeroBackground } from "@/components/marketing/hero-background";
 import { HomePriceHighlights } from "@/components/marketing/home-price-highlights";
+import SplitText from "@/components/marketing/split-text";
 import { MarketDemandHighlights } from "@/components/market/market-demand-highlights";
 import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
@@ -18,30 +19,34 @@ export default async function HomePage() {
   return (
     <div>
       <section className="relative isolate min-h-dvh overflow-hidden border-b">
-        <HeroSlider />
+        <HeroBackground />
         <div className="relative z-20 mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 py-16">
-          <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
-            <h1 className="font-satoshi max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl">
-              Keppetipola Market System
-            </h1>
+          <div>
+            <SplitText
+              text="Keppetipola Market System"
+              tag="h1"
+              className="font-satoshi max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl"
+            />
             <h2 className="font-satoshi mt-6 max-w-xl text-xl font-medium text-white/90 sm:text-2xl">
               Who will pay you the best price for your harvest today?
             </h2>
-            <p className="mt-3 max-w-lg text-white/75">
-              Live wholesale prices and trader demand — built for farmers first.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link href="/register?role=farmer">Register as Farmer</Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white"
-              >
-                <Link href="/register?role=trader">Register as Trader</Link>
-              </Button>
+            <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
+              <p className="mt-3 max-w-lg text-white/75">
+                Live wholesale prices and trader demand — built for farmers first.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg">
+                  <Link href="/register?role=farmer">Register as Farmer</Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                >
+                  <Link href="/register?role=trader">Register as Trader</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -52,9 +57,11 @@ export default async function HomePage() {
       <MarketDemandHighlights />
 
       <section className="mx-auto max-w-6xl px-4 py-14">
-        <h2 className="font-satoshi mb-6 text-2xl font-semibold tracking-tight">
-          Market Statistics
-        </h2>
+        <SplitText
+          text="Market Statistics"
+          tag="h2"
+          className="font-satoshi mb-6 text-2xl font-semibold tracking-tight"
+        />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Today's Transactions"
@@ -89,9 +96,11 @@ export default async function HomePage() {
 
       <section className="border-t bg-muted/60 py-14">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="font-satoshi mb-6 text-2xl font-semibold tracking-tight">
-            Latest Announcements
-          </h2>
+          <SplitText
+            text="Latest Announcements"
+            tag="h2"
+            className="font-satoshi mb-6 text-2xl font-semibold tracking-tight"
+          />
           {announcements.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No announcements right now.

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
+import SplitText from "@/components/marketing/split-text";
 import { VegetablePriceCard } from "@/components/market/vegetable-price-card";
 import { Button } from "@/components/ui/button";
 import type { MarketPrice } from "@/types";
@@ -23,9 +24,11 @@ export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
     <section id="price-highlights" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-14">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
-          <h2 className="font-satoshi text-2xl font-semibold tracking-tight">
-            Today&apos;s Price Highlights
-          </h2>
+          <SplitText
+            text="Today's Price Highlights"
+            tag="h2"
+            className="font-satoshi text-2xl font-semibold tracking-tight"
+          />
           <p className="mt-1 text-sm text-muted-foreground">
             Updated as traders buy and sell on the floor.
           </p>

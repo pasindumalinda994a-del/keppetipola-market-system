@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -40,15 +41,21 @@ export default function AdminAnnouncementsPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Announcement | null>(null);
   const [saving, setSaving] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  async function remove(id: string) {
-    if (!token) return;
+  async function remove() {
+    if (!token || !pendingDeleteId) return;
+    setDeleting(true);
     try {
-      await deleteAnnouncement(token, id);
-      setItems((prev) => prev.filter((a) => a.id !== id));
+      await deleteAnnouncement(token, pendingDeleteId);
+      setItems((prev) => prev.filter((a) => a.id !== pendingDeleteId));
       toast.message(t("admin.announcements.deleted"));
+      setPendingDeleteId(null);
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : t("common.retry"));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -123,7 +130,7 @@ export default function AdminAnnouncementsPage() {
                     size="sm"
                     variant="ghost"
                     className="text-destructive"
-                    onClick={() => void remove(a.id)}
+                    onClick={() => setPendingDeleteId(a.id)}
                   >
                     {t("common.delete")}
                   </Button>
@@ -206,6 +213,18 @@ export default function AdminAnnouncementsPage() {
           </form>
         </DialogContent>
       </Dialog>
+      <ConfirmDialog
+        open={pendingDeleteId !== null}
+        onOpenChange={(open) => {
+          if (!open && !deleting) setPendingDeleteId(null);
+        }}
+        title={t("common.deleteTitle")}
+        description={t("admin.announcements.deleteConfirm")}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
+        confirming={deleting}
+        onConfirm={remove}
+      />
     </div>
   );
 }

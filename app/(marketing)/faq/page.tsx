@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/shared/page-header";
+import { AnimatedPageHeader } from "@/components/marketing/animated-page-header";
 
 const faqs = [
   {
@@ -21,7 +21,7 @@ const faqs = [
 export default function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <PageHeader
+      <AnimatedPageHeader
         title="FAQ"
         description="Common questions about using Keppetipola Market."
       />

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/shared/page-header";
+import { AnimatedPageHeader } from "@/components/marketing/animated-page-header";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,7 +50,7 @@ export default function ContactPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <PageHeader
+      <AnimatedPageHeader
         title={t("contact.title")}
         description={t("contact.description")}
       />

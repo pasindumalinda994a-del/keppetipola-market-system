@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ export function ProfileForm() {
   } = useAuth();
   const [saving, setSaving] = useState(false);
   const [photoBusy, setPhotoBusy] = useState(false);
+  const [confirmRemovePhoto, setConfirmRemovePhoto] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   if (!user) return null;
@@ -54,6 +56,7 @@ export function ProfileForm() {
     try {
       await removeProfilePhoto();
       toast.success(t("farmer.profile.photoRemoved"));
+      setConfirmRemovePhoto(false);
     } catch (err) {
       const message =
         err instanceof ApiError ? err.message : t("common.requestFailed");
@@ -113,6 +116,7 @@ export function ProfileForm() {
   }
 
   return (
+    <>
     <form onSubmit={onSubmit} className="space-y-4 rounded-lg bg-card p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <UserAvatar
@@ -155,7 +159,7 @@ export function ProfileForm() {
                 variant="ghost"
                 size="sm"
                 disabled={photoBusy}
-                onClick={() => void onRemovePhoto()}
+                onClick={() => setConfirmRemovePhoto(true)}
               >
                 {t("farmer.profile.removePhoto")}
               </Button>
@@ -231,5 +235,18 @@ export function ProfileForm() {
         {saving ? t("common.saving") : t("farmer.profile.save")}
       </Button>
     </form>
+      <ConfirmDialog
+        open={confirmRemovePhoto}
+        onOpenChange={(open) => {
+          if (!open && !photoBusy) setConfirmRemovePhoto(false);
+        }}
+        title={t("farmer.profile.removePhoto")}
+        description={t("farmer.profile.removePhotoConfirm")}
+        confirmLabel={t("farmer.profile.removePhoto")}
+        cancelLabel={t("common.cancel")}
+        confirming={photoBusy}
+        onConfirm={onRemovePhoto}
+      />
+    </>
   );
 }

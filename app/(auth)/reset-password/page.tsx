@@ -85,7 +85,7 @@ function ResetPasswordForm() {
   const fieldClass = "h-11 rounded-xl bg-background/70 px-3.5";
 
   return (
-    <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/90 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+    <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
           {t("auth.resetPasswordTitle")}
