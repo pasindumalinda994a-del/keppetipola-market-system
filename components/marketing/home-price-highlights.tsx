@@ -12,10 +12,9 @@ export function HomePriceHighlights() {
       <section className="mx-auto max-w-6xl px-4 py-14">
         <Skeleton className="mb-6 h-8 w-64" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Skeleton className="h-36 w-full" />
-          <Skeleton className="h-36 w-full" />
-          <Skeleton className="h-36 w-full" />
-          <Skeleton className="h-36 w-full" />
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-36 w-full" />
+          ))}
         </div>
       </section>
     );

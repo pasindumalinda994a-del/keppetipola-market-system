@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { Award } from "lucide-react";
 import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { DemandRequestCard } from "@/components/market/demand-request-card";
 import { VegetablePriceCard } from "@/components/market/vegetable-price-card";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatCard } from "@/components/shared/stat-card";
+import { STAT_ICONS, StatCard, StatCardRow } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
@@ -101,38 +102,35 @@ export default function FarmerDashboardPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <StatCardRow>
         <StatCard
+          icon={STAT_ICONS.wheat}
           title={t("farmer.dash.harvestListings")}
           value={String(harvests.length)}
         />
         <StatCard
+          icon={STAT_ICONS.priceCheck}
           title={t("farmer.dash.pendingOffers")}
           value={String(pendingOffers)}
         />
         <StatCard
+          icon={STAT_ICONS.sell}
           title={t("farmer.dash.acceptedSales")}
           value={String(acceptedSales)}
         />
         <StatCard
+          icon={STAT_ICONS.finance}
           title={t("farmer.dash.totalEarnings")}
           value={formatLKR(totalEarnings, locale)}
         />
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {t("farmer.dash.loyaltyTokens")}
-          </p>
-          <p className="font-heading text-xl font-semibold tabular-nums">
-            {farmerLoyaltyTokens}
-          </p>
-        </div>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/farmer/loyalty">{t("farmer.dash.viewLoyalty")}</Link>
-        </Button>
-      </div>
+        <Link href="/farmer/loyalty" className="block h-full">
+          <StatCard
+            icon={<Award strokeWidth={1.5} />}
+            title={t("farmer.dash.loyaltyTokens")}
+            value={String(farmerLoyaltyTokens)}
+          />
+        </Link>
+      </StatCardRow>
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">

@@ -106,3 +106,164 @@
     @apply font-sans scroll-smooth;
   }
 }
+
+@property --mesh-lime-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 10%;
+}
+
+@property --mesh-lime-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --mesh-sage-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 94%;
+}
+
+@property --mesh-sage-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --mesh-mist-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --mesh-mist-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 6%;
+}
+
+@property --mesh-glow-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 42%;
+}
+
+@property --mesh-glow-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 58%;
+}
+
+@layer utilities {
+  .portal-canvas {
+    --mesh-lime-x: 10%;
+    --mesh-lime-y: 0%;
+    --mesh-sage-x: 94%;
+    --mesh-sage-y: 100%;
+    --mesh-mist-x: 100%;
+    --mesh-mist-y: 6%;
+    --mesh-glow-x: 42%;
+    --mesh-glow-y: 58%;
+    position: relative;
+    isolation: isolate;
+    background-color: var(--background);
+    background-image:
+      radial-gradient(
+        ellipse 92% 78% at var(--mesh-lime-x) var(--mesh-lime-y),
+        color-mix(in srgb, var(--primary) 28%, transparent),
+        transparent 64%
+      ),
+      radial-gradient(
+        ellipse 86% 74% at var(--mesh-sage-x) var(--mesh-sage-y),
+        color-mix(in srgb, var(--success) 16%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 72% 56% at var(--mesh-mist-x) var(--mesh-mist-y),
+        color-mix(in srgb, var(--muted) 75%, transparent),
+        transparent 56%
+      ),
+      radial-gradient(
+        ellipse 62% 52% at var(--mesh-glow-x) var(--mesh-glow-y),
+        color-mix(in srgb, var(--secondary) 88%, transparent),
+        transparent 58%
+      ),
+      linear-gradient(
+        168deg,
+        color-mix(in srgb, var(--secondary) 92%, var(--background)) 0%,
+        var(--background) 36%,
+        color-mix(in srgb, var(--secondary) 70%, var(--background)) 68%,
+        color-mix(in srgb, var(--success) 10%, var(--background)) 100%
+      );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    animation: portal-mesh-drift 28s ease-in-out infinite alternate;
+  }
+
+  .portal-canvas::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("/images/Black White and Metallic Modern Pitch Deck Presentation.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    mix-blend-mode: multiply;
+    -webkit-mask-image: linear-gradient(
+      to bottom right,
+      rgb(0 0 0 / 0.45) 0%,
+      transparent 42%
+    );
+    mask-image: linear-gradient(
+      to bottom right,
+      rgb(0 0 0 / 0.45) 0%,
+      transparent 42%
+    );
+  }
+
+  .portal-canvas::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  @keyframes portal-mesh-drift {
+    0% {
+      --mesh-lime-x: 10%;
+      --mesh-lime-y: 0%;
+      --mesh-sage-x: 94%;
+      --mesh-sage-y: 100%;
+      --mesh-mist-x: 100%;
+      --mesh-mist-y: 6%;
+      --mesh-glow-x: 42%;
+      --mesh-glow-y: 58%;
+    }
+    100% {
+      --mesh-lime-x: 24%;
+      --mesh-lime-y: 16%;
+      --mesh-sage-x: 78%;
+      --mesh-sage-y: 82%;
+      --mesh-mist-x: 84%;
+      --mesh-mist-y: 20%;
+      --mesh-glow-x: 58%;
+      --mesh-glow-y: 40%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portal-canvas {
+      animation: none;
+    }
+  }
+}

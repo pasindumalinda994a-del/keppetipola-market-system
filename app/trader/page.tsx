@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Award } from "lucide-react";
 import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatCard } from "@/components/shared/stat-card";
+import { STAT_ICONS, StatCard, StatCardRow } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
@@ -77,38 +78,35 @@ export default function TraderDashboardPage() {
           </Button>
         }
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <StatCardRow>
         <StatCard
+          icon={STAT_ICONS.wheat}
           title={t("trader.dash.buyingRequests")}
           value={String(requests.length)}
         />
         <StatCard
+          icon={STAT_ICONS.priceCheck}
           title={t("trader.dash.applications")}
           value={String(applications.length)}
         />
         <StatCard
+          icon={STAT_ICONS.sell}
           title={t("trader.dash.purchasesToday")}
           value={String(todaySales.length)}
         />
         <StatCard
+          icon={STAT_ICONS.finance}
           title={t("trader.dash.todaySpending")}
           value={formatLKR(todaySpending, locale)}
         />
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {t("trader.dash.loyaltyFarmers")}
-          </p>
-          <p className="font-heading text-xl font-semibold tabular-nums">
-            {loyaltyFarmers}
-          </p>
-        </div>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/trader/loyalty">{t("trader.dash.viewLoyalty")}</Link>
-        </Button>
-      </div>
+        <Link href="/trader/loyalty" className="block h-full">
+          <StatCard
+            icon={<Award strokeWidth={1.5} />}
+            title={t("trader.dash.loyaltyFarmers")}
+            value={String(loyaltyFarmers)}
+          />
+        </Link>
+      </StatCardRow>
 
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HeroBackground } from "@/components/marketing/hero-background";
 import { HomePriceHighlights } from "@/components/marketing/home-price-highlights";
@@ -56,41 +57,53 @@ export default async function HomePage() {
 
       <MarketDemandHighlights />
 
-      <section className="mx-auto max-w-6xl px-4 py-14">
-        <SplitText
-          text="Market Statistics"
-          tag="h2"
-          className="font-satoshi mb-6 text-2xl font-semibold tracking-tight"
-        />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            title="Today's Transactions"
-            value={String(marketStats.todayTransactions.value)}
-            change={marketStats.todayTransactions.change}
-            changeLabel="vs yesterday"
-            chartData={marketStats.todayTransactions.chartData}
+      <section className="relative isolate overflow-hidden border-y py-14">
+        <div className="absolute inset-0 -z-10" aria-hidden>
+          <Image
+            src="/images/market-statistics.jpeg"
+            alt=""
+            fill
+            sizes="100vw"
+            className="scale-110 object-cover object-center blur-md"
           />
-          <StatCard
-            title="Active Farmers"
-            value={String(marketStats.activeFarmers.value)}
-            change={marketStats.activeFarmers.change}
-            changeLabel="vs yesterday"
-            chartData={marketStats.activeFarmers.chartData}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-6xl px-4">
+          <SplitText
+            text="Market Statistics"
+            tag="h2"
+            className="font-satoshi mb-6 text-2xl font-semibold tracking-tight text-white"
           />
-          <StatCard
-            title="Active Traders"
-            value={String(marketStats.activeTraders.value)}
-            change={marketStats.activeTraders.change}
-            changeLabel="vs yesterday"
-            chartData={marketStats.activeTraders.chartData}
-          />
-          <StatCard
-            title="Produce Sold"
-            value={`${marketStats.vegetablesSoldTons.value} Tons`}
-            change={marketStats.vegetablesSoldTons.change}
-            changeLabel="vs yesterday"
-            chartData={marketStats.vegetablesSoldTons.chartData}
-          />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              title="Today's Transactions"
+              value={String(marketStats.todayTransactions.value)}
+              change={marketStats.todayTransactions.change}
+              changeLabel="vs yesterday"
+              chartData={marketStats.todayTransactions.chartData}
+            />
+            <StatCard
+              title="Active Farmers"
+              value={String(marketStats.activeFarmers.value)}
+              change={marketStats.activeFarmers.change}
+              changeLabel="vs yesterday"
+              chartData={marketStats.activeFarmers.chartData}
+            />
+            <StatCard
+              title="Active Traders"
+              value={String(marketStats.activeTraders.value)}
+              change={marketStats.activeTraders.change}
+              changeLabel="vs yesterday"
+              chartData={marketStats.activeTraders.chartData}
+            />
+            <StatCard
+              title="Produce Sold"
+              value={`${marketStats.vegetablesSoldTons.value} Tons`}
+              change={marketStats.vegetablesSoldTons.change}
+              changeLabel="vs yesterday"
+              chartData={marketStats.vegetablesSoldTons.chartData}
+            />
+          </div>
         </div>
       </section>
 

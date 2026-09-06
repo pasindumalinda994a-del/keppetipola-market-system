@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BookmarkedPriceChart } from "@/components/market/bookmarked-price-chart";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatCard } from "@/components/shared/stat-card";
+import { STAT_ICONS, StatCard, StatCardRow } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
@@ -73,24 +73,28 @@ export default function AdminDashboardPage() {
         title={t("admin.dash.title")}
         description={t("admin.dash.description")}
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <StatCardRow>
         <StatCard
+          icon={STAT_ICONS.wheat}
           title={t("admin.dash.farmers")}
           value={String(activeFarmers)}
         />
         <StatCard
+          icon={STAT_ICONS.sell}
           title={t("admin.dash.traders")}
           value={String(activeTraders)}
         />
         <StatCard
+          icon={STAT_ICONS.priceCheck}
           title={t("admin.dash.transactions")}
           value={String(sales.length)}
         />
         <StatCard
+          icon={STAT_ICONS.finance}
           title={t("admin.dash.todaySales")}
           value={formatLKR(todaySalesTotal, locale)}
         />
-      </div>
+      </StatCardRow>
 
       <section className="mt-8">
         <h2 className="mb-4 text-lg font-semibold">
