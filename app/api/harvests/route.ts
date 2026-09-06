@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { Harvest } from "@/database/harvest.model";
+import { User } from "@/database/user.model";
 import { Vegetable } from "@/database/vegetable.model";
 import {
   isAuthError,
   requireActiveRole,
   requireAuth,
 } from "@/lib/actions/auth.actions";
+import { withFarmerPhoto } from "@/lib/profile";
 import { parseDate, parsePositiveNumber } from "@/lib/serialize";
 import {
   asBinaryFile,
@@ -85,8 +87,18 @@ export async function GET(request: Request) {
     }
 
     const harvests = await Harvest.find(filter).sort({ createdAt: -1 });
+    const farmerIds = [...new Set(harvests.map((h) => String(h.farmerId)))];
+    const farmers = farmerIds.length
+      ? await User.find({ _id: { $in: farmerIds } }).select("photoUrl")
+      : [];
+    const photoByFarmer = new Map(
+      farmers.map((farmer) => [String(farmer._id), farmer.photoUrl])
+    );
+
     return NextResponse.json({
-      harvests: harvests.map((h) => h.toJSON()),
+      harvests: harvests.map((h) =>
+        withFarmerPhoto(h.toJSON(), photoByFarmer.get(String(h.farmerId)))
+      ),
     });
   } catch (err) {
     console.error("listHarvests error:", err);

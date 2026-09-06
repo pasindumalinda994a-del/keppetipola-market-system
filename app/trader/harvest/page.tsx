@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
@@ -83,11 +84,19 @@ export default function TraderHarvestBrowsePage() {
           {harvests.map((h) => (
             <article key={h.id} className="flex flex-col rounded-lg bg-card p-4">
               <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {t("trader.harvest.farmer")}
-                  </p>
-                  <h3 className="font-semibold">{h.farmerName}</h3>
+                <div className="flex min-w-0 items-center gap-3">
+                  <UserAvatar
+                    name={h.farmerName ?? ""}
+                    src={h.farmerPhotoUrl}
+                    size="lg"
+                    className="size-11"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm text-muted-foreground">
+                      {t("trader.harvest.farmer")}
+                    </p>
+                    <h3 className="truncate font-semibold">{h.farmerName}</h3>
+                  </div>
                 </div>
                 <StatusBadge status={h.status} />
               </div>
