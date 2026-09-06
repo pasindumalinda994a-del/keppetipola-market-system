@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -18,6 +18,7 @@ import {
   filterProduceByCategory,
   uniqueProduceCategories,
 } from "@/lib/produce";
+import { cn } from "@/lib/utils";
 import type { Vegetable } from "@/types";
 
 export function ProducePicker({
@@ -26,15 +27,21 @@ export function ProducePicker({
   onChange,
   disabled,
   loading,
+  defaultCategory = "all",
+  selectFirstOnChange = false,
+  className,
 }: {
   vegetables: Vegetable[];
   value: string;
   onChange: (id: string) => void;
   disabled?: boolean;
   loading?: boolean;
+  defaultCategory?: string;
+  selectFirstOnChange?: boolean;
+  className?: string;
 }) {
   const { t } = useLocale();
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState(defaultCategory);
   const categories = useMemo(
     () => uniqueProduceCategories(vegetables.map((v) => v.category)),
     [vegetables]
@@ -47,24 +54,32 @@ export function ProducePicker({
     filtered.map((v) => [v.id, translateVegetableName(v.name, t)])
   );
 
+  useEffect(() => {
+    if (!selectFirstOnChange || loading || !vegetables.length) return;
+    if (value && filtered.some((item) => item.id === value)) return;
+    const first = filtered[0]?.id ?? "";
+    if (first !== value) onChange(first);
+  }, [selectFirstOnChange, loading, vegetables.length, filtered, value, onChange]);
+
+  function handleCategoryChange(next: string | null) {
+    const selected = next ?? "all";
+    setCategory(selected);
+    const nextItems = filterProduceByCategory(vegetables, selected);
+    if (value && nextItems.some((item) => item.id === value)) return;
+    if (selectFirstOnChange) {
+      onChange(nextItems[0]?.id ?? "");
+      return;
+    }
+    if (value) onChange("");
+  }
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className={cn("grid gap-4 sm:grid-cols-2", className)}>
       <div className="space-y-2">
         <Label>{t("common.category")}</Label>
         <Select
           value={category}
-          onValueChange={(next) => {
-            const selected = next ?? "all";
-            setCategory(selected);
-            if (
-              value &&
-              !filterProduceByCategory(vegetables, selected).some(
-                (item) => item.id === value
-              )
-            ) {
-              onChange("");
-            }
-          }}
+          onValueChange={handleCategoryChange}
           disabled={disabled || loading}
         >
           <SelectTrigger className="w-full">

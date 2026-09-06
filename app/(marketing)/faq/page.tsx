@@ -20,16 +20,16 @@ const faqs = [
 
 export default function FaqPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className="guest-wrap py-10">
       <AnimatedPageHeader
         title="FAQ"
         description="Common questions about using Keppetipola Market."
       />
-      <div className="space-y-6">
+      <div className="space-y-3">
         {faqs.map((faq) => (
-          <div key={faq.question}>
-            <h2 className="font-medium text-foreground">{faq.question}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{faq.answer}</p>
+          <div key={faq.question} className="guest-card p-5">
+            <h2 className="font-semibold text-foreground">{faq.question}</h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">{faq.answer}</p>
           </div>
         ))}
       </div>

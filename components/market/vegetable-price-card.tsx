@@ -14,10 +14,12 @@ export function VegetablePriceCard({
   price,
   href,
   className,
+  variant = "default",
 }: {
   price: MarketPrice;
   href?: string;
   className?: string;
+  variant?: "default" | "guest";
 }) {
   const { t, locale } = useLocale();
   const vegName = translateVegetableName(price.vegetableName, t);
@@ -61,7 +63,9 @@ export function VegetablePriceCard({
   );
 
   const classes = cn(
-    "group block rounded-xl bg-card p-3 transition-colors hover:bg-accent/30",
+    variant === "guest"
+      ? "guest-card group block p-3 transition-shadow hover:shadow-[0_4px_18px_rgba(0,0,0,0.1)]"
+      : "group block rounded-xl bg-card p-3 transition-colors hover:bg-accent/30",
     className
   );
 

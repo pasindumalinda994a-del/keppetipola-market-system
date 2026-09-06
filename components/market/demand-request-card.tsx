@@ -13,16 +13,20 @@ export function DemandRequestCard({
   request,
   applyHref = "/login",
   className,
+  variant = "default",
 }: {
   request: BuyingRequest;
   applyHref?: string;
   className?: string;
+  variant?: "default" | "guest";
 }) {
   const { t, locale } = useLocale();
   return (
     <article
       className={cn(
-        "flex flex-col rounded-lg bg-card p-4",
+        variant === "guest"
+          ? "guest-card flex flex-col p-4"
+          : "flex flex-col rounded-lg bg-card p-4",
         className
       )}
     >
@@ -66,7 +70,11 @@ export function DemandRequestCard({
           </dd>
         </div>
       </dl>
-      <Button asChild className="mt-4 w-full">
+      <Button
+        asChild
+        variant={variant === "guest" ? "brand" : "default"}
+        className="mt-4 w-full"
+      >
         <Link href={applyHref}>{t("common.apply")}</Link>
       </Button>
     </article>
