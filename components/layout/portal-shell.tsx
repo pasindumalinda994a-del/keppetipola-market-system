@@ -139,7 +139,7 @@ export function PortalShell({
           </div>
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col bg-background lg:overflow-hidden lg:rounded-[1.75rem] xl:rounded-[2rem] lg:shadow-[0_8px_32px_rgba(0,0,0,0.22)]">
+        <div className="portal-canvas flex min-w-0 flex-1 flex-col lg:overflow-hidden lg:rounded-[1.75rem] xl:rounded-[2rem] lg:shadow-[0_8px_32px_rgba(0,0,0,0.22)]">
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between px-4 sm:px-6 lg:px-8">
             <BrandLogo
               href={`/${role}`}
@@ -172,7 +172,7 @@ export function PortalShell({
             </div>
           </header>
 
-          <main className="flex flex-1 flex-col overflow-y-auto">
+          <main className="relative z-10 flex flex-1 flex-col overflow-y-auto">
             <div className="flex-1 px-4 pb-8 sm:px-6 lg:px-8 lg:pb-8">
               {children}
             </div>

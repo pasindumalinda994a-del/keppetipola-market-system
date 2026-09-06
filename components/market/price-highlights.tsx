@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import type { MarketPrice } from "@/types";
 import { matchesProduceCategory } from "@/lib/produce";
 
-const FIRST_ROW = 4;
+const INITIAL_VISIBLE = 8;
 
 export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
   const [expanded, setExpanded] = useState(false);
@@ -17,8 +17,8 @@ export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
     () => prices.filter((p) => matchesProduceCategory(p.category, category)),
     [prices, category]
   );
-  const visible = expanded ? filtered : filtered.slice(0, FIRST_ROW);
-  const canExpand = filtered.length > FIRST_ROW;
+  const visible = expanded ? filtered : filtered.slice(0, INITIAL_VISIBLE);
+  const canExpand = filtered.length > INITIAL_VISIBLE;
 
   return (
     <section id="price-highlights" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-14">

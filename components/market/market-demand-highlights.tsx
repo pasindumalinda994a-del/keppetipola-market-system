@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { fetchRequests } from "@/lib/api";
 import type { BuyingRequest } from "@/types";
 
-const FIRST_ROW = 3;
+const INITIAL_VISIBLE = 6;
 
 export function MarketDemandHighlights({
   requests: initialRequests,
@@ -31,8 +31,8 @@ export function MarketDemandHighlights({
     };
   }, [initialRequests]);
 
-  const visible = expanded ? requests : requests.slice(0, FIRST_ROW);
-  const canExpand = requests.length > FIRST_ROW;
+  const visible = expanded ? requests : requests.slice(0, INITIAL_VISIBLE);
+  const canExpand = requests.length > INITIAL_VISIBLE;
 
   if (requests.length === 0) return null;
 
