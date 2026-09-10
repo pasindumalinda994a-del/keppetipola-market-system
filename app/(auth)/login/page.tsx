@@ -42,7 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_20px_50px_-28px_rgba(15,15,15,0.35)] backdrop-blur-sm sm:p-8">
+    <div className="guest-card mx-auto max-w-lg p-6 sm:p-8">
       <AuthCardBrand priority />
       <div className="mb-6">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
@@ -63,7 +63,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("auth.placeholder.email")}
-            className="h-11 rounded-xl bg-background/70 px-3.5"
+            className="h-11 rounded-lg bg-white px-3.5"
             autoComplete="email"
           />
         </div>
@@ -83,7 +83,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="h-11 rounded-xl bg-background/70 px-3.5"
+            className="h-11 rounded-lg bg-white px-3.5"
             autoComplete="current-password"
           />
         </div>
@@ -91,7 +91,8 @@ export default function LoginPage() {
           type="submit"
           size="lg"
           disabled={submitting}
-          className="mt-1 h-11 w-full rounded-xl"
+          variant="brand"
+          className="mt-1 h-11 w-full"
         >
           {submitting ? t("auth.signingIn") : t("auth.signIn")}
         </Button>

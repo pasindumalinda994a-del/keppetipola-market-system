@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { ProduceCategoryFilter } from "@/components/market/produce-category-filter";
+import { useEffect, useState } from "react";
+import { ProducePicker } from "@/components/market/produce-picker";
 import { PriceTrendChart } from "@/components/market/price-trend-chart";
 import { AnimatedPageHeader } from "@/components/marketing/animated-page-header";
-import { SearchBar } from "@/components/shared/search-bar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatLKR } from "@/lib/format";
 import { useMarketPrices } from "@/lib/hooks/use-market-prices";
 import { useVegetables } from "@/lib/hooks/use-vegetables";
 import { fetchPriceHistory } from "@/lib/api";
-import { filterProduceByCategory } from "@/lib/produce";
+import { translateVegetableName } from "@/lib/i18n/messages";
+import { useLocale } from "@/components/providers/locale-provider";
 import type { PriceHistoryPoint } from "@/types";
 import {
   Table,
@@ -22,26 +22,12 @@ import {
 } from "@/components/ui/table";
 
 export default function PriceTrendsPage() {
-  const [q, setQ] = useState("");
-  const [category, setCategory] = useState("all");
+  const { t } = useLocale();
+  const [selected, setSelected] = useState("");
   const { vegetables, loading: vegLoading } = useVegetables();
   const { prices, loading: pricesLoading } = useMarketPrices();
   const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
-
-  const visibleVegetables = useMemo(
-    () => filterProduceByCategory(vegetables, category),
-    [vegetables, category]
-  );
-
-  const selected = useMemo(() => {
-    if (!visibleVegetables.length) return "";
-    if (!q.trim()) return visibleVegetables[0]?.id ?? "";
-    const match = visibleVegetables.find((v) =>
-      v.name.toLowerCase().includes(q.toLowerCase())
-    );
-    return match?.id ?? visibleVegetables[0]?.id ?? "";
-  }, [q, visibleVegetables]);
 
   useEffect(() => {
     if (!selected) {
@@ -66,28 +52,31 @@ export default function PriceTrendsPage() {
   }, [selected]);
 
   const current = prices.find((p) => p.vegetableId === selected);
+  const selectedName = vegetables.find((v) => v.id === selected)?.name;
   const loading = vegLoading || pricesLoading;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="guest-wrap py-10">
       <AnimatedPageHeader
         title="Price Trends"
         description="Seven-day wholesale price history by produce."
       />
-      <div className="mb-6 space-y-4">
-        <SearchBar
-          placeholder="Search produce…"
-          value={q}
-          onChange={setQ}
-          className="sm:max-w-xs"
+      <div className="mb-6 sm:max-w-lg">
+        <ProducePicker
+          vegetables={vegetables}
+          value={selected}
+          onChange={setSelected}
+          loading={vegLoading}
+          defaultCategory="Vegetables"
+          selectFirstOnChange
         />
-        <ProduceCategoryFilter value={category} onChange={setCategory} />
       </div>
       {loading ? (
         <Skeleton className="mb-4 h-5 w-64" />
       ) : current ? (
         <p className="mb-4 text-sm text-muted-foreground">
-          {current.vegetableName} average today:{" "}
+          {translateVegetableName(selectedName ?? current.vegetableName, t)}{" "}
+          average today:{" "}
           <span className="font-semibold text-price-foreground">
             {formatLKR(current.average)}
           </span>
@@ -98,7 +87,7 @@ export default function PriceTrendsPage() {
       ) : (
         <PriceTrendChart data={history} height={360} />
       )}
-      <div className="mt-8 overflow-hidden rounded-xl bg-card">
+      <div className="guest-card mt-8 overflow-hidden">
         {history.length === 0 && !loading && !historyLoading ? (
           <p className="p-5 text-sm text-muted-foreground">
             No price history yet for this item.

@@ -9,11 +9,11 @@ export function HomePriceHighlights() {
 
   if (loading) {
     return (
-      <section className="mx-auto max-w-6xl px-4 py-14">
+      <section className="guest-wrap py-10">
         <Skeleton className="mb-6 h-8 w-64" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-36 w-full" />
+            <Skeleton key={i} className="guest-card h-36 w-full" />
           ))}
         </div>
       </section>

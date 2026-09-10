@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { LanguageToggle } from "@/components/layout/language-toggle";
+import { SiteHeader } from "@/components/layout/site-header";
 import { LocaleProvider } from "@/components/providers/locale-provider";
 
 export default function AuthLayout({
@@ -9,8 +10,8 @@ export default function AuthLayout({
 }) {
   return (
     <LocaleProvider>
-      <div className="relative flex min-h-screen flex-col items-center justify-center px-4 py-12">
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div className="guest-site guest-auth relative flex min-h-full flex-1 flex-col">
+        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
           <Image
             src="/images/Farmers_loading_harvest_into_lorry_2K_202609060807.jpeg"
             alt=""
@@ -22,12 +23,16 @@ export default function AuthLayout({
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
-        <div className="fixed right-4 top-4 z-10 rounded-lg bg-card/85 shadow-sm backdrop-blur-sm">
-          <LanguageToggle />
-        </div>
-
-        <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both">
-          {children}
+        <div className="relative z-10 flex min-h-full flex-1 flex-col">
+          <SiteHeader />
+          <main className="flex flex-1 flex-col items-center px-4 py-10">
+            <div className="mb-5 flex w-full max-w-2xl justify-end">
+              <LanguageToggle />
+            </div>
+            <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
     </LocaleProvider>

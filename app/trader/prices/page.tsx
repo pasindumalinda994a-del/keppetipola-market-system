@@ -11,7 +11,7 @@ import { useLocale } from "@/components/providers/locale-provider";
 import { useMarketPrices } from "@/lib/hooks/use-market-prices";
 import { useVegetables } from "@/lib/hooks/use-vegetables";
 import { vegetableMatchesQuery } from "@/lib/i18n/messages";
-import { filterProduceByCategory, matchesProduceCategory } from "@/lib/produce";
+import { matchesProduceCategory } from "@/lib/produce";
 
 export default function TraderPricesPage() {
   const { t } = useLocale();
@@ -19,11 +19,6 @@ export default function TraderPricesPage() {
   const [category, setCategory] = useState("all");
   const { prices, loading: pricesLoading } = useMarketPrices();
   const { vegetables, loading: vegLoading } = useVegetables();
-
-  const filteredVegetables = useMemo(
-    () => filterProduceByCategory(vegetables, category),
-    [vegetables, category]
-  );
 
   const filtered = useMemo(() => {
     return prices.filter(
@@ -51,7 +46,7 @@ export default function TraderPricesPage() {
         <BookmarkedPriceChart
           showRangeFilter
           searchQuery={q}
-          vegetables={filteredVegetables}
+          vegetables={vegetables}
         />
       )}
       <div className="mt-8">

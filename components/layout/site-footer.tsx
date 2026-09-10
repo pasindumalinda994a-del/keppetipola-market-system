@@ -20,18 +20,18 @@ export function SiteFooter() {
   }
 
   return (
-    <footer className="mt-auto border-t border-sidebar-border bg-portal-frame text-sidebar-foreground">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
+    <footer className="mt-auto bg-[#1c2a18] text-white">
+      <div className="guest-wrap grid gap-10 py-14 sm:grid-cols-3">
         <div>
           <BrandLogo href="/" size="md" variant="onDark" />
-          <p className="mt-3 text-sm text-sidebar-foreground/65">
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
             Wholesale produce marketplace helping farmers find the best price
             for today&apos;s harvest.
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold">Explore</p>
-          <ul className="mt-3 space-y-2 text-sm text-sidebar-foreground/65">
+          <p className="text-sm font-semibold tracking-wide">Explore</p>
+          <ul className="mt-4 space-y-2.5 text-sm text-white/65">
             <li>
               <Link
                 href="/#price-highlights"
@@ -61,8 +61,8 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold">Help</p>
-          <ul className="mt-3 space-y-2 text-sm text-sidebar-foreground/65">
+          <p className="text-sm font-semibold tracking-wide">Help</p>
+          <ul className="mt-4 space-y-2.5 text-sm text-white/65">
             <li>
               <Link
                 href="/about"
@@ -90,7 +90,7 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-sidebar-border px-4 py-4 text-center text-xs text-sidebar-foreground/45">
+      <div className="border-t border-white/10 px-4 py-4 text-center text-xs text-white/45">
         © {new Date().getFullYear()} Keppetipola Wholesale Market
       </div>
     </footer>

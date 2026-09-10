@@ -107,6 +107,82 @@
   }
 }
 
+/* Guest/marketing storefront — Keells-inspired retail tokens. Dashboards stay on :root. */
+.guest-site {
+  --background: #f5f5f5;
+  --foreground: #212121;
+  --card: #ffffff;
+  --card-foreground: #212121;
+  --popover: #ffffff;
+  --popover-foreground: #212121;
+  --primary: #6cd454;
+  --primary-foreground: #163012;
+  --secondary: #eef6ea;
+  --secondary-foreground: #345424;
+  --muted: #ececec;
+  --muted-foreground: #6b6b6b;
+  --accent: #eef6ea;
+  --accent-foreground: #212121;
+  --border: #e8e8e8;
+  --input: #e0e0e0;
+  --ring: #6cd454;
+  --price: #eef6ea;
+  --price-foreground: #345424;
+  --success: #345424;
+  --radius: 0.625rem;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.guest-site.guest-auth {
+  background-color: transparent;
+}
+
+.guest-site :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-satoshi-face), var(--font-lato), sans-serif;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+.guest-site a.bg-portal-frame,
+.guest-site button.bg-portal-frame,
+.guest-site [data-slot="button"].bg-portal-frame {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 9999px;
+}
+
+.guest-site a.bg-portal-frame:hover,
+.guest-site button.bg-portal-frame:hover,
+.guest-site [data-slot="button"].bg-portal-frame:hover {
+  background-color: color-mix(in srgb, var(--primary) 82%, #2f4a22);
+}
+
+.guest-card {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.06), 0 4px 14px rgb(0 0 0 / 0.04);
+}
+
+.guest-wrap {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .guest-wrap {
+    padding-inline: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .guest-wrap {
+    padding-inline: 1.25rem;
+  }
+}
+
 @property --mesh-lime-x {
   syntax: "<percentage>";
   inherits: false;

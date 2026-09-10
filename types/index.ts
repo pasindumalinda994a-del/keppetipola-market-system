@@ -69,6 +69,7 @@ export interface Harvest {
   id: string;
   farmerId: string;
   farmerName?: string;
+  farmerPhotoUrl?: string;
   vegetableId: string;
   vegetableName: string;
   quantityKg: number;

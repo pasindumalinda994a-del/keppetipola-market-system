@@ -49,13 +49,13 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="guest-wrap py-10">
       <AnimatedPageHeader
         title={t("contact.title")}
         description={t("contact.description")}
       />
       <div className="grid gap-10 lg:grid-cols-2">
-        <form onSubmit={(e) => void onSubmit(e)} className="space-y-4 rounded-xl bg-card p-6">
+        <form onSubmit={(e) => void onSubmit(e)} className="guest-card space-y-4 p-6">
           <div className="space-y-2">
             <Label htmlFor="name">{t("contact.name")}</Label>
             <Input id="name" name="name" required />
@@ -68,11 +68,11 @@ export default function ContactPage() {
             <Label htmlFor="message">{t("contact.message")}</Label>
             <Textarea id="message" name="message" rows={5} required />
           </div>
-          <Button type="submit" disabled={pending} className="w-full sm:w-auto">
+          <Button type="submit" variant="brand" disabled={pending} className="h-10 w-full px-6 sm:w-auto">
             {pending ? t("contact.sending") : t("contact.send")}
           </Button>
         </form>
-        <div className="space-y-6">
+        <div className="guest-card space-y-6 p-6">
           <div>
             <h2 className="font-semibold">{t("contact.phone")}</h2>
             <p className="mt-1 text-muted-foreground">{t("contact.phoneValue")}</p>

@@ -8,10 +8,10 @@ export function HeroBackground() {
         alt=""
         fill
         priority
-        sizes="100vw"
+        sizes="(max-width: 1152px) calc(100vw - 2rem), 1152px"
         className="object-cover object-center"
       />
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/50 via-black/25 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/55 via-black/30 to-black/10" />
     </div>
   );
 }

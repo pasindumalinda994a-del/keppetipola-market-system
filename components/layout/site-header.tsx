@@ -41,30 +41,23 @@ export function SiteHeader() {
     setOpen(false);
   }
 
+  function isActive(href: string) {
+    if (href.includes("#")) return false;
+    return pathname === href;
+  }
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <BrandLogo href="/" size="md" priority />
-        <nav className="hidden items-center gap-6 md:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={(e) => onNavClick(e, link.href)}
-              className={cn(
-                "text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
-                pathname === link.href && "text-foreground"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" asChild>
-            <Link href="/login">{t("status.login")}</Link>
-          </Button>
-          <Button asChild>
+    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.08)]">
+      <div className="guest-wrap flex h-[72px] items-center justify-between">
+        <BrandLogo href="/" size="lg" priority />
+        <div className="hidden items-center gap-4 md:flex">
+          <Link
+            href="/login"
+            className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+          >
+            {t("status.login")}
+          </Link>
+          <Button variant="brand" asChild className="h-10 px-5">
             <Link href="/register">{t("auth.register")}</Link>
           </Button>
         </div>
@@ -78,24 +71,48 @@ export function SiteHeader() {
           {open ? <X /> : <Menu />}
         </Button>
       </div>
+      <nav className="hidden border-t border-border bg-white md:block">
+        <div className="guest-wrap flex items-center gap-1 overflow-x-auto">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={(e) => onNavClick(e, link.href)}
+              className={cn(
+                "shrink-0 border-b-2 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors",
+                isActive(link.href)
+                  ? "border-primary text-foreground"
+                  : "border-transparent text-muted-foreground hover:border-primary/50 hover:text-foreground"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
       {open ? (
-        <div className="border-t bg-background px-4 py-4 md:hidden">
-          <nav className="flex flex-col gap-3">
+        <div className="border-t bg-white px-4 py-4 md:hidden">
+          <nav className="flex flex-col gap-1">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium"
+                className={cn(
+                  "rounded-lg px-3 py-2.5 text-sm font-medium",
+                  isActive(link.href)
+                    ? "bg-secondary text-secondary-foreground"
+                    : "text-foreground hover:bg-muted"
+                )}
                 onClick={(e) => onNavClick(e, link.href)}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-2 flex gap-2">
-              <Button variant="outline" asChild className="flex-1">
+            <div className="mt-3 flex gap-2">
+              <Button variant="outline" asChild className="flex-1 rounded-full">
                 <Link href="/login">{t("status.login")}</Link>
               </Button>
-              <Button asChild className="flex-1">
+              <Button variant="brand" asChild className="flex-1">
                 <Link href="/register">{t("auth.register")}</Link>
               </Button>
             </div>

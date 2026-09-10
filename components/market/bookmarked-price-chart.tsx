@@ -14,6 +14,14 @@ import {
   type PriceChartType,
 } from "@/components/market/multi-vegetable-price-chart";
 import { ChartSegmentedControl } from "@/components/market/chart-ui";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { MAX_BOOKMARKS } from "@/lib/bookmarks";
 import type { PriceHistoryRange, Vegetable } from "@/types";
@@ -23,9 +31,14 @@ import { useVegetables } from "@/lib/hooks/use-vegetables";
 import {
   fillTemplate,
   type MessageKey,
+  translateProduceCategory,
   translateVegetableName,
   vegetableMatchesQuery,
 } from "@/lib/i18n/messages";
+import {
+  filterProduceByCategory,
+  uniqueProduceCategories,
+} from "@/lib/produce";
 import { ApiError } from "@/lib/api";
 
 function applyBookmarks(
@@ -66,6 +79,7 @@ export function BookmarkedPriceChart({
   const [range, setRange] = useState<PriceHistoryRange>("week");
   const [chartType, setChartType] = useState<PriceChartType>("line");
   const [metric, setMetric] = useState<PriceChartMetric>("average");
+  const [category, setCategory] = useState("Vegetables");
 
   useEffect(() => {
     setVegs(applyBookmarks(source, user?.bookmarkedVegetableIds));
@@ -123,12 +137,24 @@ export function BookmarkedPriceChart({
     year: "chart.range.year",
   };
 
-  const visibleVegs = useMemo(
-    () =>
-      query
-        ? vegs.filter((v) => vegetableMatchesQuery(v.name, query, t))
-        : vegs,
-    [vegs, query, t]
+  const categories = useMemo(
+    () => uniqueProduceCategories(vegs.map((v) => v.category)),
+    [vegs]
+  );
+
+  const categoryVegs = useMemo(
+    () => filterProduceByCategory(vegs, category),
+    [vegs, category]
+  );
+
+  const addableVegs = useMemo(() => {
+    const unselected = categoryVegs.filter((v) => !v.bookmarked);
+    if (!query) return unselected;
+    return unselected.filter((v) => vegetableMatchesQuery(v.name, query, t));
+  }, [categoryVegs, query, t]);
+
+  const addableItems = Object.fromEntries(
+    addableVegs.map((v) => [v.id, translateVegetableName(v.name, t)])
   );
 
   const bookmarkedAll = useMemo(
@@ -136,19 +162,17 @@ export function BookmarkedPriceChart({
     [vegs]
   );
 
-  const bookmarked = useMemo(
-    () => visibleVegs.filter((v) => v.bookmarked).slice(0, MAX_BOOKMARKS),
-    [visibleVegs]
-  );
-
   const chartVegetables = useMemo(
     () =>
-      bookmarked.map((v) => ({
+      bookmarkedAll.map((v) => ({
         id: v.id,
         name: translateVegetableName(v.name, t),
       })),
-    [bookmarked, t]
+    [bookmarkedAll, t]
   );
+
+  const atLimit = bookmarkedAll.length >= MAX_BOOKMARKS;
+  const addDisabled = saving || atLimit || addableVegs.length === 0;
 
   const activeChartHint =
     chartTypeOptions.find((o) => o.value === chartType)?.title ?? "";
@@ -191,6 +215,9 @@ export function BookmarkedPriceChart({
   }
 
   const heading = title ?? t("chart.priceTrend");
+  const pickerEmptyMessage = query
+    ? t("chart.noMatch")
+    : t("chart.noItemsInCategory");
 
   return (
     <section className="rounded-2xl bg-card/40 p-4 sm:p-5">
@@ -236,35 +263,81 @@ export function BookmarkedPriceChart({
         ) : null}
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {visibleVegs.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("chart.noMatch")}</p>
-        ) : (
-          visibleVegs.map((v) => {
-            const active = Boolean(v.bookmarked);
-            return (
+      <div className="mb-4 space-y-3">
+        <div className="grid gap-3 sm:max-w-lg sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">
+              {t("common.category")}
+            </Label>
+            <Select
+              value={category}
+              onValueChange={(next) => setCategory(next ?? "Vegetables")}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("filter.allCategories")}</SelectItem>
+                {categories.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {translateProduceCategory(c, t)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">
+              {t("common.vegetable")}
+            </Label>
+            <Select
+              key={bookmarkedAll.map((v) => v.id).join(",") + category}
+              items={addableItems}
+              disabled={addDisabled}
+              onValueChange={(next) => {
+                if (typeof next === "string" && next) void toggleBookmark(next);
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("chart.addToChart")} />
+              </SelectTrigger>
+              <SelectContent>
+                {addableVegs.map((v) => (
+                  <SelectItem key={v.id} value={v.id}>
+                    {translateVegetableName(v.name, t)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {addableVegs.length === 0 &&
+        !atLimit &&
+        (query || categoryVegs.length === 0) ? (
+          <p className="text-sm text-muted-foreground">{pickerEmptyMessage}</p>
+        ) : null}
+
+        {bookmarkedAll.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {bookmarkedAll.map((v) => (
               <button
                 key={v.id}
                 type="button"
                 disabled={saving}
+                aria-label={`${t("chart.removeFromChart")}: ${translateVegetableName(v.name, t)}`}
                 onClick={() => toggleBookmark(v.id)}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
-                  active
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground",
+                  "inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-sm transition-all hover:opacity-90",
                   saving && "opacity-70"
                 )}
               >
-                <Bookmark
-                  className="size-3.5"
-                  fill={active ? "currentColor" : "none"}
-                />
+                <Bookmark className="size-3.5" fill="currentColor" />
                 {translateVegetableName(v.name, t)}
               </button>
-            );
-          })
-        )}
+            ))}
+          </div>
+        ) : null}
       </div>
 
       {chartSummary ? (

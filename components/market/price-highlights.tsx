@@ -21,20 +21,24 @@ export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
   const canExpand = filtered.length > INITIAL_VISIBLE;
 
   return (
-    <section id="price-highlights" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-14">
+    <section id="price-highlights" className="guest-wrap scroll-mt-28 py-10">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <SplitText
             text="Today's Price Highlights"
             tag="h2"
-            className="font-satoshi text-2xl font-semibold tracking-tight"
+            className="font-satoshi text-xl font-bold tracking-tight sm:text-2xl"
           />
           <p className="mt-1 text-sm text-muted-foreground">
             Updated as traders buy and sell on the floor.
           </p>
         </div>
         {canExpand ? (
-          <Button variant="ghost" onClick={() => setExpanded((v) => !v)}>
+          <Button
+            variant="ghost"
+            onClick={() => setExpanded((v) => !v)}
+            className="text-primary hover:bg-secondary hover:text-primary"
+          >
             {expanded ? "Show less" : "View all"}
           </Button>
         ) : null}
@@ -44,7 +48,7 @@ export function PriceHighlights({ prices }: { prices: MarketPrice[] }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {visible.map((p) => (
-          <VegetablePriceCard key={p.vegetableId} price={p} />
+          <VegetablePriceCard key={p.vegetableId} price={p} variant="guest" />
         ))}
       </div>
     </section>

@@ -16,3 +16,13 @@ export function withTraderPhoto<T extends object>(
   if (!traderPhotoUrl) return request;
   return { ...request, traderPhotoUrl };
 }
+
+export function withFarmerPhoto<T extends object>(
+  harvest: T,
+  photoUrl?: string
+): T & { farmerPhotoUrl?: string } {
+  const farmerId = "farmerId" in harvest ? String(harvest.farmerId ?? "") : "";
+  const farmerPhotoUrl = profilePhotoSrc(farmerId, photoUrl);
+  if (!farmerPhotoUrl) return harvest;
+  return { ...harvest, farmerPhotoUrl };
+}
