@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAuthError, requireAdmin } from "@/lib/actions/auth.actions";
 import { writeSystemLog } from "@/lib/actions/log.actions";
-import { upsertPriceSnapshot } from "@/lib/actions/price-history.actions";
+import { setPriceRange } from "@/lib/actions/market-price.actions";
 import { MarketPrice } from "@/database/market-price.model";
 
 type Params = { params: Promise<{ vegetableId: string }> };
@@ -50,30 +50,14 @@ export async function PATCH(request: Request, { params }: Params) {
       );
     }
 
-    const oldAverage = price.average;
-    const newAverage = Math.round((lowestNum + highestNum) / 2);
-    let change = 0;
-
-    if (oldAverage > 0) {
-      change = Math.round(((newAverage - oldAverage) / oldAverage) * 100);
-    }
-
-    price.lowest = lowestNum;
-    price.highest = highestNum;
-    price.average = newAverage;
-    price.change = change;
-    price.lastUpdated = new Date();
-
-    await price.save();
-    await upsertPriceSnapshot({
-      vegetableId: price.vegetableId,
-      lowest: price.lowest,
-      highest: price.highest,
-      average: price.average,
+    await setPriceRange(price, {
+      lowest: lowestNum,
+      highest: highestNum,
+      source: "admin",
     });
     await writeSystemLog(
       "Price Update",
-      `${price.vegetableName} average updated to Rs.${newAverage}`,
+      `${price.vegetableName} average updated to Rs.${price.average}`,
       auth.user.email
     );
     return NextResponse.json({ price: price.toJSON() });

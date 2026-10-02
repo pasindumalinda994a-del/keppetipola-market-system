@@ -6,6 +6,7 @@ import { ProduceCategoryFilter } from "@/components/market/produce-category-filt
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { PageHeader } from "@/components/shared/page-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -65,6 +66,24 @@ export default function AdminPricesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  function sourceBadge(p: MarketPrice) {
+    if (p.source === "admin" && p.rangeDate) {
+      return <Badge variant="outline">{t("admin.prices.sourceAdmin")}</Badge>;
+    }
+    if (p.source === "sales" && p.rangeDate === todayKey) {
+      return (
+        <Badge variant="secondary">
+          {fillTemplate(t("admin.prices.sourceSales"), {
+            count: String(p.salesCount ?? 0),
+          })}
+        </Badge>
+      );
+    }
+    return <Badge variant="ghost">{t("admin.prices.sourceLastKnown")}</Badge>;
+  }
+
   function openCorrect(p: MarketPrice) {
     setSelected(p);
     setOpen(true);
@@ -115,6 +134,7 @@ export default function AdminPricesPage() {
                 <TableHead>{t("common.lowest")}</TableHead>
                 <TableHead>{t("common.highest")}</TableHead>
                 <TableHead>{t("common.average")}</TableHead>
+                <TableHead>{t("admin.prices.source")}</TableHead>
                 <TableHead>{t("common.updated")}</TableHead>
                 <TableHead className="text-right">{t("common.actions")}</TableHead>
               </TableRow>
@@ -123,7 +143,7 @@ export default function AdminPricesPage() {
               {visible.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={8}
                     className="text-center text-muted-foreground"
                   >
                     {t("admin.prices.empty")}
@@ -143,6 +163,7 @@ export default function AdminPricesPage() {
                     <TableCell className="font-semibold text-price-foreground">
                       {formatLKR(p.average, locale)}
                     </TableCell>
+                    <TableCell>{sourceBadge(p)}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {formatRelativeTime(p.lastUpdated, locale)}
                     </TableCell>
@@ -175,6 +196,9 @@ export default function AdminPricesPage() {
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={submit} className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {t("admin.prices.correctHint")}
+            </p>
             <div className="space-y-2">
               <Label htmlFor="lowest">{t("common.lowest")}</Label>
               <Input
