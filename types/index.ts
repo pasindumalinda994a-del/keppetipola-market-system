@@ -34,6 +34,9 @@ export interface MarketPrice {
   highest: number;
   average: number;
   change: number;
+  rangeDate?: string;
+  source?: "sales" | "admin";
+  salesCount?: number;
   lastUpdated: string;
 }
 

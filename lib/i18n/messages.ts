@@ -711,6 +711,12 @@ const en = {
   "admin.prices.saveCorrection": "Save correction",
   "admin.prices.corrected": "Price corrected (exceptional override)",
   "admin.prices.empty": "No prices yet. Add produce to create price rows.",
+  "admin.prices.source": "Source",
+  "admin.prices.sourceSales": "From {count} sales today",
+  "admin.prices.sourceAdmin": "Admin corrected",
+  "admin.prices.sourceLastKnown": "Last known",
+  "admin.prices.correctHint":
+    "New sales later today will widen this range if their price falls outside it.",
 
   // Admin reports
   "admin.reports.title": "Reports",
@@ -1544,6 +1550,12 @@ const si: Record<MessageKey, string> = {
   "admin.prices.saveCorrection": "නිවැරදි කිරීම සුරකින්න",
   "admin.prices.corrected": "මිල නිවැරදි කරන ලදී (විශේෂ අභිබවා යාම)",
   "admin.prices.empty": "මිල තවම නැත. මිල පේළි සඳහා භාණ්ඩ එකතු කරන්න.",
+  "admin.prices.source": "මූලාශ්‍රය",
+  "admin.prices.sourceSales": "අද විකුණුම් {count} කින්",
+  "admin.prices.sourceAdmin": "පරිපාලක නිවැරදි කළා",
+  "admin.prices.sourceLastKnown": "අවසන් දන්නා මිල",
+  "admin.prices.correctHint":
+    "අද පසුව සිදුවන නව විකුණුම්වල මිල මෙම පරාසයෙන් පිටත නම්, පරාසය පුළුල් වේ.",
 
   "admin.reports.title": "වාර්තා",
   "admin.reports.description": "දෛනික, සතිපතා සහ මාසික වෙළඳපල සාරාංශ.",

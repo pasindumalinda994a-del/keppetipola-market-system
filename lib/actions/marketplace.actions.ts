@@ -4,13 +4,14 @@ import { BuyingRequest } from "@/database/buying-request.model";
 import { Harvest } from "@/database/harvest.model";
 import { Notification, type NotificationGroup } from "@/database/notification.model";
 import { Offer, type OfferDocument } from "@/database/offer.model";
-import { Sale } from "@/database/sale.model";
+import { Sale, type SaleDocument } from "@/database/sale.model";
 import { User, type INotificationPrefs, type UserDocument } from "@/database/user.model";
 import {
   applyDiscountOnAccept,
   issueTokenForCompletedSale,
 } from "@/lib/actions/loyalty.actions";
 import { writeSystemLog } from "@/lib/actions/log.actions";
+import { applySalePrice } from "@/lib/actions/market-price.actions";
 
 export class MarketplaceError extends Error {
   status: number;
@@ -51,6 +52,14 @@ export async function createNotification(
     message,
     read: false,
   });
+}
+
+async function updateMarketPriceFromSale(sale: SaleDocument) {
+  try {
+    await applySalePrice(sale);
+  } catch (err) {
+    console.error("applySalePrice error:", err);
+  }
 }
 
 export async function acceptOffer(offerId: string, farmer: UserDocument) {
@@ -129,6 +138,7 @@ async function acceptHarvestOffer(offer: OfferDocument, farmer: UserDocument) {
     `Sale created (${harvest.vegetableName}, ${offer.quantityKg} kg)`,
     farmer.email
   );
+  await updateMarketPriceFromSale(sale);
 
   offer.status = "Accepted";
   await offer.save();
@@ -268,6 +278,7 @@ async function acceptApplicationOffer(
     `Sale created (${request.vegetableName}, ${offer.quantityKg} kg)`,
     farmer.email
   );
+  await updateMarketPriceFromSale(sale);
 
   offer.status = "Accepted";
   await offer.save();

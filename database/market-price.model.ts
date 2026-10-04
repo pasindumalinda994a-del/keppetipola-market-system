@@ -5,6 +5,8 @@ import mongoose, {
   type Types,
 } from "mongoose";
 
+export type MarketPriceSource = "sales" | "admin";
+
 export type IMarketPrice = {
   vegetableId: Types.ObjectId;
   vegetableName: string;
@@ -13,6 +15,9 @@ export type IMarketPrice = {
   highest: number;
   average: number;
   change: number;
+  rangeDate: string;
+  source: MarketPriceSource;
+  salesCount: number;
   lastUpdated: Date;
 };
 
@@ -47,6 +52,19 @@ const marketPriceSchema = new Schema<IMarketPrice>(
       default: 0,
     },
     change: {
+      type: Number,
+      default: 0,
+    },
+    rangeDate: {
+      type: String,
+      default: "",
+    },
+    source: {
+      type: String,
+      enum: ["sales", "admin"],
+      default: "admin",
+    },
+    salesCount: {
       type: Number,
       default: 0,
     },
